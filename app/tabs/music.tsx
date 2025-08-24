@@ -1,5 +1,5 @@
 import { useRouter } from 'expo-router';
-import { Mic2, Music, Video } from 'lucide-react-native';
+import { Image, Mic2, Music, Video } from 'lucide-react-native';
 import React from 'react';
 import { SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
@@ -40,7 +40,12 @@ export default function MusicScreen() {
             <SectionCard 
                 title="Pravachans" 
                 icon={<Mic2 size={32} color={THEME.text} />} 
-                onPress={() => alert('Coming Soon!')}
+                onPress={() => router.push('/pravachans')}
+            />
+            <SectionCard 
+                title="Gallery" 
+                icon={<Image size={32} color={THEME.text} />} 
+                onPress={() => router.push('/gallery')}
             />
         </View>
     </SafeAreaView>
