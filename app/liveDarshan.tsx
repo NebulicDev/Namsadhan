@@ -11,8 +11,8 @@ const THEME = {
 };
 
 const LIVE_STREAMS = [
-    { id: '1', title: 'Live Darshan 1', url: 'https://rtsp.me/embed/6F8nRBez/' },
-    { id: '2', title: 'Live Darshan 2', url: 'https://rtsp.me/embed/9ZZNTtZT/' },
+  { id: '1', title: 'Live Darshan 1', url: 'https://rtsp.me/embed/6F8nRBez/' },
+  { id: '2', title: 'Live Darshan 2', url: 'https://rtsp.me/embed/9ZZNTtZT/' },
 ];
 
 export default function LiveDarshanScreen() {
@@ -22,19 +22,19 @@ export default function LiveDarshanScreen() {
     <SafeAreaView style={styles.screenContainer}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-          <ChevronLeft size={28} color={THEME.text} />
+          <ChevronLeft size={24} color={THEME.text} />
         </TouchableOpacity>
         <Text style={styles.title}>Live Darshan</Text>
       </View>
       <ScrollView contentContainerStyle={styles.content}>
-        {LIVE_STREAMS.map(stream => (
+        {LIVE_STREAMS.map((stream) => (
           <View key={stream.id} style={styles.videoContainer}>
-            <Text style={styles.videoTitle}>{stream.title}</Text>
+            {/* <Text style={styles.videoTitle}>{stream.title}</Text> */}
             <WebView
-              style={styles.webview}
-              javaScriptEnabled={true}
-              domStorageEnabled={true}
               source={{ uri: stream.url }}
+              style={styles.webview}
+              mediaPlaybackRequiresUserAction={false}
+              allowsFullscreenVideo={true}
             />
           </View>
         ))}
@@ -68,6 +68,10 @@ const styles = StyleSheet.create({
   },
   videoContainer: {
     marginBottom: 20,
+    borderRadius: 15,
+    borderWidth: 8,
+    borderColor: '#D2B48C',
+    overflow: 'hidden',
   },
   videoTitle: {
     fontSize: 18,
@@ -78,7 +82,6 @@ const styles = StyleSheet.create({
   webview: {
     width: '100%',
     aspectRatio: 16 / 9,
-    borderRadius: 15,
     backgroundColor: '#000',
   },
 });
