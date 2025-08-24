@@ -1,5 +1,5 @@
 import { Tabs } from 'expo-router';
-import { BookOpen, Clock, Home, Music, Settings } from 'lucide-react-native';
+import { BookOpen, Flower2, Home, Library, Settings } from 'lucide-react-native';
 import React from 'react';
 
 // --- Theme Colors ---
@@ -48,8 +48,8 @@ export default function TabsLayout() {
       <Tabs.Screen
         name="namasmaran"
         options={{
-          title: 'Namasmaran',
-          tabBarIcon: ({ color }) => <Clock size={26} color={color} strokeWidth={2.5} />,
+          title: 'Sadhana', // --- UPDATED NAME ---
+          tabBarIcon: ({ color }) => <Flower2 size={26} color={color} strokeWidth={2.5} />, // --- UPDATED ICON ---
         }}
       />
       <Tabs.Screen
@@ -60,10 +60,10 @@ export default function TabsLayout() {
         }}
       />
       <Tabs.Screen
-        name="music"
+        name="music" // This file name stays the same
         options={{
-          title: 'Music',
-          tabBarIcon: ({ color }) => <Music size={26} color={color} strokeWidth={2.5} />,
+          title: 'Resources',
+          tabBarIcon: ({ color }) => <Library size={26} color={color} strokeWidth={2.5} />,
         }}
       />
       <Tabs.Screen

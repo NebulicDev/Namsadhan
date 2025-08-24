@@ -62,8 +62,7 @@ export default function QuotesScreen() {
     <SafeAreaView style={styles.screenContainer}>
       <ScrollView contentContainerStyle={styles.listContent}>
         <View style={styles.header}>
-          <Text style={styles.title}>Divine Thoughts</Text>
-          <Text style={styles.subtitle}>A quote for every aspect of your journey</Text>
+          <Text style={styles.title}>Today's Divine Thoughts</Text>
         </View>
         {Object.keys(dailyQuotes).map((category) => (
           <QuoteSection key={category} title={category} quote={dailyQuotes[category]} />
