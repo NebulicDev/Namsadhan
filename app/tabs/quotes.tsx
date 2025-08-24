@@ -12,46 +12,42 @@ const THEME = {
 
 // --- New Quotes Data Structure ---
 const QUOTES_DATA = {
+    "For Daily Inspiration": [
+    { id: 'my1', text: 'Only when we keep the fact of death every moment before us we may be encouraged to devote continuous attention to the spiritual like', reference: 'P.G.H.L Page no. 26/60' },
+  ],
   "Namasadhan": [
-    { id: 'dt1', text: 'In the stillness of meditation, the divine whispers its secrets.', author: 'Ancient Proverb' },
-    { id: 'dt2', text: 'Look for the divine in the ordinary, and you will find it everywhere.', author: 'Anonymous' },
+    { id: 'dt1', text: 'The Name of God is superior to God with form, as well as to God without form.', reference: 'P.G.H.L Page no.  342/379' },
   ],
   "Morality": [
-    { id: 'm1', text: 'The true measure of a man is how he treats someone who can do him absolutely no good.', author: 'Samuel Johnson' },
-    { id: 'm2', text: 'Right is right even if no one is doing it; wrong is wrong even if everyone is doing it.', author: 'Augustine of Hippo' },
+    { id: 'm1', text: 'If a wrong word, or a bad word escapes your lips, be sorry for it, & cherish the sorrow for some time, in order that the same mistake might not be committed again.', reference: 'Reflections 26 May 1912' },
   ],
   "Mysticism": [
-    { id: 'di1', text: 'The journey of a thousand miles begins with a single step.', author: 'Lao Tzu' },
-    { id: 'di2', text: 'Believe you can and you\'re halfway there.', author: 'Theodore Roosevelt' },
-  ],
-  "For Daily Inspiration": [
-    { id: 'my1', text: 'The quieter you become, the more you are able to hear.', author: 'Rumi' },
-    { id: 'my2', text: 'What you seek is seeking you.', author: 'Rumi' },
+    { id: 'di1', text: 'God cannot be seen, God cannot be expressed by word of mouth and God cannot be heard. God is the greatest wonder of all existence', reference: 'B.G.P.G.R Page no. 245/217' },
   ],
 };
 
 // --- Helper function to get a random quote ---
-const getRandomQuote = (quotes: { id: string; text: string; author: string }[]) => {
+const getRandomQuote = (quotes: { id: string; text: string; reference: string }[]) => {
   const randomIndex = Math.floor(Math.random() * quotes.length);
   return quotes[randomIndex];
 };
 
 // --- Quote Section Component ---
-const QuoteSection = ({ title, quote }: { title: string; quote: { text: string; author: string } }) => (
+const QuoteSection = ({ title, quote }: { title: string; quote: { text: string; reference: string } }) => (
   <View style={styles.card}>
     <Text style={styles.sectionTitle}>{title}</Text>
     <View style={styles.separator} />
     <Text style={styles.quoteText}>"{quote.text}"</Text>
-    <Text style={styles.authorText}>- {quote.author}</Text>
+    <Text style={styles.referenceText}>- {quote.reference}</Text>
   </View>
 );
 
 export default function QuotesScreen() {
-  const [dailyQuotes, setDailyQuotes] = useState<{ [key: string]: { text: string; author: string } }>({});
+  const [dailyQuotes, setDailyQuotes] = useState<{ [key: string]: { text: string; reference: string } }>({});
 
   useEffect(() => {
     // This effect runs once when the component mounts to select the daily quotes
-    const newDailyQuotes: { [key: string]: { text: string; author: string } } = {};
+    const newDailyQuotes: { [key: string]: { text: string; reference: string } } = {};
     for (const category in QUOTES_DATA) {
       newDailyQuotes[category] = getRandomQuote(QUOTES_DATA[category as keyof typeof QUOTES_DATA]);
     }
@@ -125,7 +121,7 @@ const styles = StyleSheet.create({
     lineHeight: 30,
     marginBottom: 15,
   },
-  authorText: {
+  referenceText: {
     fontSize: 16,
     fontWeight: '600',
     color: THEME.primary,
