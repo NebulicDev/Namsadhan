@@ -1,9 +1,10 @@
-import React, { useRef, useState } from 'react';
+import { X } from 'lucide-react-native';
+import React, { useState } from 'react';
 import {
-  Animated, Dimensions,
-  FlatList,
   Image,
+  Modal,
   SafeAreaView,
+  ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -13,95 +14,217 @@ import {
 // --- Theme Colors ---
 const THEME = {
   background: '#FFF8F0',
-  primary: '#D2B48C',
-  accent: '#FFA07A',
   text: '#5D4037',
   lightText: '#A1887F',
-  white: '#FFFFFF',
+  card: '#FFFFFF',
+  primary: '#D2B48C',
+  white: '#FFFFFF', // Added for clarity
 };
 
-// --- Mock Data ---
-const spiritualFigures = [
-  { id: '1', name: 'Ramakrishna', photoUrl: 'https://placehold.co/600x800/FFF8F0/5D4037?text=Ramakrishna', bio: 'Sri Ramakrishna Paramahamsa was a 19th-century Indian mystic and spiritual leader...' },
-  { id: '2', name: 'Vivekananda', photoUrl: 'https://placehold.co/600x800/FFF8F0/5D4037?text=Vivekananda', bio: 'Swami Vivekananda was a Hindu monk and a chief disciple of Ramakrishna...' },
-  { id: '3', name: 'Yogananda', photoUrl: 'https://placehold.co/600x800/FFF8F0/5D4037?text=Yogananda', bio: 'Paramahansa Yogananda was an Indian monk, yogi, and guru who introduced millions to meditation...' },
-  { id: '4', name: 'Anandamayi Ma', photoUrl: 'https://placehold.co/600x800/FFF8F0/5D4037?text=Anandamayi+Ma', bio: 'Sri Anandamayi Ma was a spiritual teacher from Bengal, India, revered as a self-realized master...' }
+// --- Updated Data Structure ---
+const spiritualGuides = [
+  { 
+    id: '1', 
+    name: 'Shri Nimbargi Maharaj',
+    // TODO: Replace with your actual image file
+    photo: require('../../assets/images/nimbargi-maharaj.jpg'), 
+    bio: 'Nimbargi Maharaj was a revered saint and the founder of the Inchegeri Sampradaya. His teachings emphasized the importance of continuous remembrance of the divine name (Namasmaran) as the most direct path to self-realization. He lived a simple life as a householder, demonstrating that spiritual attainment is possible for everyone, regardless of their station in life.' 
+  },
+  { 
+    id: '2', 
+    name: 'Shri Amburao Maharaj',
+    // TODO: Replace with your actual image file
+    photo: require('../../assets/images/amburao-maharaj.jpg'),
+    bio: 'Amburao Maharaj was a devoted disciple of Nimbargi Maharaj and a key figure in carrying forward the lineage. He was known for his unwavering faith and dedication to his guru\'s teachings, and he played a crucial role in spreading the practice of Namasmaran to a wider audience.'
+  },
+  { 
+    id: '3', 
+    name: 'Shri Bhausaheb Maharaj',
+    // TODO: Replace with your actual image file
+    photo: require('../../assets/images/bhausaheb-maharaj.jpg'),
+    bio: 'Bhausaheb Maharaj was another prominent disciple who systematized the teachings of Nimbargi Maharaj, making them more accessible to spiritual seekers. He established a formal framework for the practice and is considered a pillar of the Inchegeri Sampradaya.'
+  },
+  { 
+    id: '4', 
+    name: 'Shri Gurudev Ranade',
+    // TODO: Replace with your actual image file
+    photo: require('../../assets/images/gurudeo-ranade.jpg'),
+    bio: 'Dr. R.D. Ranade, respectfully known as Gurudev Ranade, was a philosopher, scholar, and a spiritual successor in the lineage. He masterfully bridged the gap between Eastern mysticism and Western philosophy, authoring several profound books on spirituality and the path of meditation.'
+  },
 ];
 
-// --- Card Component ---
-const Card = ({ item }: { item: typeof spiritualFigures[0] }) => {
-  const [isFlipped, setIsFlipped] = useState(false);
-  const animateValue = useRef(new Animated.Value(0)).current;
+// Define the type for a single guide
+type Guide = typeof spiritualGuides[0];
 
-  const frontInterpolate = animateValue.interpolate({ inputRange: [0, 180], outputRange: ['0deg', '180deg'] });
-  const backInterpolate = animateValue.interpolate({ inputRange: [0, 180], outputRange: ['180deg', '360deg'] });
-
-  const flipCard = () => {
-    setIsFlipped(!isFlipped);
-    Animated.spring(animateValue, {
-      toValue: isFlipped ? 0 : 180,
-      friction: 8,
-      tension: 10,
-      useNativeDriver: true,
-    }).start();
-  };
-
-  const frontAnimatedStyle = { transform: [{ rotateY: frontInterpolate }] };
-  const backAnimatedStyle = { transform: [{ rotateY: backInterpolate }] };
-
-  return (
-    <TouchableOpacity onPress={flipCard} activeOpacity={0.9} style={styles.cardContainer}>
-      <Animated.View style={[styles.card, styles.cardFront, frontAnimatedStyle]}>
-        <Image source={{ uri: item.photoUrl }} style={styles.cardImage} />
-        <View style={styles.cardTextContainer}><Text style={styles.cardTitle}>{item.name}</Text></View>
-      </Animated.View>
-      <Animated.View style={[styles.card, styles.cardBack, backAnimatedStyle]}>
-        <Text style={styles.cardBackTitle}>{item.name}</Text>
-        <Text style={styles.cardBackBio}>{item.bio}</Text>
-      </Animated.View>
-    </TouchableOpacity>
-  );
-};
-
-// --- Main Screen Component ---
 export default function HomeScreen() {
+  const [selectedGuide, setSelectedGuide] = useState<Guide | null>(null);
+
   return (
     <SafeAreaView style={styles.screenContainer}>
-      <View style={styles.homeHeader}>
-        <Text style={styles.title}>Spiritual Guides</Text>
-        <Text style={styles.subtitle}>Tap a card to learn more</Text>
-      </View>
-      <FlatList
-        data={spiritualFigures}
-        renderItem={({ item }) => <Card item={item} />}
-        keyExtractor={item => item.id}
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        pagingEnabled
-        contentContainerStyle={styles.flatListContent}
-      />
+      <ScrollView contentContainerStyle={styles.scrollContent}>
+        <View style={styles.header}>
+          <Text style={styles.title}>Nimbargi Sampradaya</Text>
+          <Text style={styles.subtitle}>Shri Gurudev Ranade Samadhi Trust</Text>
+        </View>
+
+        {/* Top Card */}
+        <TouchableOpacity style={styles.topCard} onPress={() => setSelectedGuide(spiritualGuides[0])}>
+          <Image source={spiritualGuides[0].photo} style={styles.topCardImage} />
+          <View style={styles.cardOverlay}>
+            <Text style={styles.cardTitle}>{spiritualGuides[0].name}</Text>
+          </View>
+        </TouchableOpacity>
+
+        {/* Bottom Row of Cards */}
+        <View style={styles.bottomRow}>
+          {spiritualGuides.slice(1).map((guide) => (
+            <TouchableOpacity key={guide.id} style={styles.bottomCard} onPress={() => setSelectedGuide(guide)}>
+              <Image source={guide.photo} style={styles.bottomCardImage} />
+              <View style={styles.cardOverlay}>
+                <Text style={styles.cardTitleSmall}>{guide.name}</Text>
+              </View>
+            </TouchableOpacity>
+          ))}
+        </View>
+      </ScrollView>
+
+      {/* Fullscreen Modal */}
+      <Modal
+        animationType="slide"
+        transparent={false}
+        visible={selectedGuide !== null}
+        onRequestClose={() => setSelectedGuide(null)}
+      >
+        <SafeAreaView style={styles.modalContainer}>
+          <ScrollView>
+            <TouchableOpacity style={styles.closeButton} onPress={() => setSelectedGuide(null)}>
+              <X size={32} color={THEME.text} />
+            </TouchableOpacity>
+            {selectedGuide && (
+              <>
+                <Image source={selectedGuide.photo} style={styles.modalImage} />
+                <View style={styles.modalContent}>
+                  <Text style={styles.modalTitle}>{selectedGuide.name}</Text>
+                  <Text style={styles.modalBio}>{selectedGuide.bio}</Text>
+                </View>
+              </>
+            )}
+          </ScrollView>
+        </SafeAreaView>
+      </Modal>
     </SafeAreaView>
   );
 }
 
-// --- Stylesheet ---
-const { width } = Dimensions.get('window');
-const CARD_WIDTH = width * 0.8;
-const CARD_HEIGHT = CARD_WIDTH * 1.5;
-
 const styles = StyleSheet.create({
-  screenContainer: { flex: 1, backgroundColor: THEME.background },
-  homeHeader: { paddingTop: 40, paddingBottom: 20, alignItems: 'center' },
-  title: { fontSize: 32, fontWeight: 'bold', color: THEME.text, marginBottom: 8 },
-  subtitle: { fontSize: 16, color: THEME.lightText, textAlign: 'center' },
-  flatListContent: { paddingHorizontal: (width - CARD_WIDTH) / 2 },
-  cardContainer: { width: CARD_WIDTH, height: CARD_HEIGHT, marginHorizontal: 10 },
-  card: { position: 'absolute', width: '100%', height: '100%', borderRadius: 20, backfaceVisibility: 'hidden', justifyContent: 'center', alignItems: 'center' },
-  cardFront: { backgroundColor: THEME.primary },
-  cardBack: { backgroundColor: THEME.primary, padding: 20 },
-  cardImage: { width: '100%', height: '100%', borderRadius: 20 },
-  cardTextContainer: { position: 'absolute', bottom: 0, left: 0, right: 0, padding: 20, backgroundColor: 'rgba(0,0,0,0.4)', borderBottomLeftRadius: 20, borderBottomRightRadius: 20 },
-  cardTitle: { fontSize: 24, fontWeight: 'bold', color: THEME.white },
-  cardBackTitle: { fontSize: 22, fontWeight: 'bold', color: THEME.text, marginBottom: 10 },
-  cardBackBio: { fontSize: 16, color: THEME.text, lineHeight: 24 },
+  screenContainer: {
+    flex: 1,
+    backgroundColor: THEME.background,
+  },
+  scrollContent: {
+    paddingBottom: 40,
+  },
+  header: {
+    paddingTop: 60,
+    paddingHorizontal: 20,
+    marginBottom: 20,
+  },
+  title: {
+    fontSize: 34,
+    fontWeight: 'bold',
+    color: THEME.text,
+  },
+  subtitle: {
+    fontSize: 18,
+    color: THEME.lightText,
+    marginTop: 4,
+  },
+  topCard: {
+    height: 250, // Increased height
+    marginHorizontal: 20,
+    borderRadius: 20,
+    overflow: 'hidden',
+    elevation: 5,
+    backgroundColor: THEME.card,
+  },
+  topCardImage: {
+    width: '100%',
+    height: '100%',
+  },
+  bottomRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginHorizontal: 20,
+    marginTop: 20,
+  },
+  bottomCard: {
+    width: '31%',
+    height: 180, // Increased height
+    borderRadius: 20,
+    overflow: 'hidden',
+    elevation: 5,
+    backgroundColor: THEME.card,
+  },
+  bottomCardImage: {
+    width: '100%',
+    height: '100%',
+  },
+  cardOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0,0,0,0.3)',
+    justifyContent: 'flex-end',
+    padding: 15,
+  },
+  cardTitle: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: THEME.white,
+    // Added text shadow for visibility
+    textShadowColor: 'rgba(0, 0, 0, 0.75)',
+    textShadowOffset: { width: -1, height: 1 },
+    textShadowRadius: 10,
+  },
+  cardTitleSmall: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: THEME.white,
+    // Added text shadow for visibility
+    textShadowColor: 'rgba(0, 0, 0, 0.75)',
+    textShadowOffset: { width: -1, height: 1 },
+    textShadowRadius: 10,
+  },
+  // Modal Styles
+  modalContainer: {
+    flex: 1,
+    backgroundColor: THEME.background,
+  },
+  closeButton: {
+    position: 'absolute',
+    top: 50,
+    right: 20,
+    zIndex: 10,
+    backgroundColor: 'rgba(255, 255, 255, 0.7)',
+    borderRadius: 20,
+    padding: 5,
+  },
+  modalImage: {
+    width: '100%',
+    height: 400,
+    borderBottomLeftRadius: 30,
+    borderBottomRightRadius: 30,
+  },
+  modalContent: {
+    padding: 20,
+  },
+  modalTitle: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    color: THEME.text,
+    marginBottom: 15,
+  },
+  modalBio: {
+    fontSize: 18,
+    color: THEME.text,
+    lineHeight: 28,
+  },
 });
