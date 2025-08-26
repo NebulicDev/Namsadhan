@@ -48,7 +48,7 @@ export default function TabsLayout() {
       <Tabs.Screen
         name="quotes"
         options={{
-          title: 'Quotes',
+          title: 'Thoughts',
           tabBarIcon: ({ color }) => <BookOpen size={26} color={color} strokeWidth={2.5} />,
         }}
       />
