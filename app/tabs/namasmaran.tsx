@@ -72,8 +72,7 @@ export default function NamasmaranScreen() {
   return (
     <SafeAreaView style={styles.screenContainer}>
       <View style={styles.header}>
-        <Text style={styles.title}>Namasmaran</Text>
-        <Text style={styles.subtitle}>Begin your meditation session</Text>
+        {/* <Text style={styles.title}>Namasmaran</Text> */}
       </View>
 
       <View style={styles.timerCard}>
