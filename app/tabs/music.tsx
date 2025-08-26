@@ -23,8 +23,7 @@ export default function MusicScreen() {
   return (
     <SafeAreaView style={styles.screenContainer}>
         <View style={styles.header}>
-            <Text style={styles.title}>Media</Text>
-            <Text style={styles.subtitle}>Select a category to begin</Text>
+            {/* <Text style={styles.title}>Media</Text> */}
         </View>
         <View style={styles.cardContainer}>
             <SectionCard 
