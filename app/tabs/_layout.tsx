@@ -1,5 +1,5 @@
 import { Tabs } from 'expo-router';
-import { BookOpen, Flower2, Home, Library, Settings } from 'lucide-react-native';
+import { BookOpen, Home, Library, Settings, Sun } from 'lucide-react-native';
 import React from 'react';
 
 // --- Theme Colors ---
@@ -46,17 +46,17 @@ export default function TabsLayout() {
         }}
       />
       <Tabs.Screen
-        name="namasmaran"
+        name="quotes"
         options={{
-          title: 'Sadhana', // --- UPDATED NAME ---
-          tabBarIcon: ({ color }) => <Flower2 size={26} color={color} strokeWidth={2.5} />, // --- UPDATED ICON ---
+          title: 'Thoughts',
+          tabBarIcon: ({ color }) => <BookOpen size={26} color={color} strokeWidth={2.5} />,
         }}
       />
       <Tabs.Screen
-        name="quotes"
+        name="namasmaran"
         options={{
-          title: 'Quotes',
-          tabBarIcon: ({ color }) => <BookOpen size={26} color={color} strokeWidth={2.5} />,
+          title: 'Nema', // --- UPDATED NAME ---
+          tabBarIcon: ({ color }) => (<Sun size={26} color={color} strokeWidth={2.5} />),
         }}
       />
       <Tabs.Screen
