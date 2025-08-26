@@ -1,7 +1,9 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { collection, getDocs } from "firebase/firestore";
+import { Share2 } from 'lucide-react-native'; // 1. Import the Share icon
 import React, { useCallback, useEffect, useState } from 'react';
-import { ActivityIndicator, SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native';
+// 2. Import the Share API and ActivityIndicator from React Native
+import { ActivityIndicator, SafeAreaView, ScrollView, Share, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { db } from '../../firebaseConfig';
 
 // --- Theme Colors ---
@@ -23,21 +25,43 @@ const getDayOfYear = () => {
 };
 
 // --- Quote Section Component ---
-const QuoteSection = ({ title, quote }) => (
-  <View style={styles.card}>
-    <Text style={styles.sectionTitle}>{title}</Text>
-    <View style={styles.separator} />
-    {quote ? (
-      <>
-        <Text style={styles.quoteText}>"{quote.text}"</Text>
-        <Text style={styles.referenceText}>- {quote.reference}</Text>
-      </>
-    ) : (
-      // Updated message for when a category has no quotes
-      <Text style={styles.quoteText}>No quote available for this category.</Text>
-    )}
-  </View>
-);
+const QuoteSection = ({ title, quote }) => {
+  // 3. Create the function to handle the share action
+  const handleShare = async () => {
+    if (!quote) return;
+    try {
+      const message = `"${quote.text}"\n\n- ${quote.reference}\n\nShared from Namsadhan App`;
+      await Share.share({
+        message: message,
+        title: `A quote on ${title}`, // Title for email subjects etc.
+      });
+    } catch (error) {
+      console.error('Error sharing quote:', error.message);
+    }
+  };
+
+  return (
+    <View style={styles.card}>
+      <View style={styles.cardHeader}>
+        <Text style={styles.sectionTitle}>{title}</Text>
+        {/* 4. Add the share button */}
+        <TouchableOpacity onPress={handleShare} style={styles.shareIcon}>
+          <Share2 size={22} color={THEME.lightText} />
+        </TouchableOpacity>
+      </View>
+      <View style={styles.separator} />
+      {quote ? (
+        <>
+          <Text style={styles.quoteText}>"{quote.text}"</Text>
+          <Text style={styles.referenceText}>- {quote.reference}</Text>
+        </>
+      ) : (
+        <Text style={styles.quoteText}>No quote available for this category.</Text>
+      )}
+    </View>
+  );
+};
+
 
 export default function QuotesScreen() {
   const [dailyQuotes, setDailyQuotes] = useState({});
@@ -72,24 +96,20 @@ export default function QuotesScreen() {
     const loadQuotes = async () => {
       setLoading(true);
       try {
-        // 1. Try to get quotes from local storage
         const cachedQuotesJSON = await AsyncStorage.getItem('allQuotes');
         let quotesData = cachedQuotesJSON ? JSON.parse(cachedQuotesJSON) : null;
 
-        // 2. If no quotes are cached, fetch from Firestore
         if (!quotesData || quotesData.length === 0) {
           console.log("No cached quotes found. Fetching from Firestore...");
           const quotesCollection = collection(db, 'quotes');
           const quotesSnapshot = await getDocs(quotesCollection);
           quotesData = quotesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
           
-          // 3. Save the fresh quotes to local storage for next time
           await AsyncStorage.setItem('allQuotes', JSON.stringify(quotesData));
         } else {
           console.log("Loaded quotes from local cache.");
         }
         
-        // 4. Select and display the daily quotes from the (now available) data
         selectDailyQuotes(quotesData);
 
       } catch (error) {
@@ -163,11 +183,20 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.05,
     shadowRadius: 5,
   },
+  cardHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 15,
+  },
   sectionTitle: {
     fontSize: 22,
     fontWeight: '700',
     color: THEME.text,
-    marginBottom: 15,
+    flex: 1, // Allows text to take up available space
+  },
+  shareIcon: {
+    padding: 5, // Makes the touch area larger
   },
   separator: {
     height: 1,
