@@ -1,5 +1,8 @@
-import React, { useEffect, useState } from 'react';
-import { SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { collection, getDocs } from "firebase/firestore";
+import React, { useCallback, useEffect, useState } from 'react';
+import { ActivityIndicator, SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { db } from '../../firebaseConfig';
 
 // --- Theme Colors ---
 const THEME = {
@@ -10,49 +13,104 @@ const THEME = {
   primary: '#D2B48C',
 };
 
-// --- New Quotes Data Structure ---
-const QUOTES_DATA = {
-    "For Daily Inspiration": [
-    { id: 'my1', text: 'Only when we keep the fact of death every moment before us we may be encouraged to devote continuous attention to the spiritual like', reference: 'P.G.H.L Page no. 26/60' },
-  ],
-  "Namasadhan": [
-    { id: 'dt1', text: 'The Name of God is superior to God with form, as well as to God without form.', reference: 'P.G.H.L Page no.  342/379' },
-  ],
-  "Morality": [
-    { id: 'm1', text: 'If a wrong word, or a bad word escapes your lips, be sorry for it, & cherish the sorrow for some time, in order that the same mistake might not be committed again.', reference: 'Reflections 26 May 1912' },
-  ],
-  "Mysticism": [
-    { id: 'di1', text: 'God cannot be seen, God cannot be expressed by word of mouth and God cannot be heard. God is the greatest wonder of all existence', reference: 'B.G.P.G.R Page no. 245/217' },
-  ],
-};
-
-// --- Helper function to get a random quote ---
-const getRandomQuote = (quotes: { id: string; text: string; reference: string }[]) => {
-  const randomIndex = Math.floor(Math.random() * quotes.length);
-  return quotes[randomIndex];
+// --- Helper function to get the day of the year (1-366) ---
+const getDayOfYear = () => {
+  const now = new Date();
+  const start = new Date(now.getFullYear(), 0, 0);
+  const diff = (now.getTime() - start.getTime()) + ((start.getTimezoneOffset() - now.getTimezoneOffset()) * 60 * 1000);
+  const oneDay = 1000 * 60 * 60 * 24;
+  return Math.floor(diff / oneDay);
 };
 
 // --- Quote Section Component ---
-const QuoteSection = ({ title, quote }: { title: string; quote: { text: string; reference: string } }) => (
+const QuoteSection = ({ title, quote }) => (
   <View style={styles.card}>
     <Text style={styles.sectionTitle}>{title}</Text>
     <View style={styles.separator} />
-    <Text style={styles.quoteText}>"{quote.text}"</Text>
-    <Text style={styles.referenceText}>- {quote.reference}</Text>
+    {quote ? (
+      <>
+        <Text style={styles.quoteText}>"{quote.text}"</Text>
+        <Text style={styles.referenceText}>- {quote.reference}</Text>
+      </>
+    ) : (
+      // Updated message for when a category has no quotes
+      <Text style={styles.quoteText}>No quote available for this category.</Text>
+    )}
   </View>
 );
 
 export default function QuotesScreen() {
-  const [dailyQuotes, setDailyQuotes] = useState<{ [key: string]: { text: string; reference: string } }>({});
+  const [dailyQuotes, setDailyQuotes] = useState({});
+  const [loading, setLoading] = useState(true);
+  const categories = ["Daily Inspiration", "Namasadhan", "Morality", "Mysticism"];
 
-  useEffect(() => {
-    // This effect runs once when the component mounts to select the daily quotes
-    const newDailyQuotes: { [key: string]: { text: string; reference: string } } = {};
-    for (const category in QUOTES_DATA) {
-      newDailyQuotes[category] = getRandomQuote(QUOTES_DATA[category as keyof typeof QUOTES_DATA]);
+  const selectDailyQuotes = useCallback((quotesList) => {
+    const quotesByCategory = {};
+    categories.forEach(cat => quotesByCategory[cat] = []);
+    quotesList.forEach(quote => {
+      if (quotesByCategory[quote.category]) {
+        quotesByCategory[quote.category].push(quote);
+      }
+    });
+
+    const dayOfYear = getDayOfYear();
+    const newDailyQuotes = {};
+
+    for (const category of categories) {
+        const categoryQuotes = quotesByCategory[category];
+        if (categoryQuotes && categoryQuotes.length > 0) {
+            const dailyIndex = dayOfYear % categoryQuotes.length;
+            newDailyQuotes[category] = categoryQuotes[dailyIndex];
+        } else {
+            newDailyQuotes[category] = null;
+        }
     }
     setDailyQuotes(newDailyQuotes);
   }, []);
+
+  useEffect(() => {
+    const loadQuotes = async () => {
+      setLoading(true);
+      try {
+        // 1. Try to get quotes from local storage
+        const cachedQuotesJSON = await AsyncStorage.getItem('allQuotes');
+        let quotesData = cachedQuotesJSON ? JSON.parse(cachedQuotesJSON) : null;
+
+        // 2. If no quotes are cached, fetch from Firestore
+        if (!quotesData || quotesData.length === 0) {
+          console.log("No cached quotes found. Fetching from Firestore...");
+          const quotesCollection = collection(db, 'quotes');
+          const quotesSnapshot = await getDocs(quotesCollection);
+          quotesData = quotesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+          
+          // 3. Save the fresh quotes to local storage for next time
+          await AsyncStorage.setItem('allQuotes', JSON.stringify(quotesData));
+        } else {
+          console.log("Loaded quotes from local cache.");
+        }
+        
+        // 4. Select and display the daily quotes from the (now available) data
+        selectDailyQuotes(quotesData);
+
+      } catch (error) {
+        console.error("Error loading quotes: ", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadQuotes();
+  }, [selectDailyQuotes]);
+
+
+  if (loading) {
+    return (
+      <SafeAreaView style={[styles.screenContainer, styles.centered]}>
+        <ActivityIndicator size="large" color={THEME.primary} />
+        <Text style={{color: THEME.text, marginTop: 10}}>Loading Divine Thoughts...</Text>
+      </SafeAreaView>
+    );
+  }
 
   return (
     <SafeAreaView style={styles.screenContainer}>
@@ -60,7 +118,8 @@ export default function QuotesScreen() {
         <View style={styles.header}>
           <Text style={styles.title}>Today's Divine Thoughts</Text>
         </View>
-        {Object.keys(dailyQuotes).map((category) => (
+
+        {categories.map((category) => (
           <QuoteSection key={category} title={category} quote={dailyQuotes[category]} />
         ))}
       </ScrollView>
@@ -68,24 +127,26 @@ export default function QuotesScreen() {
   );
 }
 
+// --- Styles ---
 const styles = StyleSheet.create({
   screenContainer: {
     flex: 1,
     backgroundColor: THEME.background,
   },
+  centered: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   header: {
     paddingTop: 60,
     marginBottom: 20,
+    alignItems: 'center',
   },
   title: {
     fontSize: 34,
     fontWeight: 'bold',
     color: THEME.text,
-  },
-  subtitle: {
-    fontSize: 18,
-    color: THEME.lightText,
-    marginTop: 4,
   },
   listContent: {
     paddingHorizontal: 20,
