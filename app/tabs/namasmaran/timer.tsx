@@ -1,4 +1,5 @@
 // app/tabs/namasmaran/timer.tsx
+import CustomAlert from '@/components/CustomAlert'; // 1. Import the new component
 import { useSessions } from '@/context/SessionContext';
 import { Pause, Play, RotateCcw, StopCircle } from 'lucide-react-native';
 import React, { useEffect, useRef, useState } from 'react';
@@ -27,6 +28,9 @@ export default function TimerScreen() {
   const [isActive, setIsActive] = useState(false);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const { addSession } = useSessions();
+  
+  // 2. Add state to control the custom alert's visibility
+  const [isAlertVisible, setAlertVisible] = useState(false);
 
   useEffect(() => {
     if (isActive) {
@@ -48,10 +52,11 @@ export default function TimerScreen() {
       const today = new Date();
       const dateString = today.toISOString().split('T')[0];
       addSession({ date: dateString, duration: time });
-      Alert.alert("Session Complete!", `You meditated for ${formatTime(time)}.`);
+      // 3. Show our custom alert instead of the basic one
+      setAlertVisible(true);
     }
     setIsActive(false);
-    setTime(0);
+    // Note: We reset the time when the user closes the alert
   };
 
   const handleReset = () => {
@@ -66,6 +71,12 @@ export default function TimerScreen() {
         style: "destructive",
       }]
     );
+  };
+  
+  // 4. Function to handle closing the alert and resetting the timer
+  const handleAlertClose = () => {
+    setAlertVisible(false);
+    setTime(0);
   };
 
   return (
@@ -85,6 +96,14 @@ export default function TimerScreen() {
           </TouchableOpacity>
         </View>
       </View>
+      
+      {/* 5. Add the CustomAlert component to our screen */}
+      <CustomAlert 
+        visible={isAlertVisible}
+        title="Session Complete!"
+        message={`You have meditated for ${formatTime(time)}.`}
+        onClose={handleAlertClose}
+      />
     </View>
   );
 }
