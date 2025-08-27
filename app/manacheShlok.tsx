@@ -1,13 +1,14 @@
 import { useRouter } from 'expo-router';
 import { ChevronLeft } from 'lucide-react-native';
 import React from 'react';
-import { SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import manacheShlokText from '../assets/text/manache_shlok_content';
-
+import DraggableScrollbar from '../components/DraggableScrollbar'; // Import the new component
 
 const THEME = {
   background: '#FFF8F0',
   text: '#5D4037',
+  primary: '#D2B48C',
 };
 
 export default function ManacheShlokScreen() {
@@ -21,11 +22,14 @@ export default function ManacheShlokScreen() {
         </TouchableOpacity>
         <Text style={styles.title}>Manache Shlok</Text>
       </View>
-      <ScrollView contentContainerStyle={styles.contentContainer}>
-        <View>
+      <DraggableScrollbar
+        thumbStyle={{ backgroundColor: THEME.primary }}
+        scrollViewProps={{ contentContainerStyle: styles.contentContainer }}
+      >
+        <View style={{ paddingBottom: 60 }}>
           <Text style={styles.shlokText}>{manacheShlokText}</Text>
         </View>
-      </ScrollView>
+      </DraggableScrollbar>
     </SafeAreaView>
   );
 }
