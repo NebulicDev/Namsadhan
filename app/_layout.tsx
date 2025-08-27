@@ -15,6 +15,7 @@ export default function RootLayout() {
       <Stack.Screen name="pravachans" options={{ headerShown: false }} />
       <Stack.Screen name="player" options={{ headerShown: false }} />
       <Stack.Screen name="gallery" options={{ headerShown: false }} />
+      <Stack.Screen name="manacheShlok" options={{ headerShown: false }} />
     </Stack>
   );
 }
