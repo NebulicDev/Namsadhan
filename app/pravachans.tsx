@@ -1,6 +1,6 @@
 import { Audio } from 'expo-av';
 import { useRouter } from 'expo-router';
-import { ChevronDown, ChevronRight, Mic2, Pause, Play } from 'lucide-react-native';
+import { ChevronDown, ChevronLeft, ChevronRight, Pause, Play } from 'lucide-react-native';
 import React, { useEffect, useState } from 'react';
 import { FlatList, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
@@ -103,7 +103,7 @@ export default function PravachansScreen() {
     <SafeAreaView style={styles.screenContainer}>
       <View style={styles.header}>
          <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-          <Mic2 size={28} color={THEME.text} />
+          <ChevronLeft size={24} color={THEME.text} />
         </TouchableOpacity>
         <Text style={styles.title}>Pravachans</Text>
       </View>
