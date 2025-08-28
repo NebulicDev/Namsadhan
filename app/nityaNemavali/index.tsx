@@ -47,7 +47,7 @@ export default function NityanemavaliIndexScreen() {
         <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
           <ChevronLeft size={24} color={THEME.text} />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Nitya Nemavali</Text>
+        <Text style={styles.headerTitle}>Nityanemavali</Text>
       </View>
       <FlatList
         data={flattenedIndex}

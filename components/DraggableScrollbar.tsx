@@ -1,13 +1,13 @@
 import React, { useRef, useState } from 'react';
 import {
-    Dimensions,
-    LayoutChangeEvent,
-    PanResponder,
-    ScrollView,
-    StyleProp,
-    StyleSheet,
-    View,
-    ViewStyle,
+  Dimensions,
+  LayoutChangeEvent,
+  PanResponder,
+  ScrollView,
+  StyleProp,
+  StyleSheet,
+  View,
+  ViewStyle,
 } from 'react-native';
 
 const windowWidth = Dimensions.get('window').width;
