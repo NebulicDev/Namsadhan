@@ -1,8 +1,10 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Audio } from 'expo-av';
+import * as FileSystem from 'expo-file-system';
 import { useRouter } from 'expo-router';
-import { ChevronLeft, Music4, Pause, Play } from 'lucide-react-native';
+import { ChevronLeft, Download, Music4, Pause, Play, Trash2 } from 'lucide-react-native';
 import React, { useEffect, useState } from 'react';
-import { FlatList, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Alert, FlatList, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 const THEME = {
   background: '#FFF8F0',
@@ -14,11 +16,11 @@ const THEME = {
 };
 
 const MUSIC_DATA = [
-  { id: '1', title: 'Duparche Bhajan', artist: 'Traditional', file: require('../assets/audio/Duparche Bhajan.mp3') },
-  { id: '2', title: 'Kakad Arti', artist: 'Devotional', file: require('../assets/audio/Kakad Arti.mp3') },
-  { id: '3', title: 'Prastavik', artist: 'Instrumental', file: require('../assets/audio/Prastavik.mp3') },
-  { id: '4', title: 'Ratriche Bhajan', artist: 'Traditional', file: require('../assets/audio/Ratriche Bhajan.mp3') },
-  { id: '5', title: 'Sakalche Bhajan', artist: 'Traditional', file: require('../assets/audio/Sakalche Bhajan.mp3') },
+  { id: '1', title: 'Prastavik', artist: 'Instrumental', url: 'https://drive.google.com/uc?export=download&id=1fg0N7ln6kK2ay19iPrngorl9mBLBpCT9' },
+  { id: '2', title: 'Kakad Arti', artist: 'Devotional', url: 'https://drive.google.com/uc?export=download&id=1RQCWPHGM9TLjK7M2zEa9WksCh88WUtlH' },
+  { id: '3', title: 'Sakalche Bhajan', artist: 'Traditional', url: 'https://drive.google.com/uc?export=download&id=1FFbYU1sthHZDyC2XhhuvWKzVCTodW-ms' },
+  { id: '4', title: 'Duparche Bhajan', artist: 'Traditional', url: 'https://drive.google.com/uc?export=download&id=1PwhDUlWgFDSJe1u2kdJ25VmvDmAVuR-x' },
+  { id: '5', title: 'Ratriche Bhajan', artist: 'Traditional', url: 'https://drive.google.com/uc?export=download&id=1nUt72k4nG1qJunCtvU-xLhWG6WdnFnWZ' },
 ];
 
 export default function BhajansScreen() {
@@ -26,8 +28,65 @@ export default function BhajansScreen() {
   const [sound, setSound] = useState<Audio.Sound | null>(null);
   const [currentTrackId, setCurrentTrackId] = useState<string | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [downloadedTracks, setDownloadedTracks] = useState<{ [key: string]: string }>({});
+  const [downloadingTracks, setDownloadingTracks] = useState<{ [key: string]: boolean }>({});
+
+  useEffect(() => {
+    Audio.setAudioModeAsync({
+      allowsRecordingIOS: false,
+      playsInSilentModeIOS: true,
+      staysActiveInBackground: true,
+      shouldDuckAndroid: true,
+      playThroughEarpieceAndroid: false,
+    });
+  }, []);
+
+  useEffect(() => {
+    const loadDownloadedTracks = async () => {
+      try {
+        const tracks = await AsyncStorage.getItem('downloaded_bhajans');
+        console.log('Loaded downloaded bhajans from storage:', tracks);
+        if (tracks) {
+          setDownloadedTracks(JSON.parse(tracks));
+        }
+      } catch (error) {
+        console.error('Failed to load downloaded tracks from storage', error);
+      }
+    };
+    loadDownloadedTracks();
+  }, []);
+
+  const saveDownloadedTrack = async (trackId: string, fileUri: string) => {
+    try {
+      const updatedTracks = { ...downloadedTracks, [trackId]: fileUri };
+      setDownloadedTracks(updatedTracks);
+      await AsyncStorage.setItem('downloaded_bhajans', JSON.stringify(updatedTracks));
+    } catch (error) {
+      console.error('Failed to save downloaded track to storage', error);
+    }
+  };
+
+  const downloadTrack = async (track: any) => {
+    setDownloadingTracks(prev => ({ ...prev, [track.id]: true }));
+    const fileUri = FileSystem.documentDirectory + `${track.id}.mp3`;
+    try {
+      const { uri } = await FileSystem.downloadAsync(track.url, fileUri);
+      saveDownloadedTrack(track.id, uri);
+    } catch (error) {
+      console.error('Error downloading track:', error);
+      Alert.alert('Download Error', 'Could not download the bhajan. Please try again.');
+    } finally {
+      setDownloadingTracks(prev => ({ ...prev, [track.id]: false }));
+    }
+  };
 
   const playTrack = async (track: any) => {
+    const isDownloaded = downloadedTracks[track.id];
+    if (!isDownloaded) {
+      Alert.alert('Not Downloaded', 'Please download the bhajan before playing.');
+      return;
+    }
+
     if (sound && isPlaying && currentTrackId === track.id) {
       await sound.pauseAsync();
       setIsPlaying(false);
@@ -39,11 +98,46 @@ export default function BhajansScreen() {
       return;
     }
     if (sound) await sound.unloadAsync();
-    const { sound: newSound } = await Audio.Sound.createAsync(track.file);
+    
+    const { sound: newSound } = await Audio.Sound.createAsync({ uri: isDownloaded });
     setSound(newSound);
     setCurrentTrackId(track.id);
     setIsPlaying(true);
     await newSound.playAsync();
+  };
+  
+  // --- NEW FUNCTION TO CLEAR DOWNLOADS ---
+  const clearDownloads = async () => {
+    Alert.alert(
+      "Clear All Downloads",
+      "Are you sure you want to delete all downloaded bhajans? This cannot be undone.",
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Clear",
+          onPress: async () => {
+            try {
+              if (sound) {
+                await sound.unloadAsync();
+                setSound(null);
+                setIsPlaying(false);
+                setCurrentTrackId(null);
+              }
+              for (const trackId in downloadedTracks) {
+                await FileSystem.deleteAsync(downloadedTracks[trackId], { idempotent: true });
+              }
+              await AsyncStorage.removeItem('downloaded_bhajans');
+              setDownloadedTracks({});
+              Alert.alert('Success', 'All downloaded bhajans have been cleared.');
+            } catch (error) {
+              console.error('Failed to clear downloads', error);
+              Alert.alert('Error', 'Could not clear all downloads.');
+            }
+          },
+          style: "destructive",
+        },
+      ]
+    );
   };
 
   useEffect(() => {
@@ -51,7 +145,10 @@ export default function BhajansScreen() {
   }, [sound]);
 
   const TrackItem = ({ item }: { item: any }) => {
+    const isDownloaded = !!downloadedTracks[item.id];
+    const isDownloading = downloadingTracks[item.id];
     const isActive = item.id === currentTrackId && isPlaying;
+
     return (
       <View style={styles.card}>
         <View style={styles.iconContainer}><Music4 size={28} color={THEME.primary} /></View>
@@ -59,9 +156,15 @@ export default function BhajansScreen() {
           <Text style={styles.trackTitle}>{item.title}</Text>
           <Text style={styles.trackArtist}>{item.artist}</Text>
         </View>
-        <TouchableOpacity style={styles.playButton} onPress={() => playTrack(item)}>
-          {isActive ? <Pause size={28} color={THEME.accent} /> : <Play size={28} color={THEME.accent} />}
-        </TouchableOpacity>
+        {isDownloaded ? (
+          <TouchableOpacity style={styles.playButton} onPress={() => playTrack(item)}>
+            {isActive ? <Pause size={28} color={THEME.accent} /> : <Play size={28} color={THEME.accent} />}
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity style={styles.playButton} onPress={() => downloadTrack(item)} disabled={isDownloading}>
+            {isDownloading ? <ActivityIndicator color={THEME.primary} /> : <Download size={28} color={THEME.primary} />}
+          </TouchableOpacity>
+        )}
       </View>
     );
   };
@@ -73,6 +176,10 @@ export default function BhajansScreen() {
           <ChevronLeft size={28} color={THEME.text} />
         </TouchableOpacity>
         <Text style={styles.title}>Bhajans</Text>
+        {/* --- NEW CLEAR BUTTON ADDED HERE --- */}
+        <TouchableOpacity onPress={clearDownloads} style={styles.clearButton}>
+          <Trash2 size={24} color={THEME.text} />
+        </TouchableOpacity>
       </View>
       <FlatList
         data={MUSIC_DATA}
@@ -86,9 +193,10 @@ export default function BhajansScreen() {
 
 const styles = StyleSheet.create({
   screenContainer: { flex: 1, backgroundColor: THEME.background },
-  header: { paddingTop: 60, paddingHorizontal: 20, marginBottom: 10, flexDirection: 'row', alignItems: 'center' },
+  header: { paddingTop: 60, paddingHorizontal: 20, marginBottom: 10, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
   backButton: { marginRight: 15 },
-  title: { fontSize: 28, fontWeight: 'bold', color: THEME.text },
+  title: { fontSize: 28, fontWeight: 'bold', color: THEME.text, flex: 1 },
+  clearButton: { padding: 5 },
   listContent: { paddingHorizontal: 20, paddingBottom: 40 },
   card: { backgroundColor: THEME.card, borderRadius: 15, padding: 20, marginBottom: 15, flexDirection: 'row', alignItems: 'center', elevation: 3, shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.05, shadowRadius: 5 },
   iconContainer: { width: 50, height: 50, borderRadius: 10, backgroundColor: THEME.background, justifyContent: 'center', alignItems: 'center', marginRight: 15 },

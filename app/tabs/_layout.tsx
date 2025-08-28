@@ -61,7 +61,7 @@ export default function TabsLayout() {
           }}
         />
         <Tabs.Screen
-          name="music"
+          name="resources"
           options={{
             title: 'Resources',
             tabBarIcon: ({ color }) => <Library size={26} color={color} strokeWidth={2.5} />,
