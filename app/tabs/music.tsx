@@ -42,14 +42,19 @@ export default function MusicScreen() {
                 onPress={() => router.push('/pravachans')}
             />
             <SectionCard 
-                title="Gallery" 
-                icon={<Image size={32} color={THEME.text} />} 
-                onPress={() => router.push('/gallery')}
+                title="Nityanemavali" 
+                icon={<BookOpen size={32} color={THEME.text} />} 
+                onPress={() => router.push('/nityaNemavali')}
             />
             <SectionCard 
                 title="Manache Shlok" 
                 icon={<BookOpen size={32} color={THEME.text} />} 
                 onPress={() => router.push('/manacheShlok')}
+            />
+            <SectionCard 
+                title="Gallery" 
+                icon={<Image size={32} color={THEME.text} />} 
+                onPress={() => router.push('/gallery')}
             />
         </View>
     </SafeAreaView>
