@@ -11,49 +11,22 @@ import {
   View
 } from 'react-native';
 
-// --- Theme Colors ---
 const THEME = {
   background: '#FFF8F0',
   text: '#5D4037',
   lightText: '#A1887F',
   card: '#FFFFFF',
   primary: '#D2B48C',
-  white: '#FFFFFF', // Added for clarity
+  white: '#FFFFFF',
 };
 
-// --- Updated Data Structure ---
 const spiritualGuides = [
-  { 
-    id: '1', 
-    name: 'Shri Nimbargi Maharaj',
-    // TODO: Replace with your actual image file
-    photo: require('../../assets/images/nimbargi-maharaj.jpg'), 
-    bio: 'Update'
-  },
-  { 
-    id: '2', 
-    name: 'Shri Amburao Maharaj',
-    // TODO: Replace with your actual image file
-    photo: require('../../assets/images/amburao-maharaj.jpg'),
-    bio: 'Update'
-  },
-  { 
-    id: '3', 
-    name: 'Shri Bhausaheb Maharaj',
-    // TODO: Replace with your actual image file
-    photo: require('../../assets/images/bhausaheb-maharaj.jpg'),
-    bio: 'Update'
-  },
-  { 
-    id: '4', 
-    name: 'Shri Gurudev Ranade',
-    // TODO: Replace with your actual image file
-    photo: require('../../assets/images/gurudeo-ranade.jpg'),
-    bio: 'Update'
-  },
+  { id: '1', name: 'Shri Nimbargi Maharaj', photo: require('../../assets/images/nimbargi-maharaj.png'), bio: 'Update' },
+  { id: '2', name: 'Shri Amburao Maharaj', photo: require('../../assets/images/amburao-maharaj.png'), bio: 'Update' },
+  { id: '3', name: 'Shri Bhausaheb Maharaj', photo: require('../../assets/images/bhausaheb-maharaj.png'), bio: 'Update' },
+  { id: '4', name: 'Shri Gurudev Ranade', photo: require('../../assets/images/gurudeo-ranade.png'), bio: 'Update' },
 ];
 
-// Define the type for a single guide
 type Guide = typeof spiritualGuides[0];
 
 export default function HomeScreen() {
@@ -128,27 +101,33 @@ const styles = StyleSheet.create({
     paddingTop: 60,
     paddingHorizontal: 20,
     marginBottom: 20,
-    alignItems: 'center', // Center align items horizontally
+    alignItems: 'center',
   },
   title: {
     fontSize: 34,
     fontWeight: 'bold',
     color: THEME.text,
-    textAlign: 'center', // Center text
+    textAlign: 'center',
   },
   subtitle: {
     fontSize: 18,
     color: THEME.lightText,
     marginTop: 4,
-    textAlign: 'center', // Center text
+    textAlign: 'center',
   },
   topCard: {
-    height: 250, // Increased height
+    height: 250,
     marginHorizontal: 20,
     borderRadius: 20,
     overflow: 'hidden',
-    elevation: 5,
     backgroundColor: THEME.card,
+
+    // --- Blurred Shadow ---
+    elevation: 6, // Android shadow
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.18,
+    shadowRadius: 8.3, // iOS blur effect
   },
   topCardImage: {
     width: '100%',
@@ -162,11 +141,17 @@ const styles = StyleSheet.create({
   },
   bottomCard: {
     width: '31%',
-    height: 180, // Increased height
+    height: 180,
     borderRadius: 20,
     overflow: 'hidden',
-    elevation: 5,
     backgroundColor: THEME.card,
+
+    // --- Blurred Shadow ---
+    elevation: 6, // Android shadow
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.18,
+    shadowRadius: 8.3,
   },
   bottomCardImage: {
     width: '100%',
@@ -174,7 +159,7 @@ const styles = StyleSheet.create({
   },
   cardOverlay: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0,0,0,0.3)',
+    backgroundColor: 'rgba(0, 0, 0, 0.06)',
     justifyContent: 'flex-end',
     padding: 15,
   },
@@ -182,7 +167,6 @@ const styles = StyleSheet.create({
     fontSize: 22,
     fontWeight: 'bold',
     color: THEME.white,
-    // Added text shadow for visibility
     textShadowColor: 'rgba(0, 0, 0, 0.75)',
     textShadowOffset: { width: -1, height: 1 },
     textShadowRadius: 10,
@@ -191,12 +175,10 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: 'bold',
     color: THEME.white,
-    // Added text shadow for visibility
     textShadowColor: 'rgba(0, 0, 0, 0.75)',
     textShadowOffset: { width: -1, height: 1 },
     textShadowRadius: 10,
   },
-  // Modal Styles
   modalContainer: {
     flex: 1,
     backgroundColor: THEME.background,
