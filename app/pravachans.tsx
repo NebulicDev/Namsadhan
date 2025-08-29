@@ -3,9 +3,11 @@ import Slider from '@react-native-community/slider';
 import { Audio } from 'expo-av';
 import * as FileSystem from 'expo-file-system';
 import { useRouter } from 'expo-router';
+import { collection, getDocs } from 'firebase/firestore';
 import { ChevronDown, ChevronLeft, ChevronRight, Download, Pause, Play, Trash2 } from 'lucide-react-native';
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, Alert, FlatList, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { db } from '../firebaseConfig';
 
 const THEME = {
   background: '#FFF8F0',
@@ -16,27 +18,13 @@ const THEME = {
   accent: '#FFA07A',
 };
 
-const PRAVACHANS_DATA = [
-  {
-    year: '2008',
-    tracks: [
-      { id: 'p1', title: 'Pravachan on Guru Bhakti', speaker: 'Speaker Name', url: 'https://drive.google.com/uc?export=download&id=1wa0-FiPBeSSij-uJ_WHNzPl7ZbUtxd5E' },
-      { id: 'p2', title: 'The Path of Namasmaran', speaker: 'Speaker Name', url: 'https://drive.google.com/uc?export=download&id=YOUR_FILE_ID_7' },
-    ]
-  },
-  {
-    year: '2009',
-    tracks: [
-      { id: 'p3', title: 'The Essence of Gita', speaker: 'Speaker Name', url: 'https://drive.google.com/uc?export=download&id=YOUR_FILE_ID_8' },
-    ]
-  },
-];
-
 type TrackType = {
   id: string;
   title: string;
   speaker: string;
+  driveId: string;
   url: string;
+  year: number;
 };
 
 type YearType = {
@@ -49,6 +37,23 @@ type PlayStatusType = {
   duration: number;
 };
 
+const groupAndSortPravachans = (pravachansList: TrackType[]): YearType[] => {
+    const groupedByYear = pravachansList.reduce((acc, track) => {
+      const year = track.year.toString();
+      if (!acc[year]) {
+        acc[year] = [];
+      }
+      acc[year].push(track);
+      return acc;
+    }, {} as { [key: string]: TrackType[] });
+
+    return Object.keys(groupedByYear).map(year => ({
+      year,
+      tracks: groupedByYear[year]
+    })).sort((a, b) => parseInt(b.year) - parseInt(a.year));
+};
+
+
 export default function PravachansScreen() {
   const router = useRouter();
   const [sound, setSound] = useState<Audio.Sound | null>(null);
@@ -57,8 +62,52 @@ export default function PravachansScreen() {
   const [downloadedTracks, setDownloadedTracks] = useState<{ [key: string]: string }>({});
   const [downloadingTracks, setDownloadingTracks] = useState<{ [key: string]: boolean }>({});
   const [playbackStatus, setPlaybackStatus] = useState<PlayStatusType>({ position: 0, duration: 0 });
+  const [pravachansData, setPravachansData] = useState<YearType[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    const loadPravachans = async () => {
+      // 1. Try to load from cache first
+      try {
+        const cachedPravachans = await AsyncStorage.getItem('pravachans_data');
+        if (cachedPravachans) {
+          const parsedPravachans: TrackType[] = JSON.parse(cachedPravachans);
+          setPravachansData(groupAndSortPravachans(parsedPravachans));
+          setIsLoading(false); // Stop loading, show cached data
+        }
+      } catch (e) {
+        console.error("Failed to load cached pravachans:", e);
+      }
+
+      // 2. Fetch from Firestore to get the latest data
+      try {
+        const pravachansCollection = collection(db, 'pravachans');
+        const pravachansSnapshot = await getDocs(pravachansCollection);
+        const pravachansList: TrackType[] = pravachansSnapshot.docs.map(doc => ({
+          id: doc.id,
+          ...(doc.data() as Omit<TrackType, 'id' | 'url'>),
+          url: `https://drive.google.com/uc?export=download&id=${doc.data().driveId}`
+        }));
+        
+        // 3. Update state and cache if new data is different
+        const currentDataString = await AsyncStorage.getItem('pravachans_data');
+        if (JSON.stringify(pravachansList) !== currentDataString) {
+          setPravachansData(groupAndSortPravachans(pravachansList));
+          await AsyncStorage.setItem('pravachans_data', JSON.stringify(pravachansList));
+        }
+
+      } catch (error) {
+        console.error("Error fetching pravachans:", error);
+        if (!pravachansData.length) { // Only alert if there's no cached data to show
+            Alert.alert("Error", "Could not fetch pravachans. Please check your internet connection.");
+        }
+      } finally {
+        setIsLoading(false); // Stop loading in all cases
+      }
+    };
+
+    loadPravachans();
+
     Audio.setAudioModeAsync({
       allowsRecordingIOS: false,
       playsInSilentModeIOS: true,
@@ -195,6 +244,15 @@ export default function PravachansScreen() {
     }
   };
 
+  if (isLoading) {
+    return (
+      <SafeAreaView style={[styles.screenContainer, { justifyContent: 'center', alignItems: 'center' }]}>
+        <ActivityIndicator size="large" color={THEME.primary} />
+        <Text style={{ color: THEME.text, marginTop: 10 }}>Loading Pravachans...</Text>
+      </SafeAreaView>
+    );
+  }
+
   return (
     <SafeAreaView style={styles.screenContainer}>
       <View style={styles.header}>
@@ -207,7 +265,7 @@ export default function PravachansScreen() {
         </TouchableOpacity>
       </View>
       <FlatList
-        data={PRAVACHANS_DATA}
+        data={pravachansData}
         renderItem={({ item }) => <YearSection item={item} downloadedTracks={downloadedTracks} downloadingTracks={downloadingTracks} playTrack={playTrack} downloadTrack={downloadTrack} currentTrackId={currentTrackId} isPlaying={isPlaying} playbackStatus={playbackStatus} onSlidingComplete={onSlidingComplete} formatTime={formatTime} />}
         keyExtractor={(item) => item.year}
         contentContainerStyle={styles.listContent}
@@ -344,7 +402,7 @@ const styles = StyleSheet.create({
   screenContainer: { flex: 1, backgroundColor: THEME.background },
   header: { paddingTop: 60, paddingHorizontal: 20, marginBottom: 10, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
   backButton: { marginRight: 15 },
-  title: { fontSize: 28, fontWeight: 'bold', color: THEME.text, flex: 1, textAlign: 'center' },
+  title: { fontSize: 28, fontWeight: 'bold', color: THEME.text, flex: 1 },
   clearButton: { padding: 5 },
   listContent: { paddingHorizontal: 20, paddingBottom: 40 },
   card: { backgroundColor: THEME.card, borderRadius: 15, padding: 20, marginBottom: 15, elevation: 3, shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.05, shadowRadius: 5 },
