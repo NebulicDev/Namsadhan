@@ -1,4 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Slider from '@react-native-community/slider';
 import { Audio } from 'expo-av';
 import * as FileSystem from 'expo-file-system';
 import { useRouter } from 'expo-router';
@@ -19,7 +20,7 @@ const PRAVACHANS_DATA = [
   {
     year: '2008',
     tracks: [
-      { id: 'p1', title: 'Pravachan on Guru Bhakti', speaker: 'Speaker Name', url: 'https://drive.google.com/uc?export=download&id=YOUR_FILE_ID_6' },
+      { id: 'p1', title: 'Pravachan on Guru Bhakti', speaker: 'Speaker Name', url: 'https://drive.google.com/uc?export=download&id=1wa0-FiPBeSSij-uJ_WHNzPl7ZbUtxd5E' },
       { id: 'p2', title: 'The Path of Namasmaran', speaker: 'Speaker Name', url: 'https://drive.google.com/uc?export=download&id=YOUR_FILE_ID_7' },
     ]
   },
@@ -31,54 +32,21 @@ const PRAVACHANS_DATA = [
   },
 ];
 
-// --- Component moved outside of the main component ---
-const TrackItem = ({ item, isPlaying, onPlayPause, isDownloaded, isDownloading, onDownload }: { item: any, isPlaying: boolean, onPlayPause: (track: any) => void, isDownloaded: boolean, isDownloading: boolean, onDownload: (track: any) => void }) => {
-  return (
-    <View style={styles.trackContainer}>
-      <View style={styles.trackInfo}>
-        <Text style={styles.trackTitle}>{item.title}</Text>
-        <Text style={styles.trackArtist}>{item.speaker}</Text>
-      </View>
-      {isDownloaded ? (
-        <TouchableOpacity style={styles.playButton} onPress={() => onPlayPause(item)}>
-          {isPlaying ? <Pause size={24} color={THEME.accent} /> : <Play size={24} color={THEME.accent} />}
-        </TouchableOpacity>
-      ) : (
-        <TouchableOpacity style={styles.playButton} onPress={() => onDownload(item)} disabled={isDownloading}>
-          {isDownloading ? <ActivityIndicator color={THEME.primary} /> : <Download size={24} color={THEME.primary} />}
-        </TouchableOpacity>
-      )}
-    </View>
-  );
+type TrackType = {
+  id: string;
+  title: string;
+  speaker: string;
+  url: string;
 };
 
-// --- Component moved outside of the main component ---
-const YearSection = ({ year, tracks, currentTrackId, isPlaying, onPlayPause, downloadedTracks, downloadingTracks, onDownload }: { year: string, tracks: any[], currentTrackId: string | null, isPlaying: boolean, onPlayPause: (track: any) => void, downloadedTracks: { [key: string]: string }, downloadingTracks: { [key: string]: boolean }, onDownload: (track: any) => void }) => {
-  const [isExpanded, setIsExpanded] = useState(false);
+type YearType = {
+  year: string;
+  tracks: TrackType[];
+};
 
-  return (
-    <View style={styles.card}>
-      <TouchableOpacity style={styles.yearHeader} onPress={() => setIsExpanded(!isExpanded)}>
-        <Text style={styles.yearTitle}>{year}</Text>
-        {isExpanded ? <ChevronDown size={24} color={THEME.text} /> : <ChevronRight size={24} color={THEME.text} />}
-      </TouchableOpacity>
-      {isExpanded && (
-        <View style={styles.tracksList}>
-          {tracks.map(track => (
-            <TrackItem
-              key={track.id}
-              item={track}
-              isPlaying={currentTrackId === track.id && isPlaying}
-              onPlayPause={onPlayPause}
-              isDownloaded={!!downloadedTracks[track.id]}
-              isDownloading={downloadingTracks[track.id]}
-              onDownload={onDownload}
-            />
-          ))}
-        </View>
-      )}
-    </View>
-  );
+type PlayStatusType = {
+  position: number;
+  duration: number;
 };
 
 export default function PravachansScreen() {
@@ -88,6 +56,7 @@ export default function PravachansScreen() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [downloadedTracks, setDownloadedTracks] = useState<{ [key: string]: string }>({});
   const [downloadingTracks, setDownloadingTracks] = useState<{ [key: string]: boolean }>({});
+  const [playbackStatus, setPlaybackStatus] = useState<PlayStatusType>({ position: 0, duration: 0 });
 
   useEffect(() => {
     Audio.setAudioModeAsync({
@@ -97,21 +66,22 @@ export default function PravachansScreen() {
       shouldDuckAndroid: true,
       playThroughEarpieceAndroid: false,
     });
+    loadDownloadedTracks();
+    return () => {
+      sound?.unloadAsync();
+    };
   }, []);
 
-  useEffect(() => {
-    const loadDownloadedTracks = async () => {
-      try {
-        const tracks = await AsyncStorage.getItem('downloaded_pravachans');
-        if (tracks) {
-          setDownloadedTracks(JSON.parse(tracks));
-        }
-      } catch (error) {
-        console.error('Failed to load downloaded tracks from storage', error);
+  const loadDownloadedTracks = async () => {
+    try {
+      const tracks = await AsyncStorage.getItem('downloaded_pravachans');
+      if (tracks) {
+        setDownloadedTracks(JSON.parse(tracks));
       }
-    };
-    loadDownloadedTracks();
-  }, []);
+    } catch (error) {
+      console.error('Failed to load downloaded tracks from storage', error);
+    }
+  };
 
   const saveDownloadedTrack = async (trackId: string, fileUri: string) => {
     try {
@@ -123,7 +93,7 @@ export default function PravachansScreen() {
     }
   };
 
-  const downloadTrack = async (track: any) => {
+  const downloadTrack = async (track: TrackType) => {
     setDownloadingTracks(prev => ({ ...prev, [track.id]: true }));
     const fileUri = FileSystem.documentDirectory + `${track.id}.mp3`;
     try {
@@ -137,30 +107,46 @@ export default function PravachansScreen() {
     }
   };
 
-  const playTrack = async (track: any) => {
+  const onPlaybackStatusUpdate = (status: any) => {
+    if (status.isLoaded) {
+      setPlaybackStatus({
+        position: status.positionMillis,
+        duration: status.durationMillis,
+      });
+      if (status.didJustFinish) {
+        setIsPlaying(false);
+      }
+    }
+  };
+
+  const playTrack = async (track: TrackType) => {
     const isDownloaded = downloadedTracks[track.id];
     if (!isDownloaded) {
       Alert.alert('Not Downloaded', 'Please download the pravachan before playing.');
       return;
     }
 
-    if (sound && isPlaying && currentTrackId === track.id) {
-      await sound.pauseAsync();
-      setIsPlaying(false);
+    if (sound && currentTrackId === track.id) {
+      if (isPlaying) {
+        await sound.pauseAsync();
+        setIsPlaying(false);
+      } else {
+        await sound.playAsync();
+        setIsPlaying(true);
+      }
       return;
     }
-    if (sound && !isPlaying && currentTrackId === track.id) {
-      await sound.playAsync();
-      setIsPlaying(true);
-      return;
-    }
+
     if (sound) await sound.unloadAsync();
 
-    const { sound: newSound } = await Audio.Sound.createAsync({ uri: isDownloaded });
+    const { sound: newSound } = await Audio.Sound.createAsync(
+      { uri: isDownloaded },
+      { shouldPlay: true },
+      onPlaybackStatusUpdate
+    );
     setSound(newSound);
     setCurrentTrackId(track.id);
     setIsPlaying(true);
-    await newSound.playAsync();
   };
 
   const clearDownloads = async () => {
@@ -196,14 +182,23 @@ export default function PravachansScreen() {
     );
   };
 
-  useEffect(() => {
-    return sound ? () => { sound.unloadAsync(); } : undefined;
-  }, [sound]);
-  
+  const formatTime = (millis: number) => {
+    if (!millis) return '0:00';
+    const minutes = Math.floor(millis / 60000);
+    const seconds = ((millis % 60000) / 1000).toFixed(0);
+    return `${minutes}:${(parseInt(seconds) < 10 ? '0' : '')}${seconds}`;
+  };
+
+  const onSlidingComplete = async (value: number) => {
+    if (sound) {
+      await sound.setPositionAsync(value);
+    }
+  };
+
   return (
     <SafeAreaView style={styles.screenContainer}>
       <View style={styles.header}>
-         <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
+        <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
           <ChevronLeft size={28} color={THEME.text} />
         </TouchableOpacity>
         <Text style={styles.title}>Pravachans</Text>
@@ -213,24 +208,137 @@ export default function PravachansScreen() {
       </View>
       <FlatList
         data={PRAVACHANS_DATA}
-        renderItem={({ item }) => (
-          <YearSection
-            year={item.year}
-            tracks={item.tracks}
-            currentTrackId={currentTrackId}
-            isPlaying={isPlaying}
-            onPlayPause={playTrack}
-            downloadedTracks={downloadedTracks}
-            downloadingTracks={downloadingTracks}
-            onDownload={downloadTrack}
-          />
-        )}
+        renderItem={({ item }) => <YearSection item={item} downloadedTracks={downloadedTracks} downloadingTracks={downloadingTracks} playTrack={playTrack} downloadTrack={downloadTrack} currentTrackId={currentTrackId} isPlaying={isPlaying} playbackStatus={playbackStatus} onSlidingComplete={onSlidingComplete} formatTime={formatTime} />}
         keyExtractor={(item) => item.year}
         contentContainerStyle={styles.listContent}
       />
     </SafeAreaView>
   );
 }
+
+type YearSectionProps = {
+  item: YearType;
+  downloadedTracks: { [key: string]: string };
+  downloadingTracks: { [key: string]: boolean };
+  playTrack: (track: TrackType) => Promise<void>;
+  downloadTrack: (track: TrackType) => Promise<void>;
+  currentTrackId: string | null;
+  isPlaying: boolean;
+  playbackStatus: PlayStatusType;
+  onSlidingComplete: (value: number) => Promise<void>;
+  formatTime: (millis: number) => string;
+};
+
+const YearSection = ({
+  item,
+  downloadedTracks,
+  downloadingTracks,
+  playTrack,
+  downloadTrack,
+  currentTrackId,
+  isPlaying,
+  playbackStatus,
+  onSlidingComplete,
+  formatTime,
+}: YearSectionProps) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  return (
+    <View style={styles.card}>
+      <TouchableOpacity style={styles.yearHeader} onPress={() => setIsExpanded(!isExpanded)}>
+        <Text style={styles.yearTitle}>{item.year}</Text>
+        {isExpanded ? <ChevronDown size={24} color={THEME.text} /> : <ChevronRight size={24} color={THEME.text} />}
+      </TouchableOpacity>
+      {isExpanded && (
+        <View style={styles.tracksList}>
+          {item.tracks.map((track) => (
+            <TrackItem
+              key={track.id}
+              item={track}
+              downloadedTracks={downloadedTracks}
+              downloadingTracks={downloadingTracks}
+              playTrack={playTrack}
+              downloadTrack={downloadTrack}
+              currentTrackId={currentTrackId}
+              isPlaying={isPlaying}
+              playbackStatus={playbackStatus}
+              onSlidingComplete={onSlidingComplete}
+              formatTime={formatTime}
+            />
+          ))}
+        </View>
+      )}
+    </View>
+  );
+};
+
+type TrackItemProps = {
+  item: TrackType;
+  downloadedTracks: { [key: string]: string };
+  downloadingTracks: { [key: string]: boolean };
+  playTrack: (track: TrackType) => Promise<void>;
+  downloadTrack: (track: TrackType) => Promise<void>;
+  currentTrackId: string | null;
+  isPlaying: boolean;
+  playbackStatus: PlayStatusType;
+  onSlidingComplete: (value: number) => Promise<void>;
+  formatTime: (millis: number) => string;
+};
+
+const TrackItem = ({
+  item,
+  downloadedTracks,
+  downloadingTracks,
+  playTrack,
+  downloadTrack,
+  currentTrackId,
+  isPlaying,
+  playbackStatus,
+  onSlidingComplete,
+  formatTime,
+}: TrackItemProps) => {
+  const isDownloaded = !!downloadedTracks[item.id];
+  const isDownloading = downloadingTracks[item.id];
+  const isActive = item.id === currentTrackId;
+
+  return (
+    <View style={styles.trackContainer}>
+      <View style={styles.trackRow}>
+        <View style={styles.trackInfo}>
+          <Text style={styles.trackTitle}>{item.title}</Text>
+          <Text style={styles.trackArtist}>{item.speaker}</Text>
+        </View>
+        {isDownloaded ? (
+          <TouchableOpacity style={styles.playButton} onPress={() => playTrack(item)}>
+            {isPlaying && isActive ? <Pause size={24} color={THEME.accent} /> : <Play size={24} color={THEME.accent} />}
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity style={styles.playButton} onPress={() => downloadTrack(item)} disabled={isDownloading}>
+            {isDownloading ? <ActivityIndicator color={THEME.primary} /> : <Download size={24} color={THEME.primary} />}
+          </TouchableOpacity>
+        )}
+      </View>
+      {isActive && (
+        <View>
+          <Slider
+            style={styles.slider}
+            minimumValue={0}
+            maximumValue={playbackStatus.duration}
+            value={playbackStatus.position}
+            onSlidingComplete={onSlidingComplete}
+            minimumTrackTintColor={THEME.accent}
+            maximumTrackTintColor={THEME.lightText}
+            thumbTintColor={THEME.primary}
+          />
+          <View style={styles.timeRow}>
+            <Text style={styles.timeText}>{formatTime(playbackStatus.position)}</Text>
+            <Text style={styles.timeText}>{formatTime(playbackStatus.duration)}</Text>
+          </View>
+        </View>
+      )}
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
   screenContainer: { flex: 1, backgroundColor: THEME.background },
@@ -243,9 +351,24 @@ const styles = StyleSheet.create({
   yearHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
   yearTitle: { fontSize: 20, fontWeight: '700', color: THEME.text },
   tracksList: { marginTop: 15, borderTopWidth: 1, borderTopColor: THEME.background },
-  trackContainer: { flexDirection: 'row', alignItems: 'center', paddingVertical: 15, borderBottomWidth: 1, borderBottomColor: THEME.background },
+  trackContainer: { paddingVertical: 15, borderBottomWidth: 1, borderBottomColor: THEME.background },
+  trackRow: { flexDirection: 'row', alignItems: 'center' },
   trackInfo: { flex: 1 },
   trackTitle: { fontSize: 16, fontWeight: '600', color: THEME.text },
   trackArtist: { fontSize: 14, color: THEME.lightText, marginTop: 2 },
   playButton: { width: 40, height: 40, justifyContent: 'center', alignItems: 'center' },
+  slider: {
+    width: '100%',
+    height: 40,
+  },
+  timeRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: 5,
+    marginTop: -10,
+  },
+  timeText: {
+    color: THEME.lightText,
+    fontSize: 12,
+  },
 });
