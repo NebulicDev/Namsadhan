@@ -12,6 +12,8 @@ export default ({ config }) => ({
     newArchEnabled: true,
     ios: {
       supportsTablet: true,
+      // 👇 Use environment variable instead of local file
+      googleServicesFile: process.env.GOOGLE_SERVICES_JSON,
     },
     android: {
       adaptiveIcon: {
@@ -40,6 +42,8 @@ export default ({ config }) => ({
         },
       ],
       "expo-asset",
+      // Add the Google Sign-In plugin
+      "@react-native-google-signin/google-signin",
       [
         "expo-build-properties",
         {
