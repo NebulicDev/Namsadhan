@@ -17,11 +17,11 @@ const THEME = {
 };
 
 const MUSIC_DATA = [
-  { id: '1', title: 'Prastavik', artist: 'Instrumental', url: 'https://drive.google.com/uc?export=download&id=1fg0N7ln6kK2ay19iPrngorl9mBLBpCT9' },
-  { id: '2', title: 'Kakad Arti', artist: 'Devotional', url: 'https://drive.google.com/uc?export=download&id=1RQCWPHGM9TLjK7M2zEa9WksCh88WUtlH' },
-  { id: '3', title: 'Sakalche Bhajan', artist: 'Traditional', url: 'https://drive.google.com/uc?export=download&id=1FFbYU1sthHZDyC2XhhuvWKzVCTodW-ms' },
-  { id: '4', title: 'Duparche Bhajan', artist: 'Traditional', url: 'https://drive.google.com/uc?export=download&id=1PwhDUlWgFDSJe1u2kdJ25VmvDmAVuR-x' },
-  { id: '5', title: 'Ratriche Bhajan', artist: 'Traditional', url: 'https://drive.google.com/uc?export=download&id=1nUt72k4nG1qJunCtvU-xLhWG6WdnFnWZ' },
+  { id: '1', title: 'Prastavik', url: 'https://drive.google.com/uc?export=download&id=1fg0N7ln6kK2ay19iPrngorl9mBLBpCT9' },
+  { id: '2', title: 'Kakad Arti',  url: 'https://drive.google.com/uc?export=download&id=1RQCWPHGM9TLjK7M2zEa9WksCh88WUtlH' },
+  { id: '3', title: 'Sakalche Bhajan', url: 'https://drive.google.com/uc?export=download&id=1FFbYU1sthHZDyC2XhhuvWKzVCTodW-ms' },
+  { id: '4', title: 'Duparche Bhajan', url: 'https://drive.google.com/uc?export=download&id=1PwhDUlWgFDSJe1u2kdJ25VmvDmAVuR-x' },
+  { id: '5', title: 'Ratriche Bhajan', url: 'https://drive.google.com/uc?export=download&id=1nUt72k4nG1qJunCtvU-xLhWG6WdnFnWZ' },
 ];
 
 export default function BhajansScreen() {
@@ -179,7 +179,6 @@ export default function BhajansScreen() {
           <View style={styles.iconContainer}><Music4 size={28} color={THEME.primary} /></View>
           <View style={styles.trackInfo}>
             <Text style={styles.trackTitle}>{item.title}</Text>
-            <Text style={styles.trackArtist}>{item.artist}</Text>
           </View>
           {isDownloaded ? (
             <TouchableOpacity style={styles.playButton} onPress={() => playTrack(item)}>
@@ -245,7 +244,6 @@ const styles = StyleSheet.create({
   iconContainer: { width: 50, height: 50, borderRadius: 10, backgroundColor: THEME.background, justifyContent: 'center', alignItems: 'center', marginRight: 15 },
   trackInfo: { flex: 1 },
   trackTitle: { fontSize: 18, fontWeight: '600', color: THEME.text },
-  trackArtist: { fontSize: 14, color: THEME.lightText, marginTop: 2 },
   playButton: { width: 50, height: 50, justifyContent: 'center', alignItems: 'center' },
   trackRow: {
     flexDirection: 'row',
