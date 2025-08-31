@@ -1,4 +1,6 @@
-{
+// app.config.js
+
+export default {
   "expo": {
     "name": "Namsadhan",
     "slug": "Namsadhan",
@@ -18,7 +20,7 @@
       },
       "edgeToEdgeEnabled": true,
       "package": "com.nebulicdev.Namsadhan",
-      "googleServicesFile": "./google-services.json" 
+      "googleServicesFile": process.env.GOOGLE_SERVICES_JSON 
     },
     "web": {
       "bundler": "metro",
@@ -41,6 +43,13 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    // --- ADD THIS BLOCK ---
+    "extra": {
+      "eas": {
+        "projectId": "f51cfabd-1164-4cc2-a4a5-97384b80f94e"
+      }
     }
+    // --------------------
   }
 }
