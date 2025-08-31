@@ -1,9 +1,9 @@
+// app/pravachans.tsx
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Slider from '@react-native-community/slider';
 import { Audio } from 'expo-av';
 import * as FileSystem from 'expo-file-system';
 import { useRouter } from 'expo-router';
-import { collection, getDocs } from 'firebase/firestore';
 import { ChevronDown, ChevronLeft, ChevronRight, Download, Pause, Play, Trash2 } from 'lucide-react-native';
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, Alert, FlatList, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
@@ -81,8 +81,8 @@ export default function PravachansScreen() {
 
       // 2. Fetch from Firestore to get the latest data
       try {
-        const pravachansCollection = collection(db, 'pravachans');
-        const pravachansSnapshot = await getDocs(pravachansCollection);
+        const pravachansCollection = db.collection('pravachans');
+        const pravachansSnapshot = await pravachansCollection.get();
         const pravachansList: TrackType[] = pravachansSnapshot.docs.map(doc => ({
           id: doc.id,
           ...(doc.data() as Omit<TrackType, 'id' | 'url'>),
@@ -98,7 +98,7 @@ export default function PravachansScreen() {
 
       } catch (error) {
         console.error("Error fetching pravachans:", error);
-        if (!pravachansData.length) { // Only alert if there's no cached data to show
+        if (pravachansData.length === 0) { // Only alert if there's no cached data to show
             Alert.alert("Error", "Could not fetch pravachans. Please check your internet connection.");
         }
       } finally {

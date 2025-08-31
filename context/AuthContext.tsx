@@ -2,6 +2,7 @@
 import { authInstance } from '@/firebaseConfig';
 import { useRouter, useSegments } from 'expo-router';
 import React, { createContext, useContext, useEffect, useState } from 'react';
+import { ActivityIndicator, View } from 'react-native';
 
 interface AuthContextType {
   user: any; 
@@ -13,34 +14,53 @@ export function useAuth() {
   return useContext(AuthContext);
 }
 
-function useProtectedRoute(user: any) {
+function useProtectedRoute(user: any, initializing: boolean) {
   const segments = useSegments();
   const router = useRouter();
 
   useEffect(() => {
+    // If we are still initializing, do nothing.
+    if (initializing) {
+      return;
+    }
+
     const inAuthGroup = segments[0] === '(auth)';
 
     if (!user && !inAuthGroup) {
+      // Redirect to the login page if the user is not authenticated.
       router.replace('/(auth)/login');
     } else if (user && inAuthGroup) {
-      // FIX: The type cast `as any` is added here to bypass the strict type error.
-      // The route '/' is correct at runtime.
+      // Redirect away from the auth group if the user is authenticated.
       router.replace({ pathname: '/' } as any);
     }
-  }, [user, segments, router]);
+  }, [user, segments, router, initializing]); // Add initializing to the dependency array
 }
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<any>(null);
+  const [initializing, setInitializing] = useState(true);
 
   useEffect(() => {
+    // onAuthStateChanged returns an unsubscriber
     const unsubscribe = authInstance.onAuthStateChanged((user) => {
       setUser(user);
+      if (initializing) {
+        setInitializing(false);
+      }
     });
-    return () => unsubscribe();
-  }, []);
 
-  useProtectedRoute(user);
+    // Unsubscribe to the listener when unmounting
+    return () => unsubscribe();
+  }, [initializing]);
+
+  // Show a loading screen while we determine the auth state
+  if (initializing) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#FFF8F0' }}>
+        <ActivityIndicator size="large" color="#D2B48C" />
+      </View>
+    );
+  }
 
   return (
     <AuthContext.Provider value={{ user }}>
