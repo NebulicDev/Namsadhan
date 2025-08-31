@@ -8,12 +8,12 @@ import { auth } from '../../firebaseConfig';
 const THEME = {
   background: '#FFF8F0',
   text: '#5D4037',
+  lightText: '#A1887F',
   primary: '#D2B48C',
   white: '#FFFFFF',
 };
 
-// Extracted for clarity and debugging
-const WEB_CLIENT_ID = '313704785379-mkle5ntc551dihgns3g269oopkm46ot8.apps.googleusercontent.com';
+const WEB_CLIENT_ID = '313704785379-g8tp688umrk5jdmddsnudihtjr8mafi4.apps.googleusercontent.com';
 
 // Configure Google Sign-In
 GoogleSignin.configure({
@@ -24,34 +24,30 @@ export default function LoginScreen() {
   const [loading, setLoading] = React.useState(false);
 
   const onGoogleButtonPress = async () => {
-    // Log the Client ID to the terminal every time the button is pressed
-    console.log('Attempting to sign in with Web Client ID:', WEB_CLIENT_ID);
-    
     setLoading(true);
     try {
-      // Check if your device supports Google Play
       await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
       
-      // Get the user's info from Google
-      const userInfo = await GoogleSignin.signIn();
+      // **FIX:** Destructure idToken directly from the signIn() result.
+      const { idToken } = await GoogleSignin.signIn();
 
-      // Check if the idToken exists before we proceed
-      if (!userInfo.idToken) {
-        throw new Error("Google Sign-In failed to return an ID token.");
+      if (!idToken) {
+        throw new Error("Google Sign-In failed: No ID token received.");
       }
 
-      // Create a Google credential with the token
-      const googleCredential = GoogleAuthProvider.credential(userInfo.idToken);
+      // Create a Firebase credential with the Google ID token
+      const googleCredential = GoogleAuthProvider.credential(idToken);
 
       // Sign-in the user with the credential
       await signInWithCredential(auth, googleCredential);
 
     } catch (error: any) {
       console.error("A detailed error occurred during sign-in:", error);
-      if (error.code !== '12501') { // 12501 is the code for a user-cancelled sign-in
+      // Don't show an alert if the user cancels the sign-in flow
+      if (error.code !== '12501' && error.code !== '12500') { 
         Alert.alert(
           'Sign-In Failed',
-          'An error occurred during sign-in. Please try again.'
+          'An unexpected error occurred. Please check your configuration and try again.'
         );
       }
     } finally {

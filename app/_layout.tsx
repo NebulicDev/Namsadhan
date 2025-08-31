@@ -8,20 +8,29 @@ const InitialLayout = () => {
   const router = useRouter();
 
   useEffect(() => {
-    if (loading) return;
+    // Wait until the auth state is loaded
+    if (loading) {
+      return;
+    }
 
-    const inTabsGroup = segments[0] === '(tabs)';
+    const inAuthGroup = segments[0] === '(auth)';
 
-    if (user && !inTabsGroup) {
+    // If the user is signed in and the initial segment is not the main app group,
+    // redirect them to the main app.
+    if (user && !inAuthGroup) {
       router.replace('/(tabs)');
-    } else if (!user) {
+    } 
+    // If the user is not signed in and the initial segment is not the auth group,
+    // redirect them to the login page.
+    else if (!user) {
       router.replace('/(auth)/login');
     }
-  }, [user, segments, loading]);
+  }, [user, segments, loading, router]);
 
   return <Stack screenOptions={{ headerShown: false }} />;
 };
 
+// Wrap the app with the AuthProvider
 export default function RootLayout() {
   return (
     <AuthProvider>

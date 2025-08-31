@@ -21,11 +21,12 @@ if (getApps().length === 0) {
   app = getApp();
 }
 
-// 2. Initialize Auth with persistence
+// Initialize Auth with persistence
 const auth = initializeAuth(app, {
   persistence: getReactNativePersistence(ReactNativeAsyncStorage)
 });
 
 export const db = getFirestore(app);
-// 3. Export the initialized auth instance
+// Export the initialized auth instance
 export { auth };
+
