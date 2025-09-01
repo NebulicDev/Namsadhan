@@ -1,12 +1,10 @@
+// app/(tabs)/quotes.tsx
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { collection, getDocs } from "firebase/firestore";
-import { Share2 } from 'lucide-react-native'; // 1. Import the Share icon
+import { Share2 } from 'lucide-react-native';
 import React, { useCallback, useEffect, useState } from 'react';
-// 2. Import the Share API and ActivityIndicator from React Native
 import { ActivityIndicator, SafeAreaView, ScrollView, Share, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { db } from '../../firebaseConfig';
 
-// --- Theme Colors ---
 const THEME = {
   background: '#FFF8F0',
   text: '#5D4037',
@@ -15,7 +13,6 @@ const THEME = {
   primary: '#D2B48C',
 };
 
-// --- Helper function to get the day of the year (1-366) ---
 const getDayOfYear = () => {
   const now = new Date();
   const start = new Date(now.getFullYear(), 0, 0);
@@ -24,16 +21,14 @@ const getDayOfYear = () => {
   return Math.floor(diff / oneDay);
 };
 
-// --- Quote Section Component ---
 const QuoteSection = ({ title, quote }) => {
-  // 3. Create the function to handle the share action
   const handleShare = async () => {
     if (!quote) return;
     try {
       const message = `"${quote.text}"\n\n- ${quote.reference}\n\nShared from Namsadhan App`;
       await Share.share({
         message: message,
-        title: `A quote on ${title}`, // Title for email subjects etc.
+        title: `A quote on ${title}`,
       });
     } catch (error) {
       console.error('Error sharing quote:', error.message);
@@ -44,7 +39,6 @@ const QuoteSection = ({ title, quote }) => {
     <View style={styles.card}>
       <View style={styles.cardHeader}>
         <Text style={styles.sectionTitle}>{title}</Text>
-        {/* 4. Add the share button */}
         <TouchableOpacity onPress={handleShare} style={styles.shareIcon}>
           <Share2 size={22} color={THEME.lightText} />
         </TouchableOpacity>
@@ -61,7 +55,6 @@ const QuoteSection = ({ title, quote }) => {
     </View>
   );
 };
-
 
 export default function QuotesScreen() {
   const [dailyQuotes, setDailyQuotes] = useState({});
@@ -101,8 +94,9 @@ export default function QuotesScreen() {
 
         if (!quotesData || quotesData.length === 0) {
           console.log("No cached quotes found. Fetching from Firestore...");
-          const quotesCollection = collection(db, 'quotes');
-          const quotesSnapshot = await getDocs(quotesCollection);
+          // *** THIS IS THE CHANGED PART ***
+          const quotesCollection = db.collection('quotes');
+          const quotesSnapshot = await quotesCollection.get();
           quotesData = quotesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
           
           await AsyncStorage.setItem('allQuotes', JSON.stringify(quotesData));
@@ -147,74 +141,17 @@ export default function QuotesScreen() {
   );
 }
 
-// --- Styles ---
 const styles = StyleSheet.create({
-  screenContainer: {
-    flex: 1,
-    backgroundColor: THEME.background,
-  },
-  centered: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  header: {
-    paddingTop: 60,
-    marginBottom: 20,
-    alignItems: 'center',
-  },
-  title: {
-    fontSize: 34,
-    fontWeight: 'bold',
-    color: THEME.text,
-  },
-  listContent: {
-    paddingHorizontal: 20,
-    paddingBottom: 40,
-  },
-  card: {
-    backgroundColor: THEME.card,
-    borderRadius: 15,
-    padding: 25,
-    marginBottom: 20,
-    elevation: 3,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 5,
-  },
-  cardHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 15,
-  },
-  sectionTitle: {
-    fontSize: 22,
-    fontWeight: '700',
-    color: THEME.text,
-    flex: 1, // Allows text to take up available space
-  },
-  shareIcon: {
-    padding: 5, // Makes the touch area larger
-  },
-  separator: {
-    height: 1,
-    backgroundColor: THEME.primary,
-    opacity: 0.3,
-    marginBottom: 20,
-  },
-  quoteText: {
-    fontSize: 20,
-    fontStyle: 'italic',
-    color: THEME.text,
-    lineHeight: 30,
-    marginBottom: 15,
-  },
-  referenceText: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: THEME.primary,
-    textAlign: 'right',
-  },
+  screenContainer: { flex: 1, backgroundColor: THEME.background },
+  centered: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+  header: { paddingTop: 60, marginBottom: 20, alignItems: 'center' },
+  title: { fontSize: 34, fontWeight: 'bold', color: THEME.text },
+  listContent: { paddingHorizontal: 20, paddingBottom: 40 },
+  card: { backgroundColor: THEME.card, borderRadius: 15, padding: 25, marginBottom: 20, elevation: 3, shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.05, shadowRadius: 5 },
+  cardHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 15 },
+  sectionTitle: { fontSize: 22, fontWeight: '700', color: THEME.text, flex: 1 },
+  shareIcon: { padding: 5 },
+  separator: { height: 1, backgroundColor: THEME.primary, opacity: 0.3, marginBottom: 20 },
+  quoteText: { fontSize: 20, fontStyle: 'italic', color: THEME.text, lineHeight: 30, marginBottom: 15 },
+  referenceText: { fontSize: 16, fontWeight: '600', color: THEME.primary, textAlign: 'right' },
 });

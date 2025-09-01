@@ -1,17 +1,17 @@
+// app/nityaNemavali/[id].tsx
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { doc, getDoc } from 'firebase/firestore';
 import { ChevronLeft } from 'lucide-react-native';
 import React, { useEffect, useState } from 'react';
 import {
-    ActivityIndicator,
-    Alert,
-    SafeAreaView,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
+  ActivityIndicator,
+  Alert,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 import { db } from '../../firebaseConfig';
 
@@ -32,19 +32,27 @@ export default function NityanemavaliDetailsScreen() {
   useEffect(() => {
     const loadContent = async () => {
       setIsLoading(true);
+      
+      // Ensure sectionId is a string
+      if (!sectionId || typeof sectionId !== 'string') {
+        Alert.alert('Error', 'Invalid section ID.');
+        setIsLoading(false);
+        return;
+      }
+
       try {
         // Step 1: Check local cache first
         const cachedContent = await AsyncStorage.getItem(sectionId);
         if (cachedContent) {
           setContent(cachedContent);
-          setIsLoading(false);
+          setIsLoading(false); // Show cached content immediately
         }
 
         // Step 2: Fetch the latest content from Firestore
-        const docRef = doc(db, 'nityanemavali_sections', sectionId);
-        const docSnap = await getDoc(docRef);
+        const docRef = db.collection('nityanemavali_sections').doc(sectionId);
+        const docSnap = await docRef.get();
 
-        if (docSnap.exists()) {
+        if (docSnap.exists) {
           const data = docSnap.data();
           const fetchedContent = data.content;
 
@@ -54,14 +62,20 @@ export default function NityanemavaliDetailsScreen() {
             setContent(fetchedContent);
           }
         } else {
-          Alert.alert('Error', 'Content not found.');
+          // If the doc doesn't exist but we have cache, don't show an error
+          if (!cachedContent) {
+            Alert.alert('Error', 'Content not found.');
+          }
         }
       } catch (error) {
         console.error('Error loading content:', error);
-        Alert.alert(
-          'Error',
-          'Could not load content. Please check your internet connection.'
-        );
+        // Only show error if there's no cached content to display
+        if (!content) {
+          Alert.alert(
+            'Error',
+            'Could not load content. Please check your internet connection.'
+          );
+        }
       } finally {
         setIsLoading(false);
       }
@@ -72,7 +86,7 @@ export default function NityanemavaliDetailsScreen() {
     }
   }, [sectionId]);
 
-  if (isLoading) {
+  if (isLoading && !content) { // Only show loading indicator if there's no content yet
     return (
       <SafeAreaView style={[styles.screenContainer, styles.centered]}>
         <ActivityIndicator size="large" color={THEME.primary} />

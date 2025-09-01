@@ -92,9 +92,9 @@ export default function HomeScreen() {
 
         {/* Animated Typing Prayer Text */}
         <View style={styles.prayerContainer}>
-            <Text style={styles.scrollLine}>{"─".repeat(50)}</Text>
+            <Text style={styles.scrollLine}>{"─".repeat(40)}</Text>
             <Text style={styles.prayerText}>{typedText}</Text>
-            <Text style={styles.scrollLine}>{"─".repeat(50)}</Text>
+            <Text style={styles.scrollLine}>{"─".repeat(40)}</Text>
         </View>
 
         {/* Fullscreen Modal */}
@@ -135,7 +135,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     title: {
-        fontSize: 34,
+        fontSize: 30,
         fontWeight: 'bold',
         color: THEME.text,
         textAlign: 'center',
@@ -197,6 +197,7 @@ const styles = StyleSheet.create({
         textShadowColor: 'rgba(0, 0, 0, 0.75)',
         textShadowOffset: { width: -1, height: 1 },
         textShadowRadius: 10,
+        textAlign: 'center',
     },
     cardTitleSmall: {
         fontSize: 14,
@@ -205,6 +206,7 @@ const styles = StyleSheet.create({
         textShadowColor: 'rgba(0, 0, 0, 0.75)',
         textShadowOffset: { width: -1, height: 1 },
         textShadowRadius: 10,
+        textAlign: 'center',
     },
     prayerContainer: {
         marginHorizontal: 20,

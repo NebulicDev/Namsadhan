@@ -1,11 +1,13 @@
-{
+// app.config.js
+
+export default {
   "expo": {
-    "name": "Namasadhan",
-    "slug": "Namasadhan",
+    "name": "Namsadhan",
+    "slug": "Namsadhan",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "namasadhan",
+    "scheme": "namsadhan",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
@@ -13,10 +15,12 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "foregroundImage": "./assets/images/app-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "edgeToEdgeEnabled": true
+      "edgeToEdgeEnabled": true,
+      "package": "com.nebulicdev.Namsadhan",
+      "googleServicesFile": process.env.GOOGLE_SERVICES_JSON 
     },
     "web": {
       "bundler": "metro",
@@ -34,10 +38,18 @@
           "backgroundColor": "#ffffff"
         }
       ],
-      "expo-asset"
+      "expo-asset",
+      "@react-native-firebase/app"
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    // --- ADD THIS BLOCK ---
+    "extra": {
+      "eas": {
+        "projectId": "f51cfabd-1164-4cc2-a4a5-97384b80f94e"
+      }
     }
+    // --------------------
   }
 }

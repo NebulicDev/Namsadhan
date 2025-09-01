@@ -38,4 +38,9 @@ yarn-error.*
 
 app-example
 
-.env
+.env*
+
+/android
+/ios
+
+google-services.json

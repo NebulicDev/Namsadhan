@@ -17,10 +17,10 @@ const THEME = {
 };
 
 const MUSIC_DATA = [
-  { id: '1', title: 'Prastavik',  url: 'https://drive.google.com/uc?export=download&id=1fg0N7ln6kK2ay19iPrngorl9mBLBpCT9' },
-  { id: '2', title: 'Kakad Arti', url: 'https://drive.google.com/uc?export=download&id=1RQCWPHGM9TLjK7M2zEa9WksCh88WUtlH' },
+  { id: '1', title: 'Prastavik', url: 'https://drive.google.com/uc?export=download&id=1fg0N7ln6kK2ay19iPrngorl9mBLBpCT9' },
+  { id: '2', title: 'Kakad Arti',  url: 'https://drive.google.com/uc?export=download&id=1RQCWPHGM9TLjK7M2zEa9WksCh88WUtlH' },
   { id: '3', title: 'Sakalche Bhajan', url: 'https://drive.google.com/uc?export=download&id=1FFbYU1sthHZDyC2XhhuvWKzVCTodW-ms' },
-  { id: '4', title: 'Duparche Bhajan',  url: 'https://drive.google.com/uc?export=download&id=1PwhDUlWgFDSJe1u2kdJ25VmvDmAVuR-x' },
+  { id: '4', title: 'Duparche Bhajan', url: 'https://drive.google.com/uc?export=download&id=1PwhDUlWgFDSJe1u2kdJ25VmvDmAVuR-x' },
   { id: '5', title: 'Ratriche Bhajan', url: 'https://drive.google.com/uc?export=download&id=1nUt72k4nG1qJunCtvU-xLhWG6WdnFnWZ' },
 ];
 
