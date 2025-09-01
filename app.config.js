@@ -19,8 +19,9 @@ export default {
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true,
-      "package": "com.nebulicdev.Namsadhan",
+      "package": "com.namsadhan.app",
       "googleServicesFile": process.env.GOOGLE_SERVICES_JSON 
+      // "googleServicesFile": "./google-services.json" 
     },
     "web": {
       "bundler": "metro",
@@ -44,12 +45,10 @@ export default {
     "experiments": {
       "typedRoutes": true
     },
-    // --- ADD THIS BLOCK ---
     "extra": {
       "eas": {
-        "projectId": "f51cfabd-1164-4cc2-a4a5-97384b80f94e"
+        "projectId": "2c224c80-9289-4b6a-8253-d194484d8b0a" //Required for dynamic configs
       }
     }
-    // --------------------
   }
 }
