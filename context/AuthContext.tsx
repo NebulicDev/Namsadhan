@@ -1,4 +1,4 @@
-// context/AuthContext.tsx
+// nebulicdev/namsadhan/Namsadhan-feature-auth/context/AuthContext.tsx
 import { authInstance } from '@/firebaseConfig';
 import { useRouter, useSegments } from 'expo-router';
 import React, { createContext, useContext, useEffect, useState } from 'react';
@@ -33,7 +33,7 @@ function useProtectedRoute(user: any, initializing: boolean) {
       // Redirect away from the auth group if the user is authenticated.
       router.replace({ pathname: '/' } as any);
     }
-  }, [user, segments, router, initializing]); // Add initializing to the dependency array
+  }, [user, segments, router, initializing]);
 }
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
@@ -51,7 +51,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     // Unsubscribe to the listener when unmounting
     return () => unsubscribe();
-  }, [initializing]);
+  }, []);
+
+  useProtectedRoute(user, initializing);
 
   // Show a loading screen while we determine the auth state
   if (initializing) {
