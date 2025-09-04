@@ -2,16 +2,15 @@
 import auth from '@react-native-firebase/auth';
 import { GoogleSignin, statusCodes } from '@react-native-google-signin/google-signin';
 import { useRouter } from 'expo-router';
-import { Lock, Mail } from 'lucide-react-native';
 import { useEffect, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
+  Image,
   KeyboardAvoidingView,
   Platform,
   StyleSheet,
   Text,
-  TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -26,12 +25,12 @@ const THEME = {
   primary: '#D2B48C',
   white: '#FFFFFF',
   error: '#D32F2F',
+  containerBackground: '#EAE3DA',
 };
 
 export default function LoginScreen() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const [authMode, setAuthMode] = useState('login'); // 'login' or 'signup'
   const router = useRouter();
 
   useEffect(() => {
@@ -40,27 +39,12 @@ export default function LoginScreen() {
     });
   }, []);
 
-  const handleLogin = async () => {
-    if (!email || !password) {
-      Alert.alert('Missing Fields', 'Please enter both email and password.');
-      return;
-    }
-    setLoading(true);
-    try {
-      await authInstance.signInWithEmailAndPassword(email, password);
-      router.replace({ pathname: '/' } as any);
-    } catch (error: any) {
-      Alert.alert('Login Error', error.message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const handleGoogleSignIn = async () => {
+    setLoading(true);
     try {
       await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
       const userInfo = await GoogleSignin.signIn();
-      
+
       // --- THIS IS THE CORRECTED LINE ---
       const idToken = userInfo.data?.idToken;
 
@@ -83,6 +67,8 @@ export default function LoginScreen() {
       } else {
         Alert.alert('Google Sign-In Error', error.message || 'An unknown error occurred. Please check the console logs.');
       }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -92,61 +78,41 @@ export default function LoginScreen() {
       style={styles.container}
     >
       <View style={styles.inner}>
-        <Text style={styles.title}>Welcome Back</Text>
-        <Text style={styles.subtitle}>Sign in to continue your journey</Text>
+        <Image source={require('../../assets/images/app-icon.png')} style={styles.appIcon} />
 
-        <View style={styles.inputContainer}>
-          <Mail size={20} color={THEME.lightText} style={styles.icon} />
-          <TextInput
-            style={styles.input}
-            placeholder="Email"
-            placeholderTextColor={THEME.lightText}
-            value={email}
-            onChangeText={setEmail}
-            keyboardType="email-address"
-            autoCapitalize="none"
-          />
-        </View>
+        <Text style={styles.title}>Namsadhan</Text>
+        <Text style={styles.subtitle}>Sign in or create an account to continue</Text>
 
-        <View style={styles.inputContainer}>
-          <Lock size={20} color={THEME.lightText} style={styles.icon} />
-          <TextInput
-            style={styles.input}
-            placeholder="Password"
-            placeholderTextColor={THEME.lightText}
-            value={password}
-            onChangeText={setPassword}
-            secureTextEntry
-          />
+        <View style={styles.sliderContainer}>
+          <TouchableOpacity
+            style={[styles.sliderButton, authMode === 'login' && styles.activeSliderButton]}
+            onPress={() => setAuthMode('login')}
+          >
+            <Text style={[styles.sliderButtonText, authMode === 'login' && styles.activeSliderButtonText]}>
+              Login
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.sliderButton, authMode === 'signup' && styles.activeSliderButton]}
+            onPress={() => setAuthMode('signup')}
+          >
+            <Text style={[styles.sliderButtonText, authMode === 'signup' && styles.activeSliderButtonText]}>Sign Up</Text>
+          </TouchableOpacity>
         </View>
 
         <TouchableOpacity
-          style={styles.button}
-          onPress={handleLogin}
-          disabled={loading}
-        >
-          {loading ? (
-            <ActivityIndicator color={THEME.white} />
-          ) : (
-            <Text style={styles.buttonText}>Login</Text>
-          )}
-        </TouchableOpacity>
-
-        <TouchableOpacity
-            style={[styles.button, { backgroundColor: '#4285F4', marginTop: 10 }]}
+            style={styles.button}
             onPress={handleGoogleSignIn}
             disabled={loading}
         >
-            <Text style={styles.buttonText}>Sign in with Google</Text>
+            {loading ? (
+              <ActivityIndicator color={THEME.white} />
+            ) : (
+              <Text style={styles.buttonText}>
+                {authMode === 'login' ? 'Sign in with Google' : 'Sign up with Google'}
+              </Text>
+            )}
         </TouchableOpacity>
-
-
-        <View style={styles.footer}>
-          <Text style={styles.footerText}>Don't have an account? </Text>
-          <TouchableOpacity onPress={() => router.push('/(auth)/signup')}>
-            <Text style={[styles.footerText, styles.link]}>Sign Up</Text>
-          </TouchableOpacity>
-        </View>
       </View>
     </KeyboardAvoidingView>
   );
@@ -155,14 +121,51 @@ export default function LoginScreen() {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: THEME.background },
   inner: { flex: 1, justifyContent: 'center', alignItems: 'center', paddingHorizontal: 30 },
+  appIcon: {
+    width: 120,
+    height: 120,
+    borderRadius: 60,
+    marginBottom: 20,
+  },
   title: { fontSize: 34, fontWeight: 'bold', color: THEME.text, marginBottom: 10 },
-  subtitle: { fontSize: 16, color: THEME.lightText, marginBottom: 40, textAlign: 'center' },
-  inputContainer: { flexDirection: 'row', alignItems: 'center', backgroundColor: THEME.white, borderRadius: 12, marginBottom: 20, paddingHorizontal: 15, borderWidth: 1, borderColor: THEME.primary },
-  icon: { marginRight: 10 },
-  input: { flex: 1, height: 50, color: THEME.text, fontSize: 16 },
-  button: { backgroundColor: THEME.primary, borderRadius: 12, paddingVertical: 15, alignItems: 'center', width: '100%', marginTop: 10 },
+  subtitle: { fontSize: 16, color: THEME.lightText, marginBottom: 30, textAlign: 'center' },
+  sliderContainer: {
+    flexDirection: 'row',
+    backgroundColor: THEME.containerBackground,
+    borderRadius: 30,
+    padding: 4,
+    marginBottom: 30,
+    width: '100%',
+  },
+  sliderButton: {
+    flex: 1,
+    paddingVertical: 12,
+    borderRadius: 26,
+    alignItems: 'center',
+  },
+  activeSliderButton: {
+    backgroundColor: THEME.white,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    elevation: 3,
+  },
+  sliderButtonText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: THEME.lightText,
+  },
+  activeSliderButtonText: {
+    color: THEME.text,
+  },
+  button: {
+    backgroundColor: '#faac8dff',
+    borderRadius: 12,
+    paddingVertical: 15,
+    alignItems: 'center',
+    width: '100%',
+    marginTop: 10
+  },
   buttonText: { color: THEME.white, fontSize: 16, fontWeight: '600' },
-  footer: { flexDirection: 'row', marginTop: 20 },
-  footerText: { color: THEME.lightText, fontSize: 14 },
-  link: { color: THEME.primary, fontWeight: 'bold' },
 });

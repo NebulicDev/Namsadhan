@@ -4,7 +4,7 @@ import { Audio } from 'expo-av';
 import * as FileSystem from 'expo-file-system';
 import { useRouter } from 'expo-router';
 import { ChevronLeft, Download, Music4, Pause, Play, Trash2 } from 'lucide-react-native';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ActivityIndicator, Alert, FlatList, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 const THEME = {
@@ -17,11 +17,11 @@ const THEME = {
 };
 
 const MUSIC_DATA = [
-  { id: '1', title: 'Prastavik', url: 'https://drive.google.com/uc?export=download&id=1fg0N7ln6kK2ay19iPrngorl9mBLBpCT9' },
-  { id: '2', title: 'Kakad Arti',  url: 'https://drive.google.com/uc?export=download&id=1RQCWPHGM9TLjK7M2zEa9WksCh88WUtlH' },
-  { id: '3', title: 'Sakalche Bhajan', url: 'https://drive.google.com/uc?export=download&id=1FFbYU1sthHZDyC2XhhuvWKzVCTodW-ms' },
-  { id: '4', title: 'Duparche Bhajan', url: 'https://drive.google.com/uc?export=download&id=1PwhDUlWgFDSJe1u2kdJ25VmvDmAVuR-x' },
-  { id: '5', title: 'Ratriche Bhajan', url: 'https://drive.google.com/uc?export=download&id=1nUt72k4nG1qJunCtvU-xLhWG6WdnFnWZ' },
+  { id: '1', title: 'Prastavik', url: 'https://drive.google.com/uc?export=download&id=1ZE4IOKTcwbWDVsIfEg6t_y6ouv9N57W2' },
+  { id: '2', title: 'Kakad Arti',  url: 'https://drive.google.com/uc?export=download&id=https://drive.google.com/file/d/1QE4obQNx2RebmgXtgyvIoLscu7EIBigZ/view?usp=sharing' },
+  { id: '3', title: 'Sakalche Bhajan', url: 'https://drive.google.com/uc?export=download&id=1s9Me_3pQlmSchAmRzGvSFQZUOTJRfw-G' },
+  { id: '4', title: 'Duparche Bhajan', url: 'https://drive.google.com/uc?export=download&id=1KRfT9noKVEtnAVu2Okl23WKFCPQEpb7O' },
+  { id: '5', title: 'Ratriche Bhajan', url: 'https://drive.google.com/uc?export=download&id=1s8cyIaOGAcQHXAUB5PouJF7dde-HDFdg' },
 ];
 
 export default function BhajansScreen() {
