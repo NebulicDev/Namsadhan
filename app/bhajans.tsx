@@ -1,11 +1,12 @@
+// app/bhajans.tsx
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Slider from '@react-native-community/slider';
-import { Audio } from 'expo-av';
 import * as FileSystem from 'expo-file-system';
 import { useRouter } from 'expo-router';
 import { ChevronLeft, Download, Music4, Pause, Play, Trash2 } from 'lucide-react-native';
 import { useEffect, useState } from 'react';
 import { ActivityIndicator, Alert, FlatList, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { useAudio } from '../context/AudioContext';
 
 const THEME = {
   background: '#FFF8F0',
@@ -18,7 +19,7 @@ const THEME = {
 
 const MUSIC_DATA = [
   { id: '1', title: 'Prastavik', url: 'https://drive.google.com/uc?export=download&id=1ZE4IOKTcwbWDVsIfEg6t_y6ouv9N57W2' },
-  { id: '2', title: 'Kakad Arti',  url: 'https://drive.google.com/uc?export=download&id=https://drive.google.com/file/d/1QE4obQNx2RebmgXtgyvIoLscu7EIBigZ/view?usp=sharing' },
+  { id: '2', title: 'Kakad Arti',  url: 'https://drive.google.com/uc?export=download&id=1QE4obQNx2RebmgXtgyvIoLscu7EIBigZ' },
   { id: '3', title: 'Sakalche Bhajan', url: 'https://drive.google.com/uc?export=download&id=1s9Me_3pQlmSchAmRzGvSFQZUOTJRfw-G' },
   { id: '4', title: 'Duparche Bhajan', url: 'https://drive.google.com/uc?export=download&id=1KRfT9noKVEtnAVu2Okl23WKFCPQEpb7O' },
   { id: '5', title: 'Ratriche Bhajan', url: 'https://drive.google.com/uc?export=download&id=1s8cyIaOGAcQHXAUB5PouJF7dde-HDFdg' },
@@ -26,25 +27,12 @@ const MUSIC_DATA = [
 
 export default function BhajansScreen() {
   const router = useRouter();
-  const [sound, setSound] = useState<Audio.Sound | null>(null);
-  const [currentTrackId, setCurrentTrackId] = useState<string | null>(null);
-  const [isPlaying, setIsPlaying] = useState(false);
+  const { playSound, pauseSound, seekSound, isPlaying, currentTrackId, playbackStatus } = useAudio();
   const [downloadedTracks, setDownloadedTracks] = useState<{ [key: string]: string }>({});
   const [downloadingTracks, setDownloadingTracks] = useState<{ [key: string]: boolean }>({});
-  const [playbackStatus, setPlaybackStatus] = useState({ position: 0, duration: 0 });
 
   useEffect(() => {
-    Audio.setAudioModeAsync({
-      allowsRecordingIOS: false,
-      playsInSilentModeIOS: true,
-      staysActiveInBackground: true,
-      shouldDuckAndroid: true,
-      playThroughEarpieceAndroid: false,
-    });
     loadDownloadedTracks();
-    return () => {
-      sound?.unloadAsync();
-    };
   }, []);
 
   const loadDownloadedTracks = async () => {
@@ -80,46 +68,22 @@ export default function BhajansScreen() {
     }
   };
 
-  const onPlaybackStatusUpdate = (status: any) => {
-    if (status.isLoaded) {
-      setPlaybackStatus({
-        position: status.positionMillis,
-        duration: status.durationMillis,
-      });
-      if (status.didJustFinish) {
-        setIsPlaying(false);
-      }
-    }
-  };
-
-  const playTrack = async (track: any) => {
+  const handlePlayPause = async (track: any) => {
     const isDownloaded = downloadedTracks[track.id];
     if (!isDownloaded) {
       Alert.alert('Not Downloaded', 'Please download the bhajan before playing.');
       return;
     }
 
-    if (sound && currentTrackId === track.id) {
+    if (currentTrackId === track.id) {
       if (isPlaying) {
-        await sound.pauseAsync();
-        setIsPlaying(false);
+        await pauseSound();
       } else {
-        await sound.playAsync();
-        setIsPlaying(true);
+        await playSound(isDownloaded, track.id);
       }
-      return;
+    } else {
+      await playSound(isDownloaded, track.id);
     }
-    
-    if (sound) await sound.unloadAsync();
-    
-    const { sound: newSound } = await Audio.Sound.createAsync(
-      { uri: isDownloaded },
-      { shouldPlay: true },
-      onPlaybackStatusUpdate
-    );
-    setSound(newSound);
-    setCurrentTrackId(track.id);
-    setIsPlaying(true);
   };
   
   const clearDownloads = async () => {
@@ -132,12 +96,7 @@ export default function BhajansScreen() {
           text: "Clear",
           onPress: async () => {
             try {
-              if (sound) {
-                await sound.unloadAsync();
-                setSound(null);
-                setIsPlaying(false);
-                setCurrentTrackId(null);
-              }
+              await pauseSound();
               for (const trackId in downloadedTracks) {
                 await FileSystem.deleteAsync(downloadedTracks[trackId], { idempotent: true });
               }
@@ -163,9 +122,7 @@ export default function BhajansScreen() {
   };
 
   const onSlidingComplete = async (value: number) => {
-    if (sound) {
-      await sound.setPositionAsync(value);
-    }
+    await seekSound(value);
   };
 
   const TrackItem = ({ item }: { item: any }) => {
@@ -181,7 +138,7 @@ export default function BhajansScreen() {
             <Text style={styles.trackTitle}>{item.title}</Text>
           </View>
           {isDownloaded ? (
-            <TouchableOpacity style={styles.playButton} onPress={() => playTrack(item)}>
+            <TouchableOpacity style={styles.playButton} onPress={() => handlePlayPause(item)}>
               {isActive && isPlaying ? <Pause size={28} color={THEME.accent} /> : <Play size={28} color={THEME.accent} />}
             </TouchableOpacity>
           ) : (
