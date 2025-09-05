@@ -1,12 +1,12 @@
 // app/pravachans.tsx
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Slider from '@react-native-community/slider';
-import { Audio } from 'expo-av';
 import * as FileSystem from 'expo-file-system';
 import { useRouter } from 'expo-router';
 import { ChevronDown, ChevronLeft, ChevronRight, Download, Pause, Play, Trash2 } from 'lucide-react-native';
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, Alert, FlatList, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { useAudio } from '../context/AudioContext';
 import { db } from '../firebaseConfig';
 
 const THEME = {
@@ -56,12 +56,9 @@ const groupAndSortPravachans = (pravachansList: TrackType[]): YearType[] => {
 
 export default function PravachansScreen() {
   const router = useRouter();
-  const [sound, setSound] = useState<Audio.Sound | null>(null);
-  const [currentTrackId, setCurrentTrackId] = useState<string | null>(null);
-  const [isPlaying, setIsPlaying] = useState(false);
+  const { playSound, pauseSound, seekSound, isPlaying, currentTrackId, playbackStatus } = useAudio();
   const [downloadedTracks, setDownloadedTracks] = useState<{ [key: string]: string }>({});
   const [downloadingTracks, setDownloadingTracks] = useState<{ [key: string]: boolean }>({});
-  const [playbackStatus, setPlaybackStatus] = useState<PlayStatusType>({ position: 0, duration: 0 });
   const [pravachansData, setPravachansData] = useState<YearType[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -107,18 +104,7 @@ export default function PravachansScreen() {
     };
 
     loadPravachans();
-
-    Audio.setAudioModeAsync({
-      allowsRecordingIOS: false,
-      playsInSilentModeIOS: true,
-      staysActiveInBackground: true,
-      shouldDuckAndroid: true,
-      playThroughEarpieceAndroid: false,
-    });
     loadDownloadedTracks();
-    return () => {
-      sound?.unloadAsync();
-    };
   }, []);
 
   const loadDownloadedTracks = async () => {
@@ -156,46 +142,22 @@ export default function PravachansScreen() {
     }
   };
 
-  const onPlaybackStatusUpdate = (status: any) => {
-    if (status.isLoaded) {
-      setPlaybackStatus({
-        position: status.positionMillis,
-        duration: status.durationMillis,
-      });
-      if (status.didJustFinish) {
-        setIsPlaying(false);
-      }
-    }
-  };
-
-  const playTrack = async (track: TrackType) => {
+  const handlePlayPause = async (track: TrackType) => {
     const isDownloaded = downloadedTracks[track.id];
     if (!isDownloaded) {
       Alert.alert('Not Downloaded', 'Please download the pravachan before playing.');
       return;
     }
-
-    if (sound && currentTrackId === track.id) {
-      if (isPlaying) {
-        await sound.pauseAsync();
-        setIsPlaying(false);
-      } else {
-        await sound.playAsync();
-        setIsPlaying(true);
-      }
-      return;
+    
+    if (currentTrackId === track.id) {
+        if (isPlaying) {
+            await pauseSound();
+        } else {
+            await playSound(isDownloaded, track.id);
+        }
+    } else {
+        await playSound(isDownloaded, track.id);
     }
-
-    if (sound) await sound.unloadAsync();
-
-    const { sound: newSound } = await Audio.Sound.createAsync(
-      { uri: isDownloaded },
-      { shouldPlay: true },
-      onPlaybackStatusUpdate
-    );
-    setSound(newSound);
-    setCurrentTrackId(track.id);
-    setIsPlaying(true);
   };
 
   const clearDownloads = async () => {
@@ -208,12 +170,7 @@ export default function PravachansScreen() {
           text: "Clear",
           onPress: async () => {
             try {
-              if (sound) {
-                await sound.unloadAsync();
-                setSound(null);
-                setIsPlaying(false);
-                setCurrentTrackId(null);
-              }
+              await pauseSound();
               for (const trackId in downloadedTracks) {
                 await FileSystem.deleteAsync(downloadedTracks[trackId], { idempotent: true });
               }
@@ -239,9 +196,7 @@ export default function PravachansScreen() {
   };
 
   const onSlidingComplete = async (value: number) => {
-    if (sound) {
-      await sound.setPositionAsync(value);
-    }
+    await seekSound(value);
   };
 
   if (isLoading) {
@@ -266,7 +221,7 @@ export default function PravachansScreen() {
       </View>
       <FlatList
         data={pravachansData}
-        renderItem={({ item }) => <YearSection item={item} downloadedTracks={downloadedTracks} downloadingTracks={downloadingTracks} playTrack={playTrack} downloadTrack={downloadTrack} currentTrackId={currentTrackId} isPlaying={isPlaying} playbackStatus={playbackStatus} onSlidingComplete={onSlidingComplete} formatTime={formatTime} />}
+        renderItem={({ item }) => <YearSection item={item} downloadedTracks={downloadedTracks} downloadingTracks={downloadingTracks} handlePlayPause={handlePlayPause} downloadTrack={downloadTrack} currentTrackId={currentTrackId} isPlaying={isPlaying} playbackStatus={playbackStatus} onSlidingComplete={onSlidingComplete} formatTime={formatTime} />}
         keyExtractor={(item) => item.year}
         contentContainerStyle={styles.listContent}
       />
@@ -278,7 +233,7 @@ type YearSectionProps = {
   item: YearType;
   downloadedTracks: { [key: string]: string };
   downloadingTracks: { [key: string]: boolean };
-  playTrack: (track: TrackType) => Promise<void>;
+  handlePlayPause: (track: TrackType) => Promise<void>;
   downloadTrack: (track: TrackType) => Promise<void>;
   currentTrackId: string | null;
   isPlaying: boolean;
@@ -291,7 +246,7 @@ const YearSection = ({
   item,
   downloadedTracks,
   downloadingTracks,
-  playTrack,
+  handlePlayPause,
   downloadTrack,
   currentTrackId,
   isPlaying,
@@ -315,7 +270,7 @@ const YearSection = ({
               item={track}
               downloadedTracks={downloadedTracks}
               downloadingTracks={downloadingTracks}
-              playTrack={playTrack}
+              handlePlayPause={handlePlayPause}
               downloadTrack={downloadTrack}
               currentTrackId={currentTrackId}
               isPlaying={isPlaying}
@@ -334,7 +289,7 @@ type TrackItemProps = {
   item: TrackType;
   downloadedTracks: { [key: string]: string };
   downloadingTracks: { [key: string]: boolean };
-  playTrack: (track: TrackType) => Promise<void>;
+  handlePlayPause: (track: TrackType) => Promise<void>;
   downloadTrack: (track: TrackType) => Promise<void>;
   currentTrackId: string | null;
   isPlaying: boolean;
@@ -347,7 +302,7 @@ const TrackItem = ({
   item,
   downloadedTracks,
   downloadingTracks,
-  playTrack,
+  handlePlayPause,
   downloadTrack,
   currentTrackId,
   isPlaying,
@@ -367,7 +322,7 @@ const TrackItem = ({
           <Text style={styles.trackArtist}>{item.speaker}</Text>
         </View>
         {isDownloaded ? (
-          <TouchableOpacity style={styles.playButton} onPress={() => playTrack(item)}>
+          <TouchableOpacity style={styles.playButton} onPress={() => handlePlayPause(item)}>
             {isPlaying && isActive ? <Pause size={24} color={THEME.accent} /> : <Play size={24} color={THEME.accent} />}
           </TouchableOpacity>
         ) : (
