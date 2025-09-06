@@ -1,5 +1,3 @@
-// app/nityaNemavali/[id].tsx
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { ChevronLeft } from 'lucide-react-native';
 import React, { useEffect, useState } from 'react';
@@ -13,7 +11,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { db } from '../../firebaseConfig';
+import { nityaNemavaliContent } from '../../assets/text/nityaNemavaliContent'; // Import the local content
 
 const THEME = {
   background: '#FFF8F0',
@@ -30,63 +28,21 @@ export default function NityanemavaliDetailsScreen() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const loadContent = async () => {
-      setIsLoading(true);
-      
-      // Ensure sectionId is a string
-      if (!sectionId || typeof sectionId !== 'string') {
-        Alert.alert('Error', 'Invalid section ID.');
-        setIsLoading(false);
-        return;
+    setIsLoading(true);
+    if (sectionId && typeof sectionId === 'string') {
+      // Check if the content for the given sectionId exists in our local file
+      if (nityaNemavaliContent[sectionId]) {
+        setContent(nityaNemavaliContent[sectionId]);
+      } else {
+        Alert.alert('Error', 'Content for this section was not found.');
       }
-
-      try {
-        // Step 1: Check local cache first
-        const cachedContent = await AsyncStorage.getItem(sectionId);
-        if (cachedContent) {
-          setContent(cachedContent);
-          setIsLoading(false); // Show cached content immediately
-        }
-
-        // Step 2: Fetch the latest content from Firestore
-        const docRef = db.collection('nityanemavali_sections').doc(sectionId);
-        const docSnap = await docRef.get();
-
-        if (docSnap.exists) {
-          const data = docSnap.data();
-          const fetchedContent = data.content;
-
-          // Step 3: Update local cache with fetched content
-          if (fetchedContent !== cachedContent) {
-            await AsyncStorage.setItem(sectionId, fetchedContent);
-            setContent(fetchedContent);
-          }
-        } else {
-          // If the doc doesn't exist but we have cache, don't show an error
-          if (!cachedContent) {
-            Alert.alert('Error', 'Content not found.');
-          }
-        }
-      } catch (error) {
-        console.error('Error loading content:', error);
-        // Only show error if there's no cached content to display
-        if (!content) {
-          Alert.alert(
-            'Error',
-            'Could not load content. Please check your internet connection.'
-          );
-        }
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    if (sectionId) {
-      loadContent();
+    } else {
+      Alert.alert('Error', 'Invalid section ID.');
     }
+    setIsLoading(false);
   }, [sectionId]);
 
-  if (isLoading && !content) { // Only show loading indicator if there's no content yet
+  if (isLoading) {
     return (
       <SafeAreaView style={[styles.screenContainer, styles.centered]}>
         <ActivityIndicator size="large" color={THEME.primary} />
@@ -115,7 +71,7 @@ const styles = StyleSheet.create({
   centered: { justifyContent: 'center', alignItems: 'center' },
   header: { paddingTop: 60, paddingHorizontal: 20, marginBottom: 10, flexDirection: 'row', alignItems: 'center' },
   backButton: { marginRight: 15 },
-  headerTitle: { flex: 1, fontSize: 24, fontWeight: 'bold', color: THEME.text },
+  headerTitle: { flex: 1, fontSize: 24, fontWeight: 'bold', color: THEME.text},
   contentContainer: { padding: 20, },
-  content: { fontSize: 20, lineHeight: 30, color: THEME.text },
+  content: { fontSize: 20, lineHeight: 30, color: THEME.text, textAlign: 'justify' },
 });

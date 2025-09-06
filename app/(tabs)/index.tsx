@@ -307,9 +307,9 @@ const styles = StyleSheet.create({
   },
   modalImage: {
     width: '100%',
-    height: 250, 
-    borderRadius: 15,
-    marginBottom: 20, 
+    height: 250, // Adjusted height for card view
+    borderRadius: 15, // <-- Add this line to round the image corners
+    marginBottom: 20, // Keep existing margin for spacing
   },
   modalContent: {
     padding: 20,
