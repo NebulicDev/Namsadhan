@@ -7,7 +7,7 @@ const THEME = {
   text: '#5D4037',
   lightText: '#A1887F',
   white: '#FFFFFF',
-  success: '#5cb85c',
+  success: '#FFB88D',
   card: '#FFFFFF',
 };
 

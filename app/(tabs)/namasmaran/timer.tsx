@@ -1,18 +1,24 @@
 // app/tabs/namasmaran/timer.tsx
-import CustomAlert from '@/components/CustomAlert'; // 1. Import the new component
+import CustomAlert from '@/components/CustomAlert';
 import { useSessions } from '@/context/SessionContext';
-import { Pause, Play, RotateCcw, StopCircle } from 'lucide-react-native';
+import { LinearGradient } from 'expo-linear-gradient';
+import { Pause, Play, RotateCcw, StopCircle, Sun } from 'lucide-react-native';
 import React, { useEffect, useRef, useState } from 'react';
-import { Alert, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Alert, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 const THEME = {
   background: '#FFF8F0',
   primary: '#D2B48C',
   accent: '#FFA07A',
   text: '#5D4037',
+  lightText: '#A1887F',
   white: '#FFFFFF',
-  success: '#5cb85c',
+  success: '#FFB88D',
   card: '#FFFFFF',
+  gradientStart: '#FEDCBA',
+  gradientEnd: '#FFB88D',
+  disabled: '#EAE3DA',
+  shadow: 'rgba(93, 64, 55, 0.2)',
 };
 
 const formatTime = (timeInSeconds: number) => {
@@ -27,16 +33,12 @@ export default function TimerScreen() {
   const [time, setTime] = useState(0);
   const [isActive, setIsActive] = useState(false);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
-  const { addSession } = useSessions();
-  
-  // 2. Add state to control the custom alert's visibility
+  const { addSession, dailyTotals } = useSessions();
   const [isAlertVisible, setAlertVisible] = useState(false);
 
   useEffect(() => {
     if (isActive) {
-      intervalRef.current = setInterval(() => {
-        setTime((prevTime) => prevTime + 1);
-      }, 1000);
+      intervalRef.current = setInterval(() => setTime((prev) => prev + 1), 1000);
     } else if (!isActive && intervalRef.current) {
       clearInterval(intervalRef.current);
     }
@@ -49,72 +51,211 @@ export default function TimerScreen() {
 
   const handleStop = () => {
     if (time > 0) {
-      const today = new Date();
-      const dateString = today.toISOString().split('T')[0];
-      addSession({ date: dateString, duration: time });
-      // 3. Show our custom alert instead of the basic one
+      const today = new Date().toISOString().split('T')[0];
+      addSession({ date: today, duration: time });
       setAlertVisible(true);
     }
     setIsActive(false);
-    // Note: We reset the time when the user closes the alert
   };
 
   const handleReset = () => {
     if (time === 0 && !isActive) return;
-    Alert.alert("Reset Timer", "Are you sure?",
-      [{ text: "Cancel", style: "cancel" }, {
-        text: "Reset",
+    Alert.alert('Reset Timer', 'Are you sure?', [
+      { text: 'Cancel', style: 'cancel' },
+      {
+        text: 'Reset',
         onPress: () => {
           setIsActive(false);
           setTime(0);
         },
-        style: "destructive",
-      }]
-    );
+        style: 'destructive',
+      },
+    ]);
   };
-  
-  // 4. Function to handle closing the alert and resetting the timer
+
   const handleAlertClose = () => {
     setAlertVisible(false);
     setTime(0);
   };
 
+  const today = new Date().toISOString().split('T')[0];
+  const todayTotal = dailyTotals.find((d) => d.date === today)?.totalDuration ?? 0;
+  const isTimerIdle = time === 0 && !isActive;
+
   return (
-    <View style={styles.screenContainer}>
+    <SafeAreaView style={styles.screenContainer}>
+      {/* The heading is here, at the top */}
       <Text style={styles.title}>Namasmaran</Text>
-      <View style={styles.timerCard}>
-        <Text style={styles.timerText}>{formatTime(time)}</Text>
-        <View style={styles.controlsContainer}>
-          <TouchableOpacity style={[styles.controlButton, time === 0 && !isActive && styles.disabledButton]} onPress={handleReset} disabled={time === 0 && !isActive}>
-            <RotateCcw size={24} color={THEME.text} />
-          </TouchableOpacity>
-          <TouchableOpacity style={[styles.startPauseButton, { backgroundColor: isActive ? THEME.accent : THEME.success }]} onPress={handleStartPause}>
-            {isActive ? <Pause size={28} color={THEME.white} /> : <Play size={28} color={THEME.white} style={{ marginLeft: 3 }} />}
-          </TouchableOpacity>
-          <TouchableOpacity style={[styles.controlButton, time === 0 && !isActive && styles.disabledButton]} onPress={handleStop} disabled={time === 0 && !isActive}>
-            <StopCircle size={24} color={THEME.text} />
-          </TouchableOpacity>
+      
+      <View style={styles.contentContainer}>
+        {/* Top Half: Timer */}
+        <View style={styles.cardContainer}>
+          <View style={styles.timerCard}>
+            <Text style={styles.timerText}>{formatTime(time)}</Text>
+            <View style={styles.controlsContainer}>
+              <TouchableOpacity
+                style={[styles.controlButton, isTimerIdle && styles.disabledButton]}
+                onPress={handleReset}
+                disabled={isTimerIdle}
+              >
+                <RotateCcw size={28} color={isTimerIdle ? THEME.lightText : THEME.text} />
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.startPauseButton, { backgroundColor: isActive ? THEME.accent : THEME.success }]}
+                onPress={handleStartPause}
+              >
+                {isActive ? (
+                  <Pause size={32} color={THEME.white} />
+                ) : (
+                  <Play size={32} color={THEME.white} style={{ marginLeft: 4 }} />
+                )}
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.controlButton, isTimerIdle && styles.disabledButton]}
+                onPress={handleStop}
+                disabled={isTimerIdle}
+              >
+                <StopCircle size={28} color={isTimerIdle ? THEME.lightText : THEME.text} />
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+
+        {/* Bottom Half: Daily Total */}
+        <View style={styles.cardContainer}>
+          <LinearGradient
+            colors={[THEME.gradientStart, THEME.gradientEnd]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={styles.dailyTotalCard}
+          >
+            <View style={styles.dailyTotalIcon}>
+              <Sun size={24} color={THEME.white} />
+            </View>
+            <Text style={styles.dailyTotalText}>Today you've meditated on the divine name for</Text>
+            <Text style={styles.dailyTotalTimeText}>{formatTime(todayTotal)}</Text>
+          </LinearGradient>
         </View>
       </View>
-      
-      {/* 5. Add the CustomAlert component to our screen */}
-      <CustomAlert 
+
+      <CustomAlert
         visible={isAlertVisible}
-        title="Session Complete!"
+        title="Session Saved!"
         message={`You have meditated for ${formatTime(time)}.`}
         onClose={handleAlertClose}
       />
-    </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  screenContainer: { flex: 1, backgroundColor: THEME.background, paddingHorizontal: 20, paddingTop: 20 },
-  title: { fontSize: 34, fontWeight: 'bold', color: THEME.text, marginBottom: 30, textAlign: 'center' },
-  timerCard: { backgroundColor: THEME.card, borderRadius: 20, padding: 25, alignItems: 'center', elevation: 4, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.1, shadowRadius: 8 },
-  timerText: { fontSize: 64, fontWeight: '300', color: THEME.text, fontVariant: ['tabular-nums'], marginBottom: 25 },
-  controlsContainer: { flexDirection: 'row', alignItems: 'center', width: '100%', justifyContent: 'space-around' },
-  startPauseButton: { width: 70, height: 70, borderRadius: 35, justifyContent: 'center', alignItems: 'center' },
-  controlButton: { width: 60, height: 60, borderRadius: 30, justifyContent: 'center', alignItems: 'center', backgroundColor: THEME.background, borderColor: THEME.primary, borderWidth: 1.5 },
-  disabledButton: { opacity: 0.5 },
+  screenContainer: {
+    flex: 1,
+    backgroundColor: THEME.background,
+  },
+  title: {
+    fontSize: 34,
+    fontWeight: 'bold',
+    color: THEME.text,
+    textAlign: 'center',
+    paddingTop: 20,
+    paddingBottom: 10,
+  },
+  contentContainer: {
+    flex: 1,
+    paddingHorizontal: 20,
+    paddingBottom: 20,
+  },
+  cardContainer: {
+    flex: 1,
+    justifyContent: 'center',
+  },
+  timerCard: {
+    backgroundColor: THEME.card,
+    borderRadius: 32,
+    paddingVertical: 30,
+    paddingHorizontal: 20,
+    alignItems: 'center',
+    elevation: 10,
+    shadowColor: THEME.shadow,
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.2,
+    shadowRadius: 16,
+  },
+  timerText: {
+    fontSize: 64,
+    fontWeight: '300',
+    color: THEME.text,
+    fontVariant: ['tabular-nums'],
+    marginBottom: 30,
+    letterSpacing: 1.5,
+  },
+  controlsContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: '100%',
+    justifyContent: 'space-around',
+  },
+  startPauseButton: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+    elevation: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 5,
+  },
+  controlButton: {
+    width: 70,
+    height: 70,
+    borderRadius: 35,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#F5F0E9',
+  },
+  disabledButton: {
+    backgroundColor: THEME.disabled,
+  },
+  dailyTotalCard: {
+    borderRadius: 32,
+    padding: 30,
+    alignItems: 'center',
+    justifyContent: 'center',
+    elevation: 12,
+    shadowColor: THEME.gradientEnd,
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.35,
+    shadowRadius: 15,
+    marginTop: 20,
+  },
+  dailyTotalIcon: {
+    position: 'absolute',
+    top: -15,
+    backgroundColor: THEME.accent,
+    borderRadius: 15,
+    padding: 8,
+    elevation: 10,
+    shadowColor: '#000',
+    shadowOpacity: 0.2,
+    shadowRadius: 5,
+  },
+  dailyTotalText: {
+    fontSize: 18,
+    color: THEME.white,
+    textAlign: 'center',
+    fontWeight: '500',
+    opacity: 0.9,
+    marginTop: 20,
+  },
+  dailyTotalTimeText: {
+    fontSize: 42,
+    color: THEME.white,
+    fontWeight: '700',
+    fontVariant: ['tabular-nums'],
+    marginTop: 10,
+    letterSpacing: 1,
+  },
 });
