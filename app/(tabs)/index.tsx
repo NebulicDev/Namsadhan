@@ -9,9 +9,9 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  View
+  View,
 } from 'react-native';
-// 1. Import animation hooks from reanimated
+// Import animation hooks from reanimated
 import Animated, {
   interpolate,
   useAnimatedStyle,
@@ -30,40 +30,53 @@ const THEME = {
 };
 
 const spiritualGuides = [
-  { id: '1', name: 'Shri Nimbargi Maharaj', photo: require('../../assets/images/nimbargi-maharaj.png'), bio: bios['Shri Nimbargi Maharaj'] },
-  { id: '2', name: 'Shri Amburao Maharaj', photo: require('../../assets/images/amburao-maharaj.png'), bio: bios['Shri Amburao Maharaj'] },
-  { id: '3', name: 'Shri Bhausaheb Maharaj', photo: require('../../assets/images/bhausaheb-maharaj.png'), bio: bios['Shri Bhausaheb Maharaj'] },
-  { id: '4', name: 'Shri Gurudev Ranade', photo: require('../../assets/images/gurudeo-ranade.png'), bio: bios['Shri Gurudev Ranade'] },
+  {
+    id: '1',
+    name: 'Shri Nimbargi Maharaj',
+    photo: require('../../assets/images/nimbargi-maharaj.png'),
+    bio: bios['Shri Nimbargi Maharaj'],
+  },
+  {
+    id: '2',
+    name: 'Shri Amburao Maharaj',
+    photo: require('../../assets/images/amburao-maharaj.png'),
+    bio: bios['Shri Amburao Maharaj'],
+  },
+  {
+    id: '3',
+    name: 'Shri Bhausaheb Maharaj',
+    photo: require('../../assets/images/bhausaheb-maharaj.png'),
+    bio: bios['Shri Bhausaheb Maharaj'],
+  },
+  {
+    id: '4',
+    name: 'Shri Gurudev Ranade',
+    photo: require('../../assets/images/gurudeo-ranade.png'),
+    bio: bios['Shri Gurudev Ranade'],
+  },
 ];
 
 type Guide = typeof spiritualGuides[0];
 
 export default function HomeScreen() {
   const [selectedGuide, setSelectedGuide] = useState<Guide | null>(null);
-
-  // 2. Set up a shared value for the animation
   const animation = useSharedValue(0);
 
-  // 3. Define the animated style for the modal content
+  // CHANGE 1: The animation now includes a 'scale' effect for a nice pop-up feel.
   const animatedModalStyle = useAnimatedStyle(() => {
-    // Interpolate opacity from 0 to 1
     const opacity = interpolate(animation.value, [0, 1], [0, 1]);
-    // Interpolate vertical position to slide up from 50px below
-    const translateY = interpolate(animation.value, [0, 1], [50, 0]);
+    const scale = interpolate(animation.value, [0, 1], [0.9, 1]);
     return {
       opacity,
-      transform: [{ translateY }],
+      transform: [{ scale }],
     };
   });
 
-  // 4. Trigger the animation when a guide is selected or deselected
   useEffect(() => {
     if (selectedGuide) {
-      // Animate in
-      animation.value = withTiming(1, { duration: 400 });
+      animation.value = withTiming(1, { duration: 300 });
     } else {
-      // Instantly reset when closed
-      animation.value = 0;
+      animation.value = withTiming(0, { duration: 200 });
     }
   }, [selectedGuide, animation]);
 
@@ -89,13 +102,12 @@ export default function HomeScreen() {
         clearInterval(typingInterval);
         setTimeout(() => {
           setLineIndex((prev) => (prev + 1) % prayerLines.length);
-        }, 1000); // Wait 1 second before starting next line
+        }, 1000);
       }
-    }, 150); // Adjust typing speed here
+    }, 150);
 
     return () => clearInterval(typingInterval);
   }, [lineIndex]);
-
 
   return (
     <SafeAreaView style={styles.screenContainer}>
@@ -105,7 +117,6 @@ export default function HomeScreen() {
           <Text style={styles.subtitle}>Shri Gurudev Ranade Samadhi Trust</Text>
         </View>
 
-        {/* Top Card */}
         <TouchableOpacity style={styles.topCard} onPress={() => setSelectedGuide(spiritualGuides[0])}>
           <Image source={spiritualGuides[0].photo} style={styles.topCardImage} resizeMode="cover" />
           <View style={styles.cardOverlay}>
@@ -113,7 +124,6 @@ export default function HomeScreen() {
           </View>
         </TouchableOpacity>
 
-        {/* Bottom Row of Cards */}
         <View style={styles.bottomRow}>
           {spiritualGuides.slice(1).map((guide) => (
             <TouchableOpacity key={guide.id} style={styles.bottomCard} onPress={() => setSelectedGuide(guide)}>
@@ -125,178 +135,196 @@ export default function HomeScreen() {
           ))}
         </View>
 
-        {/* Animated Typing Prayer Text */}
         <View style={styles.prayerContainer}>
-            <Text style={styles.scrollLine}>{"─".repeat(40)}</Text>
-            <Text style={styles.prayerText}>{typedText}</Text>
-            <Text style={styles.scrollLine}>{"─".repeat(40)}</Text>
+          <Text style={styles.scrollLine}>{"─".repeat(40)}</Text>
+          <Text style={styles.prayerText}>{typedText}</Text>
+          <Text style={styles.scrollLine}>{"─".repeat(40)}</Text>
         </View>
-
-        {/* Fullscreen Modal */}
-        <Modal visible={selectedGuide !== null} animationType="slide" onRequestClose={() => setSelectedGuide(null)}>
-          <SafeAreaView style={styles.modalContainer}>
-            <TouchableOpacity style={styles.closeButton} onPress={() => setSelectedGuide(null)}>
-              <X size={30} color={THEME.text} />
-            </TouchableOpacity>
-
-            {selectedGuide && (
-              // 5. Wrap the content in an Animated.View and apply the style
-              <Animated.View style={[{ flex: 1 }, animatedModalStyle]}>
-                <ScrollView contentContainerStyle={styles.modalContent}>
-                  <Image source={selectedGuide.photo} style={styles.modalImage} resizeMode="cover" />
-                  <Text style={styles.modalTitle}>{selectedGuide.name}</Text>
-                  <Text style={styles.modalBio}>{selectedGuide.bio}</Text>
-                </ScrollView>
-              </Animated.View>
-            )}
-          </SafeAreaView>
-        </Modal>
       </ScrollView>
+
+      {/* CHANGE 2: The Modal is now transparent with a fade animation */}
+      <Modal
+        visible={selectedGuide !== null}
+        transparent={true}
+        animationType="fade"
+        onRequestClose={() => setSelectedGuide(null)}
+      >
+        <View style={styles.modalOverlay}>
+          {selectedGuide && (
+            <Animated.View style={[styles.modalCard, animatedModalStyle]}>
+              <TouchableOpacity style={styles.closeButton} onPress={() => setSelectedGuide(null)}>
+                <X size={24} color={THEME.lightText} />
+              </TouchableOpacity>
+              <ScrollView contentContainerStyle={styles.modalContent}>
+                <Image source={selectedGuide.photo} style={styles.modalImage} resizeMode="cover" />
+                <Text style={styles.modalTitle}>{selectedGuide.name}</Text>
+                <Text style={styles.modalBio}>{selectedGuide.bio}</Text>
+              </ScrollView>
+            </Animated.View>
+          )}
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-    screenContainer: {
-        flex: 1,
-        backgroundColor: THEME.background,
-    },
-    scrollContent: {
-        paddingBottom: 40,
-    },
-    header: {
-        paddingTop: 60,
-        paddingHorizontal: 20,
-        marginBottom: 20,
-        alignItems: 'center',
-    },
-    title: {
-        fontSize: 30,
-        fontWeight: 'bold',
-        color: THEME.text,
-        textAlign: 'center',
-    },
-    subtitle: {
-        fontSize: 18,
-        color: THEME.lightText,
-        marginTop: 4,
-        textAlign: 'center',
-    },
-    topCard: {
-        height: 250,
-        marginHorizontal: 20,
-        borderRadius: 20,
-        overflow: 'hidden',
-        backgroundColor: THEME.card,
-        elevation: 6,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 6 },
-        shadowOpacity: 0.18,
-        shadowRadius: 8.3,
-    },
-    topCardImage: {
-        width: '100%',
-        height: '100%',
-    },
-    bottomRow: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        marginHorizontal: 20,
-        marginTop: 20,
-    },
-    bottomCard: {
-        width: '31%',
-        height: 180,
-        borderRadius: 20,
-        overflow: 'hidden',
-        backgroundColor: THEME.card,
-        elevation: 6,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 6 },
-        shadowOpacity: 0.18,
-        shadowRadius: 8.3,
-    },
-    bottomCardImage: {
-        width: '100%',
-        height: '100%',
-    },
-    cardOverlay: {
-        ...StyleSheet.absoluteFillObject,
-        backgroundColor: 'rgba(0, 0, 0, 0.06)',
-        justifyContent: 'flex-end',
-        padding: 15,
-    },
-    cardTitle: {
-        fontSize: 22,
-        fontWeight: 'bold',
-        color: THEME.white,
-        textShadowColor: 'rgba(0, 0, 0, 0.75)',
-        textShadowOffset: { width: -1, height: 1 },
-        textShadowRadius: 10,
-        textAlign: 'center',
-    },
-    cardTitleSmall: {
-        fontSize: 14,
-        fontWeight: 'bold',
-        color: THEME.white,
-        textShadowColor: 'rgba(0, 0, 0, 0.75)',
-        textShadowOffset: { width: -1, height: 1 },
-        textShadowRadius: 10,
-        textAlign: 'center',
-    },
-    prayerContainer: {
-        marginHorizontal: 20,
-        marginTop: 30,
-        height: 100, // Increased height to accommodate lines
-        justifyContent: 'center',
-    },
-    prayerText: {
-        fontSize: 24, // increased size
-        color: THEME.text,
-        textAlign: 'center',
-        fontFamily: 'serif',
-        lineHeight: 32,
-        textShadowColor: THEME.primary,
-        textShadowOffset: { width: 0, height: 0 },
-        textShadowRadius: 10,
-    },
-    scrollLine: {
-        fontSize: 10,
-        color: THEME.primary,
-        textAlign: 'center',
-    },
-    modalContainer: {
-        flex: 1,
-        backgroundColor: THEME.background,
-    },
-    closeButton: {
-        position: 'absolute',
-        top: 50,
-        right: 20,
-        zIndex: 10,
-        backgroundColor: 'rgba(255, 255, 255, 0.7)',
-        borderRadius: 20,
-        padding: 5,
-    },
-    modalImage: {
-        width: '100%',
-        height: 350,
-        borderRadius: 20,
-        marginBottom: 20,
-    },
-    modalContent: {
-        padding: 20,
-        paddingTop: 80, // Add padding to account for close button
-    },
-    modalTitle: {
-        fontSize: 32,
-        fontWeight: 'bold',
-        color: THEME.text,
-        marginBottom: 15,
-    },
-    modalBio: {
-        fontSize: 18,
-        color: THEME.text,
-        lineHeight: 28,
-    },
+  screenContainer: {
+    flex: 1,
+    backgroundColor: THEME.background,
+  },
+  scrollContent: {
+    paddingBottom: 40,
+  },
+  header: {
+    paddingTop: 60,
+    paddingHorizontal: 20,
+    marginBottom: 20,
+    alignItems: 'center',
+  },
+  title: {
+    fontSize: 30,
+    fontWeight: 'bold',
+    color: THEME.text,
+    textAlign: 'center',
+  },
+  subtitle: {
+    fontSize: 18,
+    color: THEME.lightText,
+    marginTop: 4,
+    textAlign: 'center',
+  },
+  topCard: {
+    height: 250,
+    marginHorizontal: 20,
+    borderRadius: 20,
+    overflow: 'hidden',
+    backgroundColor: THEME.card,
+    elevation: 6,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.18,
+    shadowRadius: 8.3,
+  },
+  topCardImage: {
+    width: '100%',
+    height: '100%',
+  },
+  bottomRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginHorizontal: 20,
+    marginTop: 20,
+  },
+  bottomCard: {
+    width: '31%',
+    height: 180,
+    borderRadius: 20,
+    overflow: 'hidden',
+    backgroundColor: THEME.card,
+    elevation: 6,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.18,
+    shadowRadius: 8.3,
+  },
+  bottomCardImage: {
+    width: '100%',
+    height: '100%',
+  },
+  cardOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0, 0, 0, 0.06)',
+    justifyContent: 'flex-end',
+    padding: 15,
+  },
+  cardTitle: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: THEME.white,
+    textShadowColor: 'rgba(0, 0, 0, 0.75)',
+    textShadowOffset: { width: -1, height: 1 },
+    textShadowRadius: 10,
+    textAlign: 'center',
+  },
+  cardTitleSmall: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: THEME.white,
+    textShadowColor: 'rgba(0, 0, 0, 0.75)',
+    textShadowOffset: { width: -1, height: 1 },
+    textShadowRadius: 10,
+    textAlign: 'center',
+  },
+  prayerContainer: {
+    marginHorizontal: 20,
+    marginTop: 30,
+    height: 100,
+    justifyContent: 'center',
+  },
+  prayerText: {
+    fontSize: 24,
+    color: THEME.text,
+    textAlign: 'center',
+    fontFamily: 'serif',
+    lineHeight: 32,
+    textShadowColor: THEME.primary,
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 10,
+  },
+  scrollLine: {
+    fontSize: 10,
+    color: THEME.primary,
+    textAlign: 'center',
+  },
+  // CHANGE 3: New and updated styles for the pop-up modal
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalCard: {
+    width: '90%',
+    maxHeight: '80%',
+    backgroundColor: THEME.background,
+    borderRadius: 20,
+    overflow: 'hidden',
+    elevation: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 5 },
+    shadowOpacity: 0.3,
+    shadowRadius: 15,
+  },
+  closeButton: {
+    position: 'absolute',
+    top: 15,
+    right: 15,
+    zIndex: 10,
+    backgroundColor: 'rgba(0, 0, 0, 0.05)',
+    borderRadius: 20,
+    padding: 5,
+  },
+  modalImage: {
+    width: '100%',
+    height: 250, 
+    borderRadius: 15,
+    marginBottom: 20, 
+  },
+  modalContent: {
+    padding: 20,
+  },
+  modalTitle: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: THEME.text,
+    marginBottom: 15,
+    textAlign: 'center',
+  },
+  modalBio: {
+    fontSize: 17,
+    color: THEME.text,
+    lineHeight: 26,
+    textAlign: 'center',
+  },
 });
