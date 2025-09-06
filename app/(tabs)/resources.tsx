@@ -1,5 +1,5 @@
 import { useRouter } from 'expo-router';
-import { BookOpen, Image, Mic2, Music, Video } from 'lucide-react-native';
+import { BookOpen, Mic2, Music, Video } from 'lucide-react-native';
 import React from 'react';
 import { SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
@@ -51,11 +51,11 @@ export default function MusicScreen() {
                 icon={<BookOpen size={32} color={THEME.text} />} 
                 onPress={() => router.push('/manacheShlok')}
             />
-            <SectionCard 
+            {/* <SectionCard 
                 title="Gallery" 
                 icon={<Image size={32} color={THEME.text} />} 
                 onPress={() => router.push('/gallery')}
-            />
+            /> */}
         </View>
     </SafeAreaView>
   );
