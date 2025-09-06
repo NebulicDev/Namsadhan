@@ -1,3 +1,4 @@
+// app/(tabs)/index.tsx
 import { X } from 'lucide-react-native';
 import React, { useEffect, useState } from 'react';
 import {
@@ -10,6 +11,14 @@ import {
   TouchableOpacity,
   View
 } from 'react-native';
+// 1. Import animation hooks from reanimated
+import Animated, {
+  interpolate,
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from 'react-native-reanimated';
+import { bios } from '../../assets/text/bios';
 
 const THEME = {
   background: '#FFF8F0',
@@ -21,16 +30,42 @@ const THEME = {
 };
 
 const spiritualGuides = [
-  { id: '1', name: 'Shri Nimbargi Maharaj', photo: require('../../assets/images/nimbargi-maharaj.png'), bio: 'Update' },
-  { id: '2', name: 'Shri Amburao Maharaj', photo: require('../../assets/images/amburao-maharaj.png'), bio: 'Update' },
-  { id: '3', name: 'Shri Bhausaheb Maharaj', photo: require('../../assets/images/bhausaheb-maharaj.png'), bio: 'Update' },
-  { id: '4', name: 'Shri Gurudev Ranade', photo: require('../../assets/images/gurudeo-ranade.png'), bio: 'Update' },
+  { id: '1', name: 'Shri Nimbargi Maharaj', photo: require('../../assets/images/nimbargi-maharaj.png'), bio: bios['Shri Nimbargi Maharaj'] },
+  { id: '2', name: 'Shri Amburao Maharaj', photo: require('../../assets/images/amburao-maharaj.png'), bio: bios['Shri Amburao Maharaj'] },
+  { id: '3', name: 'Shri Bhausaheb Maharaj', photo: require('../../assets/images/bhausaheb-maharaj.png'), bio: bios['Shri Bhausaheb Maharaj'] },
+  { id: '4', name: 'Shri Gurudev Ranade', photo: require('../../assets/images/gurudeo-ranade.png'), bio: bios['Shri Gurudev Ranade'] },
 ];
 
 type Guide = typeof spiritualGuides[0];
 
 export default function HomeScreen() {
   const [selectedGuide, setSelectedGuide] = useState<Guide | null>(null);
+
+  // 2. Set up a shared value for the animation
+  const animation = useSharedValue(0);
+
+  // 3. Define the animated style for the modal content
+  const animatedModalStyle = useAnimatedStyle(() => {
+    // Interpolate opacity from 0 to 1
+    const opacity = interpolate(animation.value, [0, 1], [0, 1]);
+    // Interpolate vertical position to slide up from 50px below
+    const translateY = interpolate(animation.value, [0, 1], [50, 0]);
+    return {
+      opacity,
+      transform: [{ translateY }],
+    };
+  });
+
+  // 4. Trigger the animation when a guide is selected or deselected
+  useEffect(() => {
+    if (selectedGuide) {
+      // Animate in
+      animation.value = withTiming(1, { duration: 400 });
+    } else {
+      // Instantly reset when closed
+      animation.value = 0;
+    }
+  }, [selectedGuide, animation]);
 
   const prayerLines = [
     'ॐ',
@@ -105,13 +140,14 @@ export default function HomeScreen() {
             </TouchableOpacity>
 
             {selectedGuide && (
-              <>
-                <Image source={selectedGuide.photo} style={styles.modalImage} resizeMode="cover" />
-                <View style={styles.modalContent}>
+              // 5. Wrap the content in an Animated.View and apply the style
+              <Animated.View style={[{ flex: 1 }, animatedModalStyle]}>
+                <ScrollView contentContainerStyle={styles.modalContent}>
+                  <Image source={selectedGuide.photo} style={styles.modalImage} resizeMode="cover" />
                   <Text style={styles.modalTitle}>{selectedGuide.name}</Text>
                   <Text style={styles.modalBio}>{selectedGuide.bio}</Text>
-                </View>
-              </>
+                </ScrollView>
+              </Animated.View>
             )}
           </SafeAreaView>
         </Modal>
@@ -244,12 +280,13 @@ const styles = StyleSheet.create({
     },
     modalImage: {
         width: '100%',
-        height: 400,
-        borderBottomLeftRadius: 30,
-        borderBottomRightRadius: 30,
+        height: 350,
+        borderRadius: 20,
+        marginBottom: 20,
     },
     modalContent: {
         padding: 20,
+        paddingTop: 80, // Add padding to account for close button
     },
     modalTitle: {
         fontSize: 32,
