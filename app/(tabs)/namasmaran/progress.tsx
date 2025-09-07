@@ -1,4 +1,3 @@
-// app/tabs/namasmaran/progress.tsx
 import { useSessions } from '@/context/SessionContext';
 import { LinearGradient } from 'expo-linear-gradient';
 import React, { useMemo, useState } from 'react';
@@ -13,7 +12,6 @@ const THEME = {
   text: '#5D4037',
   lightText: '#A1887F',
   white: '#FFFFFF',
-  card: '#FFFFFF',
   gradientStart: '#FEDCBA',
   gradientEnd: '#FFB88D',
 };
@@ -36,12 +34,11 @@ export default function ProgressScreen() {
     dailyTotals.forEach(session => {
       marks[session.date] = { marked: true, dotColor: THEME.accent };
     });
-    // Add selected date marking
     if (selectedDate) {
       marks[selectedDate] = {
         ...marks[selectedDate],
         selected: true,
-        selectedColor: THEME.primary,
+        selectedColor: THEME.gradientEnd,
         selectedTextColor: THEME.white,
       };
     }
@@ -56,7 +53,7 @@ export default function ProgressScreen() {
 
   return (
     <View style={styles.screenContainer}>
-      <Text style={styles.title}>Your Diary</Text>
+      <Text style={styles.title}>Your Progress</Text>
       <Calendar
         onDayPress={handleDayPress}
         markedDates={markedDates}
@@ -86,7 +83,7 @@ export default function ProgressScreen() {
                 end={{ x: 1, y: 1 }}
                 style={styles.dailyTotalCard}
             >
-                <Text style={styles.dailyTotalText}>Meditation for selected day:</Text>
+                <Text style={styles.dailyTotalText}>Nema</Text>
                 <Text style={styles.dailyTotalTimeText}>{formatTime(selectedDayTotal)}</Text>
             </LinearGradient>
         </View>
@@ -97,8 +94,11 @@ export default function ProgressScreen() {
 
 const styles = StyleSheet.create({
   screenContainer: { flex: 1, backgroundColor: THEME.background, padding: 20 },
-  title: { fontSize: 22, fontWeight: 'bold', color: THEME.text, marginBottom: 15 },
-  calendar: { borderRadius: 10, marginBottom: 20, elevation: 2, shadowColor: '#000', shadowOpacity: 0.05, shadowRadius: 5 },
+  title: { fontSize: 22, fontWeight: 'bold', color: THEME.text, marginBottom: 15, textAlign:'center'},
+  // Updated calendar style - removed card properties
+  calendar: { 
+    marginBottom: 20,
+  },
   totalContainer: {
     alignItems: 'center',
     marginTop: 10,

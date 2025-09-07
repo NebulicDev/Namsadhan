@@ -30,6 +30,7 @@ const THEME = {
   card: '#FFFFFF',
   primary: '#D2B48C',
   accent: '#FFA07A',
+  gradientEnd: '#FFB88D',
 };
 
 const getRandomInt = (max) => {
@@ -226,10 +227,10 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 30,
     right: 30,
-    backgroundColor: THEME.primary,
+    backgroundColor: THEME.gradientEnd,
     borderRadius: 28,
-    width: 56,
-    height: 56,
+    width: 44,
+    height: 44,
     justifyContent: 'center',
     alignItems: 'center',
     elevation: 6,
