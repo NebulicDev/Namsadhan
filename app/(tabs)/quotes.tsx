@@ -1,6 +1,6 @@
 // app/(tabs)/quotes.tsx
 import { RefreshCw, Share2 } from 'lucide-react-native';
-import React, { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import {
   ActivityIndicator,
   SafeAreaView,
@@ -29,7 +29,7 @@ const THEME = {
   lightText: '#A1887F',
   card: '#FFFFFF',
   primary: '#D2B48C',
-  accent: '#FFA07A',
+  accent: '#FFB88D',
   gradientEnd: '#FFB88D',
 };
 
@@ -221,13 +221,13 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
     color: THEME.primary,
-    textAlign: 'right',
+    textAlign: 'left',
   },
   shuffleButtonFab: {
     position: 'absolute',
     bottom: 30,
     right: 30,
-    backgroundColor: THEME.gradientEnd,
+    backgroundColor: THEME.primary,
     borderRadius: 28,
     width: 44,
     height: 44,

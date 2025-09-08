@@ -14,7 +14,7 @@ const THEME = {
   lightText: '#A1887F',
   card: '#FFFFFF',
   primary: '#D2B48C',
-  accent: '#FFA07A',
+  accent: '#FFB88D',
 };
 
 const MUSIC_DATA = [

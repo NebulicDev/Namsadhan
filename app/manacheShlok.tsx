@@ -1,14 +1,15 @@
+// ManacheShlokScreen.js
 import { useRouter } from 'expo-router';
 import { ChevronLeft } from 'lucide-react-native';
-import React from 'react';
 import { SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import manacheShlokText from '../assets/text/manache_shlok_content';
-import DraggableScrollbar from '../components/DraggableScrollbar'; // Import the new component
+import DraggableScrollbar from '../components/DraggableScrollbar'; // Updated component
 
 const THEME = {
   background: '#FFF8F0',
   text: '#5D4037',
   primary: '#D2B48C',
+  accent: '#FFB88D'
 };
 
 export default function ManacheShlokScreen() {
@@ -23,7 +24,7 @@ export default function ManacheShlokScreen() {
         <Text style={styles.title}>Manache Shlok</Text>
       </View>
       <DraggableScrollbar
-        thumbStyle={{ backgroundColor: THEME.primary }}
+        thumbStyle={{ backgroundColor: THEME.accent }}
         scrollViewProps={{ contentContainerStyle: styles.contentContainer }}
       >
         <View style={{ paddingBottom: 60 }}>
@@ -57,6 +58,7 @@ const styles = StyleSheet.create({
   contentContainer: {
     paddingHorizontal: 20,
     paddingBottom: 40,
+    // Don't add paddingRight; the scrollbar sits on top absolutely
   },
   shlokText: {
     fontSize: 24,

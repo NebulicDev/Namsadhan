@@ -1,59 +1,92 @@
 // assets/text/bios.ts
 
 export const bios = {
-  'Shri Nimbargi Maharaj': `
-Birth: April 9, 1789 AD (Shake 1712) in Solapur
-Initiation (Anugrah): Between 1809-1814
-Passing (Niryaan): March 29, 1885 AD (Chaitra Sh 12, Shake 1807)
+  'Shri Nimbargi Maharaj': 
+  `Janma: April 9, 1789; Solapur (raised at Devar Nimbargi, Karnataka); Shake 1712
+Anugrah: c. 1809–1814 at Siddhagiri by Yogi Muppinmuni of the Kadasiddha lineage
+Niryaan: March 29, 1885; Chaitra Sh 12, Shake 1807
 
-Shri Narayanrao Bhausaheb, widely known as Shri Nimbargi Maharaj, is revered as the foundational saint of the Nimbargi Sampradaya. Often called a "Spiritual Bhagirath," he is credited with reviving a spiritual tradition that had been dormant for centuries, much like King Bhagirath brought the celestial Ganga river to earth.
+Sadguru Shri Narayanrao Bhausahib, revered as Nimbargi Maharaj, is regarded as the originator of the Nimbargi Sampradaya. He is remembered as a Spiritual Bhagirath who, through decades of intense meditation, revived the hidden current of inner realization in this region, opening the path for countless seekers who followed.
 
-Born into a Virasaiva family in Nimbargi, a village in Karnataka, his life took a pivotal turn at the age of 25. After being reprimanded by his father for his enthusiastic participation in the Holi festival, a remorseful Narayanrao traveled to Pandharpur. There, he prayed fervently to Lord Vitthal for three days. On the third day, the Lord appeared in his dream, directing him to Siddhagiri to find his spiritual master.
+Born in Solapur and brought up in the village of Nimbargi (Bijapur district), he belonged to a Lingayat (Neelawani sub-caste) family with the surname Misalkar. In his youth, a moment of shame after being reprimanded by his father during the Holi festival drove him to Pandharpur. There, after three days of fervent prayer, Lord Vitthal appeared in his dream and directed him to Siddhagiri. At the temple of Shri Kadsiddheshwar, he encountered Yogi Muppinmuni, who initiated him with the Divine Name and instructed him to meditate sincerely.
 
-Following the divine guidance, he met the Yogi Shri Muppinmuni at a cave in Siddhagiri, who initiated him with the Divine Name and instructed him in meditation. Although Narayanrao was initially distracted by family life for six years, a surprise visit from his Guru reignited his commitment. He then changed his profession from a dyer to a shepherd to dedicate more time to his spiritual practice. For 36 years, he engaged in intense meditation, eventually attaining the pinnacle of spiritual realization and enjoying a profound connection with the Atman (the Self).
+Though he initially neglected the practice, a later visit by his Guru reignited his resolve. Renouncing his trade as a dyer, he became a shepherd—an occupation that allowed long hours of solitude. For thirty-six years he immersed himself in Naam Sadhana, meditating ceaselessly under trees and in fields, progressing stage by stage until he attained profound realization and union with the Atman.
 
-For the last 28 years of his life, Shri Nimbargi Maharaj guided deserving disciples and conducted discourses on the Dasabodha. His core teaching was to dedicate worldly life to the Self through constant meditation. He taught that everything is controlled by the will of the Self and that by deserving Its grace, one can visualize Its divine light. His teachings were later compiled in a volume called "Bodh-Sudha" (The Nectar of Illumination). His spiritual lineage continued through prominent disciples, including Raghunathpriya Sadhu Maharaj, who in turn guided Shri Bhausahib Maharaj of Umadi. Shri Nimbargi Maharaj passed away at the age of 95, and his Samadhi in Nimbargi remains a sacred site for followers.
-`,
+In the last twenty-eight years of his life, Nimbargi Maharaj emerged as a Sadguru, guiding seekers with mature wisdom born of direct experience. He interpreted Dasbodh of Samarth Ramdas, and his own teachings were later compiled as Bodh-Sudha (The Nectar of Illumination). He was known for initiating only those truly deserving and urged disciples to dedicate both worldly and spiritual life to the Self, emphasizing that everything is governed by the Divine Will and that meditation alone makes life complete.
 
-  'Shri Amburao Maharaj': `
-Birth: September 21, 1857 (Bhadrapad Sh 9, Shake 1779) in Jigjivani
-Initiation (Anugrah): April 1892 (Chaitra Sh 15, Shake 1814)
-Passing (Niryaan): December 22, 1933 (Poush Sh 6, Shake 1855)
+Among his foremost disciples was Raghunathpriya Sadhu Maharaj, who later initiated Shri Bhausahib Maharaj of Umdi, thus continuing the living lineage that flowed to Amburao Maharaj and Gurudev Dr. R. D. Ranade.
 
-Shri Amburao Maharaj, affectionately known as Baba, was a premier disciple of Shri Bhausaheb Maharaj and a spiritual brother to Shri Gurudev Ranade. His life is a testament to faith and penance, and he played a crucial role in carrying forward the spiritual lineage of the Nimbargi Sampradaya.
+Shri Nimbargi Maharaj taught that even the slightest glimpse of the Self is sufficient for liberation:
+“If you get even a glimpse of the Spiritual Ensign, you would never be born again.”
 
-Born into a poor Smarth Brahmin family in Jigjivani, Baba faced immense hardship from a young age, including the early loss of his parents and wife. His spiritual journey began unexpectedly when his sister encouraged him to attend a festival at Nimbargi, where he met Shri Bhausaheb Maharaj and was initiated, almost against his will. Despite his initial reluctance, Baba dedicated himself to meditation with such intensity that he experienced profound visions of divine light within three months.
+His message was one of constant soulful meditation, surrender, and the vision of inner Light. Gurudev Ranade likened him to the Bakula tree, whose hidden flowers spread fragrance across Karnataka. He left his body on 29 March 1885 at the age of 95. His Samadhi at Devar Nimbargi remains a sacred pilgrimage site, where devotees continue to feel the living presence of the founder of the Sampradaya.`,
 
-He was instrumental in building the Ashram and the Samadhi of Shri Nimbargi Maharaj at Inchgiri, managing its affairs until his Master's passing in 1914. Afterward, despite disputes over leadership, Shri Amburao stood as a protector of the true spiritual path taught in the Sampradaya. In 1915, following a clear mandate from his Master in a dream, he began initiating his own disciples.
+  'Shri Amburao Maharaj': 
+  `Janma: Jigjivani, Sept 21, 1857; Monday, Bhadrapad Sh 9, Shake 1779
+Anugrah: April 1892; Chaitra Sh 15, Shake 1814; 2 p.m. in Siddheshwar Temple
+Niryaan: Dec 22, 1933; Friday, Poush Sh 6, Shake 1855
 
-Shri Amburao Maharaj was a source of great moral and spiritual support for Gurudev Ranade, whom he considered his twin. He conducted extensive spiritual tours, spreading devotion and clearing the pathway to God for thousands of followers. His Samadhi is located beside his guru's at Inchgiri.
-`,
+Sadguru Shri Amburao Maharaj, affectionately called Baba, was a direct disciple of H. H. Sadguru Shri Bhausahib Maharaj of Umadi and the senior spiritual brother of Gurudev Dr. R. D. Ranade. His life reflected complete faith, devotion, and penance, and he played a vital role in carrying forward the Nimbargi Sampradaya after the passing of his Guru.
 
-  'Shri Bhausaheb Maharaj': `
-Birth: 1843 (Chaitra Sh 9, Ramnavami, Shake 1765) in Umadi
-Initiation (Anugrah): 1858
-Passing (Niryaan): January 29, 1914 (Magh, Sh 3, Shake 1835)
+Born in 1857 in Jigjivani village of Bijapur district to a poor Smarth Brahmin family, Amburao Maharaj faced many hardships. He lost his parents at an early age, endured severe poverty, and later also faced the untimely loss of his wife and daughter. In the midst of these struggles, a turning point came when he visited the Bhimraya festival at Nimbargi. There, he encountered Shri Bhausahib Maharaj, who initiated him into the Divine Name almost against his will.
 
-Shri Venkatesh Khanderao Deshpande, widely known as Shri Bhausahib Maharaj, was a prominent saint of the Nimbargi Sampradaya and a foremost disciple of Shri Nimbargi Maharaj. Born into a well-to-do family in Umadi, Maharashtra, he showed deep devotion from a young age, particularly to Lord Hanuman.
+Though initially hesitant, Amburao Maharaj devoted himself wholeheartedly to the discipline given by his Guru. He meditated day and night with unwavering focus, and soon began experiencing profound inner light and bliss. With his Master’s grace, he advanced steadily on the path, eventually receiving the authority to initiate aspirants.
 
-At the age of 14, he was introduced to Shri Nimbargi Maharaj by Shri Raghunath Priya Maharaj and was initiated into the spiritual path. For the next 28 years, he balanced his worldly duties with intense daily meditation, eventually achieving "Advaita Siddhi," the highest state of self-realization. After his Master's passing in 1885, he redoubled his spiritual efforts and took on the responsibility of spreading devotion.
+One of his major contributions was building and managing the Ashram and the Samadhi of Shri Bhausahib Maharaj at Inchgiri, especially after his Guru’s passing in 1914. At a time when disputes arose regarding succession within the Sampradaya, Baba stood firm in preserving the true spiritual path. Following a dream-vision in 1915, he began initiating disciples, carrying forward his Guru’s mission with dedication.
 
-He established a spiritual center at Inchgiri, which became a hub of spiritual activity. From there, he traveled extensively on horseback across Karnataka and Maharashtra, guiding countless seekers. For 18 years, he conducted the "Shravan Sadhan Saptaha," a weekly spiritual gathering at Umadi that drew many disciples for long meditation sessions.
+Sadguru Amburao Maharaj guided many aspirants and attracted thousands of devotees across regions. He was a source of constant support—both moral and spiritual—to Gurudev Dr. R. D. Ranade, considering him his spiritual twin. In 1927, he established an independent Math at Inchgiri, while continuing to honor his Guru’s memory.
 
-Shri Bhausahib Maharaj's teachings are encapsulated in a few profound aphorisms, emphasizing the remembrance of the Divine Name as reality and forgetfulness as illusion. He taught his disciples to live with resolute endurance (Dhir), magnanimity (Udar), and a considerate outlook (Gambhir). He passed away at the age of 71, leaving a rich spiritual legacy continued by his prominent disciples, including Shri Amburao Maharaj and Shri Gurudev R. D. Ranade.
-`,
+He often compared spiritual practice to a blind man twisting jute into rope—one must keep meditating without worrying about progress or results, trusting fully in the Master’s grace. His life became a shining example of how complete surrender to the Guru transforms an ordinary seeker into a Sadguru.
 
-  'Shri Gurudev Ranade': `
-Birth: July 3, 1886, in Jamkhandi
-Initiation (Anugrah): 1901 (Kartik Sh 14, Vaikuntha Chaturdashi)
-Passing (Niryaan): June 6, 1957 (Jeshth Sh 10, Gangadashami)
+Sadguru Shri Amburao Maharaj left his mortal body on 22 December 1933 at Bijapur. His Samadhi lies beside that of Shri Bhausahib Maharaj at Inchgiri, and the Math he built continues to serve as a center of devotion and guidance. His contribution ensured that the flame of the Nimbargi Sampradaya remained alive and accessible for future generations.`,
 
-Sri Gurudev Dr. Ramchandra Dattatreya Ranade was a rare combination of a saint, philosopher, and scholar, whose life was a brilliant example of spiritual devotion and intellectual rigor. Born in Jamkhandi, he was raised in a devout household and received his spiritual initiation with the Divine Name from Sadguru Shri Bhausahib Maharaj in 1901.
+  'Shri Bhausaheb Maharaj': 
+  `Janma: Umadi, 1843; Chaitra Sh 9, Ramnavami, Shake 1765
+Anugrah: 1858
+Niryaan: Jan 29, 1914; Thursday, Magh Sh 3, Shake 1835
 
-While dedicated to his spiritual practices, Dr. Ranade also excelled academically, earning scholarships and gold medals throughout his education. He sought an intellectual foundation for his spiritual experiences, which led him to a deep study of both Eastern and Western philosophy. He served as a Professor of Philosophy at Fergusson College and later at Allahabad University, where he eventually became Head of the Philosophy Department, Dean of the Faculty of Arts, and finally, Vice-Chancellor.
+Sadguru Shri Venkatesh Khanderao Deshpande, popularly known as Sadguru Shri Bhausahib Maharaj (Umadikar), was a revered saint of the Nimbargi Sampradaya and the foremost disciple of Sadguru Shri Nimbargi Maharaj. He carried forward the tradition of meditation on the Divine Name (Nama), establishing Inchgiri as a spiritual center and initiating many seekers on the path of devotion and self-realization.
 
-Severe illnesses and personal tragedies only deepened his spiritual resolve and granted him profound experiences of divine bliss. In 1922, following a dream-vision, he established a modest ashram in Nimbal, which has since grown into a significant spiritual center.
+Born in 1843 at Umadi in Maharashtra, Bhausahib belonged to a respected Deshpande family. From a young age, he displayed deep devotion, particularly to Lord Hanuman, and would worship regularly at the local Balbheem temple. It was Shri Raghunathpriya Maharaj, a disciple of Nimbargi Maharaj, who guided him towards the Nimbargi tradition. At the age of 14, he received initiation from Shri Nimbargi Maharaj and began to meditate sincerely on the Divine Name imparted by his Guru.
 
-In 1920, at the height of his meditation, Gurudev received the divine mandate to initiate others. He began this work in 1936 after the passing of his spiritual brother, Shri Amburao Maharaj. He blessed thousands of seekers from all walks of life. His first major publication, "A Constructive Survey of Upanishadic Philosophy" (1926), earned him international acclaim. His ultimate goal was to create a comprehensive work on the "Pathway to God," bridging global philosophies, though this remained unfinished upon his passing. His final message to his disciples was a call to attain "Himalayan heights" through devotion and meditation.
+For nearly three decades, Bhausahib Maharaj balanced worldly responsibilities with intense meditation. His discipline and dedication gradually led him to profound spiritual experiences, culminating in the realization of Advaita Siddhi — the highest state of non-dual awareness. At his Guru’s instruction, he began initiating aspirants in 1875, and after the passing of Shri Nimbargi Maharaj in 1885, he intensified his spiritual practice with renewed zeal.
+
+He organized Shravan Sadhan Saptahas (week-long meditation gatherings) at Umadi between 1885 and 1903, where seekers engaged deeply in Nama-smaran. Later, for 18 years, he continued his nightly meditation in a narrow two-foot space at his house, a testament to his austerity and determination.
+
+Fulfilling his Guru’s wish, Bhausahib Maharaj built a Samadhi temple for Shri Nimbargi Maharaj and later shifted the center of the Sampradaya to Inchgiri. From there, he expanded his spiritual work, spreading devotion across Maharashtra and Karnataka, traveling frequently to Bijapur, Jamkhandi, Solapur, and surrounding regions. Inchgiri soon became a major hub of Nama-yoga and spiritual activity.
+
+The essence of his teachings can be summarized in a few guiding principles:
+
+Meditation on the Divine Name is the supreme spiritual reality.
+
+Forgetting the Divine Name leads to worldly illusion.
+
+A burning desire for self-knowledge is the source of illumination.
+
+Dispassion is the root of true devotion.
+
+The mind is the seat of the heart where meditation must be centered.
+
+An aspirant should meditate with perseverance, regardless of circumstances.
+
+
+Sadguru Shri Bhausahib Maharaj attained Mahasamadhi on 29th January 1914 at Inchgiri. His Samadhi lies beside that of Shri Nimbargi Maharaj, and later of Sadguru Shri Amburao Maharaj. Among his prominent disciples were Sadguru Shri Amburao Maharaj, Smt. Shivalingavva Akka, and Sadguru Shri Gurudev Ranade, who carried forward his spiritual mission. Through his life and teachings, Bhausahib Maharaj strengthened the foundations of the Nimbargi Sampradaya and left a lasting influence on generations of seekers.`,
+
+  'Shri Gurudev Ranade': 
+  `Janma: Jamkhindi, July 3, 1886
+Anugrah: 1901; Kartik Sh 14, Vaikuntha Chaturdashi
+Niryaan: June 6, 1957; Thursday, Jeshth Sh 10, Gangadashami
+
+Sri Gurudev Dr. Ramchandra Dattatreya Ranade was a philosopher, mystic, and spiritual teacher of the 20th century. He was born on 3rd July 1886 at Jamkhandi, then a princely state. His early education began in 1895, and in 1901 he was initiated into the Nimbargi Sampradaya by his Guru, Shri Bhausaheb Maharaj of Umadi. This initiation marked the beginning of his spiritual journey.
+
+Dr. Ranade was a brilliant student. He secured several scholarships, stood second in matriculation, and later graduated from Deccan College, Pune. He pursued Sanskrit, Mathematics, and English, winning recognition for his academic excellence. Despite health challenges, including brain tuberculosis diagnosed in 1909, he continued his studies and completed his M.A. in Philosophy in 1914 with high distinction, receiving the Vice-Chancellor and Justice K. T. Telang Gold Medals.
+
+He served as Professor of Philosophy at Fergusson College, Pune, and later at Allahabad University, where he became Head of the Philosophy Department, Dean of the Faculty of Arts, and eventually Vice-Chancellor. In 1947, both he and Pandit Jawaharlal Nehru were conferred the honorary degree of D.Litt.
+
+Alongside his academic career, Dr. Ranade remained deeply devoted to spiritual practice. After the passing of his Guru, he spent time at Inchagiri and later settled in Nimbal in 1925, where he built a small ashram. From there, he guided many seekers, imparting the Divine Name and spiritual teachings. His writings and lectures covered the Upanishads, Bhagavad Gita, Vedanta, and the mystical traditions of Marathi, Hindi, and Kannada saints. His major work, A Constructive Survey of Upanishadic Philosophy (1926), brought him international recognition.
+
+He lived a simple and austere life, often stating that his life itself was his philosophy. Despite fragile health and personal losses, he continued his work with dedication. His teachings emphasized a balance of intellectual inquiry and spiritual experience, aiming to guide aspirants on the pathway to God.
+
+Sri Gurudev Dr. R. D. Ranade left his mortal body on 6th June 1957 at Nimbal. His legacy continues through his writings, lectures, and the spiritual lineage he carried forward in the Nimbargi Sampradaya.
 `,
 };

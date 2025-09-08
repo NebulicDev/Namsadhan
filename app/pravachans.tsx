@@ -4,7 +4,7 @@ import Slider from '@react-native-community/slider';
 import * as FileSystem from 'expo-file-system';
 import { useRouter } from 'expo-router';
 import { ChevronDown, ChevronLeft, ChevronRight, Download, Pause, Play, Trash2 } from 'lucide-react-native';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ActivityIndicator, Alert, FlatList, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useAudio } from '../context/AudioContext';
 import { db } from '../firebaseConfig';
@@ -15,7 +15,7 @@ const THEME = {
   lightText: '#A1887F',
   card: '#FFFFFF',
   primary: '#D2B48C',
-  accent: '#FFA07A',
+  accent: '#FFB88D',
 };
 
 type TrackType = {

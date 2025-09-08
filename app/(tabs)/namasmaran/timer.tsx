@@ -3,13 +3,13 @@ import CustomAlert from '@/components/CustomAlert';
 import { useSessions } from '@/context/SessionContext';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Pause, Play, RotateCcw, StopCircle, Sun } from 'lucide-react-native';
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Alert, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 const THEME = {
   background: '#FFF8F0',
   primary: '#D2B48C',
-  accent: '#FFA07A',
+  accent: '#FFB88D',
   text: '#5D4037',
   lightText: '#A1887F',
   white: '#FFFFFF',

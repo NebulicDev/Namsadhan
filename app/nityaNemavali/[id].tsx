@@ -1,6 +1,6 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { ChevronLeft } from 'lucide-react-native';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
@@ -73,5 +73,5 @@ const styles = StyleSheet.create({
   backButton: { marginRight: 15 },
   headerTitle: { flex: 1, fontSize: 24, fontWeight: 'bold', color: THEME.text},
   contentContainer: { padding: 20, },
-  content: { fontSize: 20, lineHeight: 30, color: THEME.text, textAlign: 'justify' },
+  content: { fontSize: 20, lineHeight: 30, color: THEME.text, textAlign: 'center' },
 });

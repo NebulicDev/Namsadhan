@@ -1,13 +1,12 @@
 import { Tabs } from 'expo-router';
 import { BookOpen, Home, Library, Settings, Sun } from 'lucide-react-native';
-import React from 'react';
 import { SessionProvider } from '../../context/SessionContext';
 
 // --- Theme Colors ---
 const THEME = {
   background: '#FFF8F0',
   primary: '#D2B48C',
-  accent: '#FFA07A',
+  accent: '#FFB88D',
   text: '#5D4037',
   white: '#FFFFFF',
 };

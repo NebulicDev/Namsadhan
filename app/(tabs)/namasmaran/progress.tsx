@@ -1,6 +1,6 @@
 import { useSessions } from '@/context/SessionContext';
 import { LinearGradient } from 'expo-linear-gradient';
-import React, { useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 import { Calendar, DateData } from 'react-native-calendars';
 import { MarkedDates } from 'react-native-calendars/src/types';
@@ -8,7 +8,7 @@ import { MarkedDates } from 'react-native-calendars/src/types';
 const THEME = {
   background: '#FFF8F0',
   primary: '#D2B48C',
-  accent: '#FFA07A',
+  accent: '#FFB88D',
   text: '#5D4037',
   lightText: '#A1887F',
   white: '#FFFFFF',
