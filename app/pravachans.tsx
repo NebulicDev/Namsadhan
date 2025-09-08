@@ -360,7 +360,7 @@ const styles = StyleSheet.create({
   title: { fontSize: 28, fontWeight: 'bold', color: THEME.text, flex: 1 },
   clearButton: { padding: 5 },
   listContent: { paddingHorizontal: 20, paddingBottom: 40 },
-  card: { backgroundColor: THEME.card, borderRadius: 15, padding: 20, marginBottom: 15, elevation: 3, shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.05, shadowRadius: 5 },
+  card: { backgroundColor: THEME.card, borderRadius: 15, padding: 20, marginBottom: 15, elevation: 3, shadowColor: 'rgba(93, 64, 55, 0.4)', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.05, shadowRadius: 5 },
   yearHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
   yearTitle: { fontSize: 20, fontWeight: '700', color: THEME.text },
   tracksList: { marginTop: 15, borderTopWidth: 1, borderTopColor: THEME.background },

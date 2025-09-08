@@ -61,7 +61,7 @@ const styles = StyleSheet.create({
     // Don't add paddingRight; the scrollbar sits on top absolutely
   },
   shlokText: {
-    fontSize: 24,
+    fontSize: 22,
     lineHeight: 28,
     color: THEME.text,
     textAlign: 'center',

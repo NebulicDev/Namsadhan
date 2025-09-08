@@ -1,6 +1,6 @@
 // app/(tabs)/index.tsx
 import { X } from 'lucide-react-native';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Image,
   Modal,
@@ -201,7 +201,7 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     backgroundColor: THEME.card,
     elevation: 6,
-    shadowColor: '#000',
+    shadowColor: 'rgba(93, 64, 55, 0.4)',
     shadowOffset: { width: 0, height: 6 },
     shadowOpacity: 0.18,
     shadowRadius: 8.3,
@@ -223,7 +223,7 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     backgroundColor: THEME.card,
     elevation: 6,
-    shadowColor: '#000',
+    shadowColor: 'rgba(93, 64, 55, 0.4)',
     shadowOffset: { width: 0, height: 6 },
     shadowOpacity: 0.18,
     shadowRadius: 8.3,
@@ -291,7 +291,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     overflow: 'hidden',
     elevation: 10,
-    shadowColor: '#000',
+    shadowColor: 'rgba(93, 64, 55, 0.4)',
     shadowOffset: { width: 0, height: 5 },
     shadowOpacity: 0.3,
     shadowRadius: 15,

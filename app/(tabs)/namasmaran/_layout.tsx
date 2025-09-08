@@ -38,7 +38,7 @@ export default function NamasmaranLayout() {
             borderRadius: 18,
             height: '100%', // Fills the container set by padding below
             elevation: 1,
-            shadowColor: '#000',
+            shadowColor: 'rgba(93, 64, 55, 0.4)',
             shadowOffset: { width: 0, height: 1 },
             shadowOpacity: 0.1,
             shadowRadius: 2,

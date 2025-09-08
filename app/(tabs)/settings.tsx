@@ -1,7 +1,7 @@
 // app/(tabs)/settings.tsx
 import { useRouter } from 'expo-router';
 import { ChevronRight, HandHeart, Info, LogOut, Mail, Phone } from 'lucide-react-native';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import {
   Alert,
   Linking,
@@ -147,7 +147,7 @@ const styles = StyleSheet.create({
   screenContainer: { flex: 1, backgroundColor: THEME.background },
   header: { paddingTop: 60, paddingHorizontal: 20, marginBottom: 20 },
   title: { fontSize: 34, fontWeight: 'bold', color: THEME.text },
-  card: { backgroundColor: THEME.card, borderRadius: 15, marginHorizontal: 20, paddingVertical: 10, elevation: 3, shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.05, shadowRadius: 5 },
+  card: { backgroundColor: THEME.card, borderRadius: 15, marginHorizontal: 20, paddingVertical: 10, elevation: 3, shadowColor: 'rgba(93, 64, 55, 0.4)', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.05, shadowRadius: 5 },
   settingsItem: { flexDirection: 'row', alignItems: 'center', paddingVertical: 15, paddingHorizontal: 20 },
   itemText: { flex: 1, fontSize: 18, marginLeft: 20, color: THEME.text },
   separator: { height: 1, backgroundColor: THEME.background, marginHorizontal: 20 },

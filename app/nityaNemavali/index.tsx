@@ -1,6 +1,5 @@
 import { useRouter } from 'expo-router';
 import { ChevronLeft, ChevronRight } from 'lucide-react-native';
-import React from 'react';
 import { FlatList, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 import { nityaNemavaliIndex } from '../../constants/nityaNemavaliIndex';
@@ -74,7 +73,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     marginBottom: 15,
     elevation: 3,
-    shadowColor: '#000',
+    shadowColor: 'rgba(93, 64, 55, 0.4)',
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.05,
     shadowRadius: 5,

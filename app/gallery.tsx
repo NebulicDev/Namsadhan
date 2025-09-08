@@ -88,7 +88,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     elevation: 3,
-    shadowColor: '#000',
+    shadowColor: 'rgba(93, 64, 55, 0.4)',
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.05,
     shadowRadius: 5,

@@ -1,5 +1,4 @@
 import { CheckCircle } from 'lucide-react-native';
-import React from 'react';
 import { Modal, Pressable, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 const THEME = {
@@ -59,7 +58,7 @@ const styles = StyleSheet.create({
     paddingTop: 60, // Top padding to make space for the icon
     alignItems: 'center',
     elevation: 10,
-    shadowColor: '#000',
+    shadowColor: 'rgba(93, 64, 55, 0.4)',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.2,
     shadowRadius: 10,

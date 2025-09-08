@@ -31,6 +31,7 @@ const THEME = {
   primary: '#D2B48C',
   accent: '#FFB88D',
   gradientEnd: '#FFB88D',
+  white: '#FFFFFF'
 };
 
 const getRandomInt = (max) => {
@@ -196,7 +197,7 @@ const styles = StyleSheet.create({
     padding: 25,
     marginBottom: 20,
     elevation: 3,
-    shadowColor: '#000',
+    shadowColor: 'rgba(93, 64, 55, 0.4)',
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.05,
     shadowRadius: 5,
@@ -227,14 +228,14 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 30,
     right: 30,
-    backgroundColor: THEME.primary,
+    backgroundColor: THEME.gradientEnd,
     borderRadius: 28,
     width: 44,
     height: 44,
     justifyContent: 'center',
     alignItems: 'center',
     elevation: 6,
-    shadowColor: '#000',
+    shadowColor: 'rgba(93, 64, 55, 0.4)',
     shadowOffset: { width: 0, height: 3 },
     shadowOpacity: 0.2,
     shadowRadius: 5,

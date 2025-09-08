@@ -197,7 +197,7 @@ const styles = StyleSheet.create({
   title: { fontSize: 28, fontWeight: 'bold', color: THEME.text, flex: 1 },
   clearButton: { padding: 5 },
   listContent: { paddingHorizontal: 20, paddingBottom: 40 },
-  card: { backgroundColor: THEME.card, borderRadius: 15, padding: 20, marginBottom: 15, elevation: 3, shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.05, shadowRadius: 5 },
+  card: { backgroundColor: THEME.card, borderRadius: 15, padding: 20, marginBottom: 15, elevation: 3, shadowColor: 'rgba(93, 64, 55, 0.4)', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.05, shadowRadius: 5 },
   iconContainer: { width: 50, height: 50, borderRadius: 10, backgroundColor: THEME.background, justifyContent: 'center', alignItems: 'center', marginRight: 15 },
   trackInfo: { flex: 1 },
   trackTitle: { fontSize: 18, fontWeight: '600', color: THEME.text },
