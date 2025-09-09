@@ -1,3 +1,4 @@
+// app/(tabs)/resources.tsx
 import { useRouter } from 'expo-router';
 import { BookOpen, Mic2, Music, Video } from 'lucide-react-native';
 import React from 'react';
@@ -45,6 +46,12 @@ export default function MusicScreen() {
                 title="Nityanemavali" 
                 icon={<BookOpen size={32} color={THEME.text} />} 
                 onPress={() => router.push('/nityaNemavali')}
+            />
+            {/* THIS IS THE NEW CARD WE ARE ADDING */}
+            <SectionCard 
+                title="Parmarth Mandir" 
+                icon={<BookOpen size={32} color={THEME.text} />} 
+                onPress={() => router.push('/parmarthMandir')}
             />
             <SectionCard 
                 title="Manache Shlok" 
