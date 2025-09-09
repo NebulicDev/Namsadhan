@@ -7,7 +7,7 @@ export const parmarthMandirIndex = [
   { id: 'section_6', title: '६. श्री भाऊसाहेब उमदीकर महाराज यांचे बोधवचनामृत' },
   {
     id: 'section_7',
-    title: '७. श्री सद्गुरुनाथ निंबर्गी महाराजांची १३ पदे',
+    title: '७. श्री सद्गुरुनाथ निंबरगी महाराजांची १३ पदे',
     subsections: [
         { id: 'section_7_sub_1', title: '१. गुरुचरणकमलदल्लि', author: '' },
         { id: 'section_7_sub_2', title: '२. ॐ नाम कायुवदु', author: '' },
