@@ -18,6 +18,9 @@ export default function ParmarthMandirIndexScreen() {
     // If the item is section 8, navigate to the special grid screen
     if (item.id === 'section_8') {
       router.push({ pathname: `/parmarthMandir/section8`, params: { sectionTitle: item.title } });
+    } else if (item.subsections) {
+      // **NEW LOGIC**: If it has subsections, go to the subsection list screen
+      router.push({ pathname: `/parmarthMandir/subsections/${item.id}`, params: { parentTitle: item.title } });
     } else {
       // Otherwise, navigate to the standard content screen
       router.push({ pathname: `/parmarthMandir/${item.id}`, params: { sectionTitle: item.title } });

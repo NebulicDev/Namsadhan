@@ -16,12 +16,15 @@ export default function Section8GridScreen() {
   const params = useLocalSearchParams();
   const { sectionTitle } = params;
 
-  // Find the subsections for section 8 from our index
   const section8 = parmarthMandirIndex.find(item => item.id === 'section_8');
   const subsections = section8?.subsections || [];
 
   const handlePressItem = (item) => {
-    router.push({ pathname: `/parmarthMandir/${item.id}`, params: { sectionTitle: item.title } });
+    // **UPDATED LOGIC**: Always navigate to the subsection list for the character tapped
+    router.push({ 
+        pathname: `/parmarthMandir/subsections/${item.id}`, 
+        params: { parentTitle: item.title } 
+    });
   };
 
   const renderItem = ({ item }) => (
@@ -46,7 +49,7 @@ export default function Section8GridScreen() {
         data={subsections}
         keyExtractor={(item) => item.id}
         renderItem={renderItem}
-        numColumns={4} // Adjust the number of columns as you see fit
+        numColumns={4}
         contentContainerStyle={styles.gridContainer}
       />
     </SafeAreaView>
@@ -63,7 +66,7 @@ const styles = StyleSheet.create({
     },
     gridItem: {
         flex: 1,
-        aspectRatio: 1, // Creates square items
+        aspectRatio: 1,
         margin: 5,
         justifyContent: 'center',
         alignItems: 'center',

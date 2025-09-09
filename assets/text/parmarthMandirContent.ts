@@ -78,6 +78,9 @@ export default {
   section_5: `Placeholder text for Section 5 (संप्रदायाचे चार महापुरुष).`,
   section_6: `Placeholder text for Section 6 (श्री भाऊसाहेब उमदीकर महाराज यांचे बोधवचनामृत).`,
   section_7: `Placeholder text for Section 7 (श्री सद्गुरुनाथ निंबर्गी महाराजांची १३ पदे).`,
+
+  section_7_sub_1: `Placeholder text for Section 7, Pad 1.`,
+  section_7_sub_2: `Placeholder text for Section 7, Pad 2.`,
   
   // Section 8 Subsections ( अनुभव-पदे )
   section_8_a: `Placeholder text for Section 8, subsection अ.`,
@@ -95,6 +98,9 @@ export default {
   section_8_ru: `Placeholder text for Section 8, subsection ऋ.`,
   section_8_ka: `Placeholder text for Section 8, subsection क.`,
   section_8_kha: `Placeholder text for Section 8, subsection ख.`,
+    section_8_ka_1: `Placeholder text for Section 8, subsection क, item 1.`,
+    section_8_ka_2: `Placeholder text for Section 8, subsection क, item 2.`,
+    section_8_kha_1: `Placeholder text for Section 8, subsection ख, item 1.`,
   section_8_ga: `Placeholder text for Section 8, subsection ग.`,
   section_8_gha: `Placeholder text for Section 8, subsection घ.`,
   section_8_na: `Placeholder text for Section 8, subsection ङ.`,
@@ -132,10 +138,26 @@ export default {
   section_8_shra: `Placeholder text for Section 8, subsection श्र.`, 
 
   section_9: `Placeholder text for Section 9 (भुपाळ्या).`,
+
+  section_9_sub_1: `Placeholder text for Section 9, Bhupali 1.`,
+  section_9_sub_2: `Placeholder text for Section 9, Bhupali 2.`,
+
+
   section_10: `Placeholder text for Section 10 (आरत्या).`,
+
+   section_10_sub_1: `Placeholder text for Section 10, Aarti 1.`,
+
   section_11: `Placeholder text for Section 11 (प्रार्थना).`,
+
+  section_11_sub_1: `Placeholder text for Section 11, Prarthana 1.`,
+  
   section_12: `Placeholder text for Section 12 (स्तवने).`,
+
+  section_12_sub_1: `Placeholder text for Section 12, Stavan 1.`,
+
   section_13: `Placeholder text for Section 13 (भारुडे).`,
+  
+  section_13_sub_1: `Placeholder text for Section 13, Bharud 1.`,
 };
 
 // { id: 'section_8_dnya', title: 'श्र' },
