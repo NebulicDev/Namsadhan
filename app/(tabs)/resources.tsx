@@ -1,6 +1,6 @@
 // app/(tabs)/resources.tsx
 import { useRouter } from 'expo-router';
-import { BookOpen, Mic2, Music, Video } from 'lucide-react-native';
+import { BellRing, Book, BookOpenText, Mic2, Scroll, TvMinimalPlay } from 'lucide-react-native';
 import React from 'react';
 import { SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
@@ -29,12 +29,12 @@ export default function MusicScreen() {
         <View style={styles.cardContainer}>
             <SectionCard 
                 title="Live Darshan" 
-                icon={<Video size={32} color={THEME.text} />} 
+                icon={<TvMinimalPlay size={32} color={THEME.text} />} 
                 onPress={() => router.push('/liveDarshan')}
             />
             <SectionCard 
                 title="Bhajans" 
-                icon={<Music size={32} color={THEME.text} />} 
+                icon={<BellRing size={32} color={THEME.text} />} 
                 onPress={() => router.push('/bhajans')}
             />
             <SectionCard 
@@ -44,18 +44,18 @@ export default function MusicScreen() {
             />
             <SectionCard 
                 title="Nityanemavali" 
-                icon={<BookOpen size={32} color={THEME.text} />} 
+                icon={<BookOpenText  size={32} color={THEME.text} />} 
                 onPress={() => router.push('/nityaNemavali')}
             />
             {/* THIS IS THE NEW CARD WE ARE ADDING */}
             <SectionCard 
                 title="Parmarth Mandir" 
-                icon={<BookOpen size={32} color={THEME.text} />} 
+                icon={<Book  size={32} color={THEME.text} />} 
                 onPress={() => router.push('/parmarthMandir')}
             />
             <SectionCard 
                 title="Manache Shlok" 
-                icon={<BookOpen size={32} color={THEME.text} />} 
+                icon={<Scroll size={32} color={THEME.text} />} 
                 onPress={() => router.push('/manacheShlok')}
             />
             {/* <SectionCard 
