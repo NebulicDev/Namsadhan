@@ -90,7 +90,7 @@ export const parmarthMandirIndex = [
         subsections: [
             { id: 'section_8_i_1', title: '४५. इको नम्म स्वामि', author: 'महिपति' },
             { id: 'section_8_i_2', title: '४६. इतनी कृपा हो स्वामी', author: 'बहिरो' },
-            { id: 'section_8_i_3', title: '४७. दरोळारय्या नीनु', author: 'महिपति' },
+            { id: 'section_8_i_3', title: '४७. इदरोळारय्या  नीनु', author: 'महिपति' },
             { id: 'section_8_i_4', title: '४८. इदीग भकुतियु', author: 'पुरंदरदास' },
             { id: 'section_8_i_5', title: '४९. इदु एननुभावमंटपवो', author: 'शिवलिंगव्वा' },
             { id: 'section_8_i_6', title: '५०. इदु भाग्यविदु भाग्यविदु', author: 'पुरंदरदास' },
@@ -143,7 +143,7 @@ export const parmarthMandirIndex = [
             { id: 'section_8_e_6', title: '७३. एन्न बिन्त्रप केळो', author: 'गोपालदास' },
             { id: 'section_8_e_7', title: '७४. एन्नल्लि निन्न मेलण', author: 'बसवेश्वर' },
             { id: 'section_8_e_8', title: '७५. एमगे सरि इत्तंडदल्लिय', author: 'कुमार व्यास' },
-            { id: 'section_8_e_9', title: '७६. एल एल केडबेडिरो', author: 'कूडलूरेश' },
+            { id: 'section_8_e_9', title: '७६ एलऱ्यो एलऱ्यो केडबेडिरो ', author: 'कूडलूरेश' },
             { id: 'section_8_e_10', title: '७७. एलो दारिकारने मलगिकोंबरे', author: 'पुरंदरदास' },
             { id: 'section_8_e_11', title: '७८. एल्लिद्यो हरि हेळय्य', author: 'महिपति' },
             { id: 'section_8_e_12', title: '७९. एक प्रेम पुजारी आया है', author: 'परमात्म प्रकाश' },
@@ -191,7 +191,7 @@ export const parmarthMandirIndex = [
         title: 'औ',
         subsections: [
             { id: 'section_8_au_1', title: '९८. औदुंबरवासि प्रभो', author: 'अज्ञात' },
-            { id: 'section_8_au_1', title: '९९. और देवल जहँ धुन्धली पूजा', author: 'चरनदास' },
+            { id: 'section_8_au_2', title: '९९. और देवल जहँ धुन्धली पूजा', author: 'चरनदास' },
 
         ]
       },
@@ -499,7 +499,7 @@ export const parmarthMandirIndex = [
             { id: 'section_8_pra_1', title: '२९८. प्रभु मेरे औगुन चित न धरो', author: 'सूरदास' },
             { id: 'section_8_pra_2', title: '२९९. प्रलयपयोधिजले', author: 'जयदेव' },
             { id: 'section_8_pra_3', title: '३००. प्राप्यस्य ब्रह्मणो', author: '' },
-            { id: 'section_8_pra_3', title: '३०१. प्रीति लगी तुव नाम की ', author: 'कबीर' },
+            { id: 'section_8_pra_4', title: '३०१. प्रीति लगी तुव नाम की ', author: 'कबीर' },
 
         ]
       },
