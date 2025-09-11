@@ -21,7 +21,7 @@ import Animated, {
 import { dailyInspiration } from '../../assets/text/dailyInspiration';
 import { morality } from '../../assets/text/morality';
 import { mysticism } from '../../assets/text/mysticism';
-import { namasadan } from '../../assets/text/namasadan';
+import { namasadan } from '../../assets/text/namasadhan';
 
 const THEME = {
   background: '#FFF8F0',
