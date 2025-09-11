@@ -1,7 +1,7 @@
 // app/parmarthMandir/section8.tsx
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { ChevronLeft } from 'lucide-react-native';
-import { FlatList, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Dimensions, FlatList, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { parmarthMandirIndex } from '../../constants/parmarthMandirIndex';
 
 const THEME = {
@@ -10,6 +10,13 @@ const THEME = {
   card: '#FFFFFF',
   primary: '#D2B48C',
 };
+
+const numColumns = 4;
+const screenWidth = Dimensions.get('window').width;
+const paddingHorizontal = 15;
+const margin = 5;
+const itemWidth = (screenWidth - (paddingHorizontal * 2) - (margin * 2 * numColumns)) / numColumns;
+
 
 export default function Section8GridScreen() {
   const router = useRouter();
@@ -21,9 +28,9 @@ export default function Section8GridScreen() {
 
   const handlePressItem = (item) => {
     // **UPDATED LOGIC**: Always navigate to the subsection list for the character tapped
-    router.push({ 
-        pathname: `/parmarthMandir/subsections/${item.id}`, 
-        params: { parentTitle: item.title } 
+    router.push({
+        pathname: `/parmarthMandir/subsections/${item.id}`,
+        params: { parentTitle: item.title }
     });
   };
 
@@ -49,7 +56,7 @@ export default function Section8GridScreen() {
         data={subsections}
         keyExtractor={(item) => item.id}
         renderItem={renderItem}
-        numColumns={4}
+        numColumns={numColumns}
         contentContainerStyle={styles.gridContainer}
       />
     </SafeAreaView>
@@ -62,12 +69,12 @@ const styles = StyleSheet.create({
     backButton: { marginRight: 15 },
     headerTitle: { fontSize: 28, fontWeight: 'bold', color: THEME.text },
     gridContainer: {
-        paddingHorizontal: 15,
+        paddingHorizontal: paddingHorizontal,
     },
     gridItem: {
-        flex: 1,
+        width: itemWidth,
         aspectRatio: 1,
-        margin: 5,
+        margin: margin,
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: THEME.card,

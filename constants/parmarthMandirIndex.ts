@@ -656,7 +656,7 @@ export const parmarthMandirIndex = [
             { id: "section_8_va_1", title: "४०४. वंदऊँ श्री हरि", author: "सूरदास" },
             { id: "section_8_va_2", title: "४०५. वस्तु अल्लिल्ल", author: "माणिकप्रभ्" },
             { id: "section_8_va_3", title: "४०६. वस्तु कंडेनो औंदु", author: "महिपति" },
-            { id: "section_8_va_4", title: "४०७. वाचे बोला राम", author: "माधवात्मजा" },
+            { id: "section_8_va_4", title: "४०७. वाचें बोला राम", author: "माधवात्मजा" },
             { id: "section_8_va_5", title: "४०८. विठ्ठल विठ्ठल गजरी", author: "चोखामेळा" },
             { id: "section_8_va_6", title: "४०९. विद्या मद औ गुषहुँ", author: "" },
             { id: "section_8_va_7", title: "४१०. विबुद्धतत्त्वस्यापि", author: "" },
@@ -686,21 +686,16 @@ export const parmarthMandirIndex = [
         title: 'श्र',
         subsections: [
             { id: 'section_8_shra_1', title: '४२४. श्रवणीं पेरिलें नयनीं उगवलें', author: 'शिवदिन केसरी' },
+            { id: "section_8_shra_2", title: "४२५. श्रीगिरिय सुक्षेत्रकिंदू", author: "शांतमल्ल" },
+            { id: "section_8_shra_3", title: "४२६. श्रीगुरुवे निम्म", author: "अज्ञात" },
+            { id: "section_8_shra_4", title: "४२७. श्रीगुरु सारिखा", author: "ज्ञानदेव" },
+            { id: "section_8_shra_5", title: "४२८. श्रीमन्मध्वमते हरि", author: "" },
+            { id: "section_8_shra_6", title: "४२९. श्री रामनाम नुडियबारदे", author: "कृष्णहरि" },
+            { id: "section_8_shra_7", title: "४३०. श्रीरामेवीण जे अन्न", author: "एकनाथ" },
+            { id: "section_8_shra_8", title: "४३१. श्रेय धेनु बंतु मनेगे", author: "महिपति" },
         ]
       },
-      {
-        id: 'section_8_shri',
-        title: 'श्री',
-        subsections: [
-            { id: "section_8_shri_1", title: "४२५. श्रीगिरिय सुक्षेत्रकिंदू", author: "शांतमल्ल" },
-            { id: "section_8_shri_2", title: "४२६. श्रीगुरुवे निम्म", author: "अज्ञात" },
-            { id: "section_8_shri_3", title: "४२७. श्रीगुरु सारिखा", author: "ज्ञानदेव" },
-            { id: "section_8_shri_4", title: "४२८. श्रीमन्मध्वमते हरि", author: "" },
-            { id: "section_8_shri_5", title: "४२९. श्री रामनाम नुडियबारदे", author: "कृष्णहरि" },
-            { id: "section_8_shri_6", title: "४३०. श्रीरामेवीण जे अन्न", author: "एकनाथ" },
-            { id: "section_8_shri_7", title: "४३१. श्रेय धेनु बंतु मनेगे", author: "महिपति" },
-        ]
-      },
+ 
       {
         id: 'section_8_sa',
         title: 'स',
