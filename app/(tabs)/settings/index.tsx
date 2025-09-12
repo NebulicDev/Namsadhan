@@ -1,10 +1,5 @@
 import { useRouter } from 'expo-router';
-import {
-  ChevronRight,
-  LogOut,
-  Settings as SettingsIcon,
-  User,
-} from 'lucide-react-native';
+import { LogOut, Settings as SettingsIcon, User } from 'lucide-react-native';
 import { useEffect, useState } from 'react';
 import {
   Alert,
@@ -21,20 +16,10 @@ import { authInstance } from '../../../firebaseConfig';
 const THEME = {
   background: '#FFF8F0',
   text: '#5D4037',
-  lightText: '#A1887F',
-  card: '#FFFFFF',
   primary: '#D2B48C',
-  white: '#FFFFFF',
+  card: '#FFFFFF',
   error: '#D32F2F',
 };
-
-const SettingsItem = ({ icon, text, onPress }) => (
-  <TouchableOpacity style={styles.settingsItem} onPress={onPress}>
-    {icon}
-    <Text style={styles.itemText}>{text}</Text>
-    <ChevronRight size={24} color={THEME.lightText} />
-  </TouchableOpacity>
-);
 
 export default function ProfileScreen() {
   const [userName, setUserName] = useState('');
@@ -59,32 +44,30 @@ export default function ProfileScreen() {
 
   return (
     <SafeAreaView style={styles.screenContainer}>
-      <ScrollView>
-        <View style={{ paddingTop: insets.top }}>
-          <View style={styles.headerActions}>
+      <ScrollView contentContainerStyle={styles.scrollViewContent}>
+        <View style={[styles.profileHeader, { paddingTop: insets.top + 40 }]}>
+          <View style={styles.avatar}>
+            <User size={40} color={THEME.primary} />
+          </View>
+          <Text style={styles.userName}>{userName}</Text>
+
+          <View style={styles.actionsContainer}>
             <TouchableOpacity
+              style={styles.iconButton}
               onPress={() => router.push('/settings/settings-page')}
-              hitSlop={{ top: 16, right: 16, bottom: 16, left: 16 }}
               accessibilityLabel="Open Settings"
             >
-              <SettingsIcon size={28} color={THEME.primary} />
+              <SettingsIcon size={26} color={THEME.text} />
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.iconButton}
+              onPress={handleSignOut}
+              accessibilityLabel="Sign Out"
+            >
+              <LogOut size={26} color={THEME.error} />
             </TouchableOpacity>
           </View>
-
-          <View style={styles.profileHeader}>
-            <View style={styles.avatar}>
-              <User size={40} color={THEME.primary} />
-            </View>
-            <Text style={styles.userName}>{userName}</Text>
-          </View>
-        </View>
-
-        <View style={styles.card}>
-          <SettingsItem
-            icon={<LogOut size={24} color={THEME.error} />}
-            text="Sign Out"
-            onPress={handleSignOut}
-          />
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -92,60 +75,51 @@ export default function ProfileScreen() {
 }
 
 const styles = StyleSheet.create({
-  screenContainer: { flex: 1, backgroundColor: THEME.background },
-  headerActions: {
-    width: '100%',
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    paddingHorizontal: 24,
-    paddingTop: 16,
+  screenContainer: {
+    flex: 1,
+    backgroundColor: THEME.background,
+  },
+  scrollViewContent: {
+    flexGrow: 1,
+    justifyContent: 'center',
   },
   profileHeader: {
     alignItems: 'center',
-    paddingTop: 8,
-    marginBottom: 30,
+    paddingBottom: 30,
   },
   avatar: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
+    width: 90,
+    height: 90,
+    borderRadius: 45,
     backgroundColor: THEME.card,
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 15,
-    elevation: 3,
+    elevation: 4,
     shadowColor: 'rgba(93, 64, 55, 0.4)',
-    shadowOffset: { width: 0, height: 1 },
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 5,
   },
   userName: {
-    fontSize: 22,
+    fontSize: 24,
     fontWeight: '600',
     color: THEME.text,
     marginBottom: 8,
   },
-  card: {
-    backgroundColor: THEME.card,
-    borderRadius: 15,
-    marginHorizontal: 20,
-    elevation: 3,
-    shadowColor: 'rgba(93, 64, 55, 0.4)',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 5,
-    overflow: 'hidden',
-  },
-  settingsItem: {
+  actionsContainer: {
     flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 15,
-    paddingHorizontal: 20,
+    marginTop: 20,
   },
-  itemText: {
-    flex: 1,
-    fontSize: 18,
-    marginLeft: 20,
-    color: THEME.text,
+  iconButton: {
+    backgroundColor: THEME.card,
+    padding: 15,
+    borderRadius: 50,
+    marginHorizontal: 10,
+    elevation: 4,
+    shadowColor: 'rgba(93, 64, 55, 0.4)',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
   },
 });
