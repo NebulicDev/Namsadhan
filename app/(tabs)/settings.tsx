@@ -1,32 +1,21 @@
-// app/(tabs)/settings.tsx
 import { useRouter } from 'expo-router';
 import {
-  Bell,
   ChevronRight,
-  HandHeart,
-  Info,
   LogOut,
-  Mail,
-  MapPin,
-  Phone,
-  Shield,
+  Settings as SettingsIcon,
   User
 } from 'lucide-react-native';
 import { useEffect, useState } from 'react';
 import {
   Alert,
-  Linking,
-  Modal,
-  Platform,
   SafeAreaView,
   ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
-  View,
+  View
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { WebView } from 'react-native-webview';
 import { authInstance } from '../../firebaseConfig';
 
 const THEME = {
@@ -48,8 +37,6 @@ const SettingsItem = ({ icon, text, onPress }) => (
 );
 
 export default function ProfileScreen() {
-  const [contactModalVisible, setContactModalVisible] = useState(false);
-  const [donationModalVisible, setDonationModalVisible] = useState(false);
   const [userName, setUserName] = useState('');
   const router = useRouter();
   const insets = useSafeAreaInsets();
@@ -70,87 +57,22 @@ export default function ProfileScreen() {
     }
   };
 
-  const handleAbout = () => {
-    Alert.alert(
-      'About Namsadhan',
-      'This app is dedicated to the teachings and lineage of the Nimbargi Sampradaya, with special reverence for Shri Gurudev Ranade. Our mission is to provide a digital platform for devotees to access spiritual resources and connect with the teachings.',
-      [{ text: 'OK' }]
-    );
-  };
-
-  const handleContact = () => setContactModalVisible(true);
-  const handleDonation = () => setDonationModalVisible(true);
-  const handleEmail = () => Linking.openURL('mailto:info@nimbargisampradaya.org');
-  const handlePhone = () => Linking.openURL('tel:+919422032595');
-
-  const handleMap = () => {
-    const address = 'Shree Gurudev Ranade Samadhi Ashram Nimbal (rs)';
-    const url = Platform.select({
-      ios: `maps:?q=${address}`,
-      android: `geo:0,0?q=${address}`,
-    });
-
-    if (url) {
-      Linking.openURL(url).catch(err =>
-        Alert.alert("Couldn't open maps", 'Please install a maps application.')
-      );
-    }
-  };
-
-  const handleNotifications = () => {
-    Alert.alert('Notifications', 'Functionality to be implemented.');
-  };
-  const handlePrivacyPolicy = () => {
-    Alert.alert('Privacy Policy', 'Functionality to be implemented.');
-  };
-
   return (
     <SafeAreaView style={styles.screenContainer}>
       <ScrollView>
-        {/* Profile Header with Safe Insets */}
         <View style={[styles.profileHeader, { paddingTop: insets.top + 24 }]}>
           <View style={styles.avatar}>
             <User size={40} color={THEME.primary} />
           </View>
           <Text style={styles.userName}>{userName}</Text>
-        </View>
-
-        <View style={styles.card}>
-          <SettingsItem
-            icon={<Mail size={24} color={THEME.text} />}
-            text="Contact Us"
-            onPress={handleContact}
-          />
-          <View style={styles.separator} />
-          <SettingsItem
-            icon={<HandHeart size={24} color={THEME.text} />}
-            text="Donate"
-            onPress={handleDonation}
-          />
-          <View style={styles.separator} />
-          <SettingsItem
-            icon={<MapPin size={24} color={THEME.text} />}
-            text="Map / Address"
-            onPress={handleMap}
-          />
-          <View style={styles.separator} />
-          <SettingsItem
-            icon={<Bell size={24} color={THEME.text} />}
-            text="Notifications"
-            onPress={handleNotifications}
-          />
-          <View style={styles.separator} />
-          <SettingsItem
-            icon={<Shield size={24} color={THEME.text} />}
-            text="Privacy Policy"
-            onPress={handlePrivacyPolicy}
-          />
-          <View style={styles.separator} />
-          <SettingsItem
-            icon={<Info size={24} color={THEME.text} />}
-            text="About Namsadhan"
-            onPress={handleAbout}
-          />
+          <TouchableOpacity
+            style={styles.settingsIconWrapper}
+            onPress={() => router.push('/settings-page')}
+            hitSlop={{ top: 16, right: 16, bottom: 16, left: 16 }}
+            accessibilityLabel="Open Settings"
+          >
+            <SettingsIcon size={28} color={THEME.primary} />
+          </TouchableOpacity>
         </View>
 
         <View style={[styles.card, { marginTop: 20 }]}>
@@ -160,51 +82,6 @@ export default function ProfileScreen() {
             onPress={handleSignOut}
           />
         </View>
-
-        {/* Contact Modal */}
-        <Modal
-          animationType="slide"
-          transparent={true}
-          visible={contactModalVisible}
-          onRequestClose={() => setContactModalVisible(false)}
-        >
-          <View style={styles.modalContainer}>
-            <View style={styles.modalContent}>
-              <Text style={styles.modalTitle}>Contact Us</Text>
-              <TouchableOpacity style={styles.contactButton} onPress={handleEmail}>
-                <Mail size={24} color={THEME.primary} />
-                <Text style={styles.contactText}>info@nimbargisampradaya.org</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.contactButton} onPress={handlePhone}>
-                <Phone size={24} color={THEME.primary} />
-                <Text style={styles.contactText}>+91 94220 32595</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.closeButton}
-                onPress={() => setContactModalVisible(false)}
-              >
-                <Text style={styles.closeButtonText}>Close</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </Modal>
-
-        {/* Donation Modal */}
-        <Modal
-          animationType="slide"
-          visible={donationModalVisible}
-          onRequestClose={() => setDonationModalVisible(false)}
-        >
-          <SafeAreaView style={{ flex: 1, backgroundColor: THEME.background }}>
-            <TouchableOpacity
-              style={styles.modalCloseButton}
-              onPress={() => setDonationModalVisible(false)}
-            >
-              <Text style={{ fontSize: 18, color: THEME.text }}>Done</Text>
-            </TouchableOpacity>
-            <WebView source={{ uri: 'https://www.nimbargisampradaya.org/donation' }} />
-          </SafeAreaView>
-        </Modal>
       </ScrollView>
     </SafeAreaView>
   );
@@ -212,12 +89,10 @@ export default function ProfileScreen() {
 
 const styles = StyleSheet.create({
   screenContainer: { flex: 1, backgroundColor: THEME.background },
-  header: { paddingTop: 60, paddingHorizontal: 20, marginBottom: 20 },
-  title: { fontSize: 34, fontWeight: 'bold', color: THEME.text },
   profileHeader: {
     alignItems: 'center',
     marginBottom: 30,
-    // paddingTop is added dynamically via inline style
+    position: 'relative',
   },
   avatar: {
     width: 80,
@@ -237,6 +112,16 @@ const styles = StyleSheet.create({
     fontSize: 22,
     fontWeight: '600',
     color: THEME.text,
+    marginBottom: 8,
+  },
+  settingsIconWrapper: {
+    position: 'absolute',
+    top: 10,
+    right: 15,
+    padding: 6,
+    backgroundColor: '#fff8f0ea',
+    borderRadius: 18,
+    zIndex: 10,
   },
   card: {
     backgroundColor: THEME.card,
@@ -256,30 +141,4 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   itemText: { flex: 1, fontSize: 18, marginLeft: 20, color: THEME.text },
-  separator: { height: 1, backgroundColor: THEME.background, marginHorizontal: 20 },
-  modalContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0,0,0,0.5)',
-  },
-  modalContent: {
-    width: '85%',
-    backgroundColor: THEME.white,
-    borderRadius: 20,
-    padding: 25,
-    alignItems: 'center',
-  },
-  modalTitle: { fontSize: 22, fontWeight: 'bold', color: THEME.text, marginBottom: 20 },
-  contactButton: { flexDirection: 'row', alignItems: 'center', paddingVertical: 15 },
-  contactText: { fontSize: 16, color: THEME.text, marginLeft: 15 },
-  closeButton: {
-    marginTop: 20,
-    backgroundColor: THEME.primary,
-    borderRadius: 12,
-    paddingVertical: 12,
-    paddingHorizontal: 40,
-  },
-  closeButtonText: { color: THEME.white, fontSize: 16, fontWeight: '600' },
-  modalCloseButton: { padding: 15, alignItems: 'flex-end' },
 });
