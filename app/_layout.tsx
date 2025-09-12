@@ -17,7 +17,6 @@ export default function RootLayout() {
           <Stack.Screen name="manacheShlok" options={{ headerShown: false }} />
           <Stack.Screen name="nityaNemavali" options={{ headerShown: false }} />
           <Stack.Screen name="parmarthMandir" options={{ headerShown: false }} />
-          <Stack.Screen name="settings" options={{ headerShown: false }} />
         </Stack>
       </AuthProvider>
     </AudioProvider>
