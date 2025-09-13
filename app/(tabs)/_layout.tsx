@@ -1,5 +1,5 @@
 import { Tabs } from 'expo-router';
-import { BookOpen, Home, Library, Settings, Sun } from 'lucide-react-native';
+import { BookOpen, Home, Library, Sun, UserRound } from 'lucide-react-native';
 import { SessionProvider } from '../../context/SessionContext';
 
 // --- Theme Colors ---
@@ -69,8 +69,8 @@ export default function TabsLayout() {
         <Tabs.Screen
           name="settings"
           options={{
-            title: 'Settings',
-            tabBarIcon: ({ color }) => <Settings size={26} color={color} strokeWidth={2.5} />,
+            title: 'Profile',
+            tabBarIcon: ({ color }) => <UserRound size={26} color={color} strokeWidth={2.5} />,
           }}
         />
       </Tabs>
