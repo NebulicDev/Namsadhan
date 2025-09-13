@@ -11,12 +11,6 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-// 1. Import animation tools from reanimated
-import Animated, {
-  useAnimatedStyle,
-  useSharedValue,
-  withTiming,
-} from 'react-native-reanimated';
 
 import { dailyInspiration } from '../../assets/text/dailyInspiration';
 import { morality } from '../../assets/text/morality';
@@ -49,7 +43,7 @@ const getDayOfYear = () => {
   return Math.floor(diff / oneDay);
 };
 
-const QuoteSection = ({ title, quote }) => {
+const QuoteSection = ({ title, quote, onShuffle }) => {
   const handleShare = async () => {
     if (!quote) return;
     try {
@@ -67,9 +61,14 @@ const QuoteSection = ({ title, quote }) => {
     <View style={styles.card}>
       <View style={styles.cardHeader}>
         <Text style={styles.sectionTitle}>{title}</Text>
-        <TouchableOpacity onPress={handleShare} style={styles.shareIcon}>
-          <Share2 size={22} color={THEME.lightText} />
-        </TouchableOpacity>
+        <View style={styles.cardActions}>
+          <TouchableOpacity onPress={onShuffle} style={styles.shuffleIcon}>
+            <RefreshCw size={22} color={THEME.gradientEnd} />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={handleShare} style={styles.shareIcon}>
+            <Share2 size={22} color={THEME.lightText} />
+          </TouchableOpacity>
+        </View>
       </View>
       <View style={styles.separator} />
       {quote ? (
@@ -88,9 +87,6 @@ export default function QuotesScreen() {
   const [displayedQuotes, setDisplayedQuotes] = useState({});
   const [loading, setLoading] = useState(true);
   const categories = ['Daily Inspiration', 'Namasadhan', 'Morality', 'Mysticism'];
-
-  // 2. Setup animated value for rotation
-  const rotation = useSharedValue(0);
 
   const allQuotesByCategory = {
     'Daily Inspiration': dailyInspiration,
@@ -120,30 +116,16 @@ export default function QuotesScreen() {
     selectDailyQuotes();
   }, [selectDailyQuotes]);
 
-  const handleShuffle = useCallback(() => {
-    // 3. Animate the rotation
-    rotation.value = withTiming(rotation.value + 360, { duration: 400 });
-
-    const newShuffledQuotes = {};
-    for (const category of categories) {
-      const categoryQuotes = allQuotesByCategory[category];
-      if (categoryQuotes && categoryQuotes.length > 0) {
-        const randomIndex = getRandomInt(categoryQuotes.length);
-        newShuffledQuotes[category] = categoryQuotes[randomIndex];
-      } else {
-        newShuffledQuotes[category] = null;
-      }
+  const handleShuffleCategory = useCallback((category) => {
+    const categoryQuotes = allQuotesByCategory[category];
+    if (categoryQuotes && categoryQuotes.length > 0) {
+      const randomIndex = getRandomInt(categoryQuotes.length);
+      setDisplayedQuotes(prevQuotes => ({
+        ...prevQuotes,
+        [category]: categoryQuotes[randomIndex]
+      }));
     }
-    setDisplayedQuotes(newShuffledQuotes);
-  }, [rotation]);
-
-  // 4. Define the animated style for the icon container
-  const animatedIconStyle = useAnimatedStyle(() => {
-    return {
-      transform: [{ rotate: `${rotation.value}deg` }],
-    };
-  });
-
+  }, []);
 
   if (loading) {
     return (
@@ -162,16 +144,14 @@ export default function QuotesScreen() {
         </View>
 
         {categories.map((category) => (
-          <QuoteSection key={category} title={category} quote={displayedQuotes[category]} />
+          <QuoteSection
+            key={category}
+            title={category}
+            quote={displayedQuotes[category]}
+            onShuffle={() => handleShuffleCategory(category)}
+          />
         ))}
       </ScrollView>
-
-      {/* 5. Wrap the icon in an Animated.View */}
-      <TouchableOpacity onPress={handleShuffle} style={styles.shuffleButtonFab}>
-        <Animated.View style={animatedIconStyle}>
-            <RefreshCw size={24} color={THEME.white} />
-        </Animated.View>
-      </TouchableOpacity>
     </SafeAreaView>
   );
 }
@@ -209,7 +189,14 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   sectionTitle: { fontSize: 22, fontWeight: '700', color: THEME.text, flex: 1 },
-  shareIcon: { padding: 5 },
+  cardActions: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  shareIcon: { padding: 5, marginLeft: 10 },
+  shuffleIcon: {
+    padding: 5,
+  },
   separator: { height: 1, backgroundColor: THEME.primary, opacity: 0.3, marginBottom: 20 },
   quoteText: {
     fontSize: 20,
@@ -223,21 +210,5 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: THEME.primary,
     textAlign: 'left',
-  },
-  shuffleButtonFab: {
-    position: 'absolute',
-    bottom: 30,
-    right: 30,
-    backgroundColor: THEME.gradientEnd,
-    borderRadius: 28,
-    width: 44,
-    height: 44,
-    justifyContent: 'center',
-    alignItems: 'center',
-    elevation: 6,
-    shadowColor: 'rgba(93, 64, 55, 0.4)',
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.2,
-    shadowRadius: 5,
   },
 });
