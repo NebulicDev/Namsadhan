@@ -4,7 +4,7 @@ import { useSessions } from '@/context/SessionContext';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Pause, Play, RotateCcw, StopCircle, Sun } from 'lucide-react-native';
 import { useEffect, useRef, useState } from 'react';
-import { Alert, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Alert, AppState, AppStateStatus, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 const THEME = {
   background: '#FFF8F0',
@@ -33,21 +33,53 @@ export default function TimerScreen() {
   const [time, setTime] = useState(0);
   const [isActive, setIsActive] = useState(false);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const startTimeRef = useRef<number>(0);
   const { addSession, dailyTotals } = useSessions();
   const [isAlertVisible, setAlertVisible] = useState(false);
 
   useEffect(() => {
+    const handleAppStateChange = (nextAppState: AppStateStatus) => {
+      if (nextAppState === 'active' && isActive) {
+        // When app comes to foreground, recalculate time
+        setTime(Math.floor((Date.now() - startTimeRef.current) / 1000));
+      }
+    };
+
+    const subscription = AppState.addEventListener('change', handleAppStateChange);
+
+    return () => {
+      subscription.remove();
+    };
+  }, [isActive]);
+
+
+  useEffect(() => {
     if (isActive) {
-      intervalRef.current = setInterval(() => setTime((prev) => prev + 1), 1000);
+      // When timer starts, set the start time.
+      if (startTimeRef.current === 0) {
+        startTimeRef.current = Date.now() - time * 1000;
+      }
+      intervalRef.current = setInterval(() => {
+        // Update time based on elapsed time since start.
+        setTime(Math.floor((Date.now() - startTimeRef.current) / 1000));
+      }, 1000);
     } else if (!isActive && intervalRef.current) {
       clearInterval(intervalRef.current);
+      // Reset startTimeRef when paused
+      startTimeRef.current = 0;
     }
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
     };
   }, [isActive]);
 
-  const handleStartPause = () => setIsActive(!isActive);
+  const handleStartPause = () => {
+      if (!isActive) {
+          // Store the starting point of the timer.
+          startTimeRef.current = Date.now() - time * 1000;
+      }
+      setIsActive(!isActive);
+  }
 
   const handleStop = () => {
     if (time > 0) {
@@ -67,6 +99,7 @@ export default function TimerScreen() {
         onPress: () => {
           setIsActive(false);
           setTime(0);
+          startTimeRef.current = 0;
         },
         style: 'destructive',
       },
@@ -76,6 +109,7 @@ export default function TimerScreen() {
   const handleAlertClose = () => {
     setAlertVisible(false);
     setTime(0);
+    startTimeRef.current = 0;
   };
 
   const today = new Date().toISOString().split('T')[0];
