@@ -1,26 +1,25 @@
 import {
-    Bell,
-    ChevronRight,
-    HandHeart,
-    Info,
-    Mail,
-    MapPin,
-    Phone,
-    Shield,
-    ChevronLeft
+  Bell,
+  ChevronRight,
+  HandHeart,
+  Info,
+  Mail,
+  MapPin,
+  Phone,
+  Shield
 } from 'lucide-react-native';
 import { useState } from 'react';
 import {
-    Alert,
-    Linking,
-    Modal,
-    Platform,
-    SafeAreaView,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
+  Alert,
+  Linking,
+  Modal,
+  Platform,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 import { WebView } from 'react-native-webview';
 

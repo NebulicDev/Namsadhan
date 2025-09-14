@@ -1,12 +1,11 @@
 // app/tabs/namasmaran/timer.tsx
-import CustomAlert from '@/components/CustomAlert';
+import CustomAlert, { AlertType } from '@/components/CustomAlert';
 import { useSessions } from '@/context/SessionContext';
 import * as Haptics from 'expo-haptics';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Pause, Play, RotateCcw, StopCircle } from 'lucide-react-native';
 import React, { useEffect, useRef, useState } from 'react';
 import {
-  Alert,
   Animated,
   AppState,
   AppStateStatus,
@@ -30,7 +29,6 @@ const THEME = {
   divider: '#F0EBE4',
 };
 
-// Timer format: 00:00:00
 const formatTime = (timeInSeconds: number) => {
   const hours = Math.floor(timeInSeconds / 3600);
   const minutes = Math.floor((timeInSeconds % 3600) / 60);
@@ -39,7 +37,6 @@ const formatTime = (timeInSeconds: number) => {
   return `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
 };
 
-// Descriptive format for totals: 00 h 00 m 00 s
 const formatDescriptiveTime = (timeInSeconds: number) => {
   const hours = Math.floor(timeInSeconds / 3600);
   const minutes = Math.floor((timeInSeconds % 3600) / 60);
@@ -54,9 +51,21 @@ export default function TimerScreen() {
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const startTimeRef = useRef<number>(0);
   const { addSession, dailyTotals } = useSessions();
-  const [isAlertVisible, setAlertVisible] = useState(false);
-
   const progressAnim = useRef(new Animated.Value(0)).current;
+
+  // State for the custom alert
+  const [alertInfo, setAlertInfo] = useState<{
+    visible: boolean;
+    title: string;
+    message: string;
+    type: AlertType;
+    onConfirm?: () => void;
+  }>({
+    visible: false,
+    title: '',
+    message: '',
+    type: 'success',
+  });
 
   useEffect(() => {
     const handleAppStateChange = (nextAppState: AppStateStatus) => {
@@ -102,35 +111,39 @@ export default function TimerScreen() {
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
       const today = new Date().toISOString().split('T')[0];
       addSession({ date: today, duration: time });
-      setAlertVisible(true);
+      setAlertInfo({
+        visible: true,
+        title: 'Session Saved!',
+        message: `Current session ${formatDescriptiveTime(time)}.`,
+        type: 'success',
+        onConfirm: () => {
+          setAlertInfo({ ...alertInfo, visible: false });
+          setTime(0);
+          startTimeRef.current = 0;
+        }
+      });
     }
     setIsActive(false);
     progressAnim.setValue(0);
   };
 
-  const handleReset = () => {
+  const handleResetPress = () => {
     if (time === 0 && !isActive) return;
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    Alert.alert('Reset Timer', 'Are you sure?', [
-      { text: 'Cancel', style: 'cancel' },
-      {
-        text: 'Reset',
-        onPress: () => {
-          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
-          setIsActive(false);
-          setTime(0);
-          startTimeRef.current = 0;
-          progressAnim.setValue(0);
-        },
-        style: 'destructive',
-      },
-    ]);
-  };
-
-  const handleAlertClose = () => {
-    setAlertVisible(false);
-    setTime(0);
-    startTimeRef.current = 0;
+    setAlertInfo({
+      visible: true,
+      title: 'Reset Timer',
+      message: 'Are you sure you want to reset? This action cannot be undone.',
+      type: 'confirm',
+      onConfirm: () => {
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
+        setIsActive(false);
+        setTime(0);
+        startTimeRef.current = 0;
+        progressAnim.setValue(0);
+        setAlertInfo({ ...alertInfo, visible: false });
+      }
+    });
   };
 
   const today = new Date().toISOString().split('T')[0];
@@ -157,7 +170,7 @@ export default function TimerScreen() {
             {() => (
               <View style={styles.timerContent}>
                 <Text style={styles.timerText}>{formatTime(time)}</Text>
-                <Text style={styles.timerSubtitle}>CURRENT SESSION</Text>
+                {/* <Text style={styles.timerSubtitle}>CURRENT SESSION</Text> */}
               </View>
             )}
           </CircularProgress>
@@ -167,7 +180,7 @@ export default function TimerScreen() {
           <View style={styles.controlsContainer}>
             <TouchableOpacity
               style={[styles.controlButton, isTimerIdle && styles.disabledButton]}
-              onPress={handleReset}
+              onPress={handleResetPress}
               disabled={isTimerIdle}
             >
               <RotateCcw size={28} color={isTimerIdle ? THEME.lightText : THEME.text} />
@@ -187,7 +200,7 @@ export default function TimerScreen() {
           <View style={styles.dailyTotalContainer}>
             <View style={styles.divider} />
             <Text style={styles.dailyTotalText}>
-              Today's meditation on the Divine Name
+              Today you have meditated on the Divine Name for
             </Text>
             <View style={styles.divider} />
             <Text style={styles.dailyTotalTime}>{formatDescriptiveTime(todayTotal)}</Text>
@@ -196,17 +209,20 @@ export default function TimerScreen() {
       </LinearGradient>
 
       <CustomAlert
-        visible={isAlertVisible}
-        title="Session Saved!"
-        message={`You have meditated for ${formatDescriptiveTime(time)}.`}
-        onClose={handleAlertClose}
+        visible={alertInfo.visible}
+        title={alertInfo.title}
+        message={alertInfo.message}
+        type={alertInfo.type}
+        onClose={() => setAlertInfo({ ...alertInfo, visible: false })}
+        onConfirm={alertInfo.onConfirm}
+        confirmText={alertInfo.type === 'confirm' ? 'Reset' : 'OK'}
       />
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  screenContainer: {
+    screenContainer: {
     flex: 1,
     backgroundColor: THEME.background,
   },
@@ -233,7 +249,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   timerText: {
-    fontSize: 60, // Restored original font size
+    fontSize: 60,
     fontWeight: '300',
     color: THEME.text,
     fontVariant: ['tabular-nums'],
