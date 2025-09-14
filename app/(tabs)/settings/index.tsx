@@ -1,9 +1,10 @@
-// app/(tabs)/index.tsx
 import { useAuth } from '@/context/AuthContext';
 import { useSessions } from '@/context/SessionContext';
+import { authInstance } from '@/firebaseConfig';
+import * as Haptics from 'expo-haptics';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
-import { LogOut, Settings as SettingsIcon, Sun, User } from 'lucide-react-native';
+import { Award, BarChart2, Calendar as CalendarIcon, LogOut, Settings as SettingsIcon } from 'lucide-react-native';
 import React, { useMemo, useState } from 'react';
 import {
   ActivityIndicator,
@@ -28,94 +29,121 @@ const THEME = {
   accent: '#FFB88D',
   gradientStart: '#FEDCBA',
   gradientEnd: '#FFB88D',
-  selected: '#5D4037',
+  selected: '#FFB88D',
+  icon: '#5D4037',
+  disabled: '#D9D9D9'
 };
 
 const formatTime = (timeInSeconds: number) => {
   const hours = Math.floor(timeInSeconds / 3600);
   const minutes = Math.floor((timeInSeconds % 3600) / 60);
   const seconds = timeInSeconds % 60;
-  const pad = (num: number) => (num < 10 ? `0${num}` : num);
-
-  if (hours > 0) {
-    return `${hours}h ${minutes}m`;
-  }
-  if (minutes > 0) {
-    return `${minutes}m ${seconds}s`;
-  }
+  
+  if (hours > 0) return `${hours}h ${minutes}m`;
+  if (minutes > 0) return `${minutes}m ${seconds}s`;
   return `${seconds}s`;
 };
 
+const StatCard = ({ icon, label, value }: { icon: React.ReactNode, label: string, value: string }) => (
+  <View style={styles.statCard}>
+    {icon}
+    <Text style={styles.statValue}>{value}</Text>
+    <Text style={styles.statLabel}>{label}</Text>
+  </View>
+);
+
 export default function ProfileScreen() {
-  const { user, logout } = useAuth(); // Using logout from AuthContext
+  const { user } = useAuth();
   const { dailyTotals, loading } = useSessions();
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
   
   const router = useRouter();
   const insets = useSafeAreaInsets();
 
+  // ✅ FIX: use Firebase logout directly (not from AuthContext)
   const handleSignOut = () => {
+    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
     Alert.alert("Logout", "Are you sure you want to logout?", [
-        { text: "Cancel", style: "cancel" },
-        { text: "Logout", style: "destructive", onPress: logout }
+      { text: "Cancel", style: "cancel" },
+      { text: "Logout", style: "destructive", onPress: async () => {
+          try {
+            await authInstance.signOut();
+            router.replace('/(auth)/login'); // redirect to login
+          } catch (err) {
+            console.error("Logout error:", err);
+            Alert.alert("Error", "Failed to logout. Please try again.");
+          }
+        }
+      }
     ]);
+  };
+
+  const handleSettings = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    router.push('/settings/settings-page');
   };
 
   const markedDates = useMemo(() => {
     const markings: { [key: string]: any } = {};
     dailyTotals.forEach(session => {
-      markings[session.date] = {
-        marked: true,
-        dotColor: THEME.accent,
-      };
+      markings[session.date] = { marked: true, dotColor: THEME.accent };
     });
-    // Apply selected styling
-    markings[selectedDate] = {
-      ...markings[selectedDate],
-      selected: true,
-      selectedColor: THEME.selected,
-      disableTouchEvent: true,
-    };
+    if (markings[selectedDate]) {
+      markings[selectedDate] = { ...markings[selectedDate], selected: true, selectedColor: THEME.selected, disableTouchEvent: true };
+    } else {
+      markings[selectedDate] = { selected: true, selectedColor: THEME.selected, disableTouchEvent: true };
+    }
     return markings;
   }, [dailyTotals, selectedDate]);
 
   const onDayPress = (day: DateData) => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     setSelectedDate(day.dateString);
   };
 
   const selectedDayTotal = dailyTotals.find(d => d.date === selectedDate)?.totalDuration ?? 0;
+  const totalSadhana = useMemo(() => dailyTotals.reduce((acc, curr) => acc + curr.totalDuration, 0), [dailyTotals]);
+  const firstName = user?.displayName?.split(' ')[0] || user?.email?.split('@')[0] || 'User';
 
   return (
     <SafeAreaView style={styles.screenContainer}>
-      <ScrollView contentContainerStyle={styles.scrollViewContent}>
-        {/* --- EXISTING PROFILE HEADER --- */}
-        <View style={[styles.profileHeader, { paddingTop: insets.top + 20 }]}>
-          <View style={styles.avatar}>
-            <User size={40} color={THEME.primary} />
+      <ScrollView contentContainerStyle={{ paddingTop: insets.top, paddingBottom: 30 }}>
+        {/* --- HEADER --- */}
+        <View style={styles.header}>
+          <View>
+            <Text style={styles.greeting}>Hello,</Text>
+            <Text style={styles.userName}>{firstName}</Text>
           </View>
-          <Text style={styles.userName}>{user?.displayName || user?.email || 'User'}</Text>
-          <View style={styles.actionsContainer}>
-            <TouchableOpacity
-              style={styles.iconButton}
-              onPress={() => router.push('/(tabs)/settings/settings-page')}
-              accessibilityLabel="Open Settings"
-            >
-              <SettingsIcon size={26} color={THEME.text} />
+
+          {/* Settings + Logout icons side by side */}
+          <View style={{ flexDirection: 'row' }}>
+            <TouchableOpacity onPress={handleSettings} style={styles.iconButton}>
+              <SettingsIcon size={24} color={THEME.icon} />
             </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.iconButton}
-              onPress={handleSignOut}
-              accessibilityLabel="Sign Out"
-            >
-              <LogOut size={26} color={THEME.error} />
+            <TouchableOpacity onPress={handleSignOut} style={[styles.iconButton, { marginLeft: 10 }]}>
+              <LogOut size={24} color={THEME.error} />
             </TouchableOpacity>
           </View>
         </View>
 
-        {/* --- NEWLY ADDED PROGRESS VIEW --- */}
-        <View style={styles.progressContainer}>
+        <View style={styles.card}> 
+          <Text style={styles.cardTitle}>Your Progress</Text>
+        </View>
+
+        {/* --- STATS --- */}
+        <View style={styles.statsContainer}>
+          <StatCard icon={<BarChart2 size={24} color={THEME.primary}/>} label="Total Sadhana" value={formatTime(totalSadhana)} />
+          <StatCard icon={<CalendarIcon size={24} color={THEME.primary}/>} label="Current Streak" value="12 days" />
+          <StatCard icon={<Award size={24} color={THEME.primary}/>} label="Longest Streak" value="45 days" />
+        </View>
+        
+        
+
+        {/* --- CALENDAR & PROGRESS --- */}
+        <View style={styles.card}>
+          
           {loading ? (
-            <ActivityIndicator style={{marginTop: 40}} size="large" color={THEME.accent} />
+            <ActivityIndicator style={{ marginVertical: 40 }} size="large" color={THEME.accent} />
           ) : (
             <>
               <Calendar
@@ -124,35 +152,27 @@ export default function ProfileScreen() {
                 markedDates={markedDates}
                 style={styles.calendar}
                 theme={{
-                  calendarBackground: 'transparent', // Transparent background
+                  calendarBackground: 'transparent',
                   backgroundColor: 'transparent',
                   textSectionTitleColor: THEME.primary,
                   selectedDayBackgroundColor: THEME.selected,
                   selectedDayTextColor: '#ffffff',
                   todayTextColor: THEME.accent,
                   dayTextColor: THEME.text,
-                  textDisabledColor: '#d9e1e8',
+                  textDisabledColor: THEME.disabled,
                   arrowColor: THEME.primary,
                   monthTextColor: THEME.text,
-                  textDayFontWeight: '300',
+                  textDayFontWeight: '400',
                   textMonthFontWeight: 'bold',
-                  textDayHeaderFontWeight: '300',
-                  textDayFontSize: 16,
-                  textMonthFontSize: 16,
-                  textDayHeaderFontSize: 14,
+                  textDayHeaderFontWeight: '500',
                 }}
               />
               <LinearGradient
                 colors={[THEME.gradientStart, THEME.gradientEnd]}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 1 }}
                 style={styles.dailyTotalCard}
               >
-                <View style={styles.dailyTotalIcon}>
-                  <Sun size={20} color='white' />
-                </View>
                 <Text style={styles.dailyTotalText}>
-                  Meditation for {new Date(selectedDate).toLocaleDateString('en-US', { month: 'long', day: 'numeric' })}
+                  Sadhana on {new Date(selectedDate).toLocaleDateString('en-US', { month: 'long', day: 'numeric' })}
                 </Text>
                 <Text style={styles.dailyTotalTimeText}>{formatTime(selectedDayTotal)}</Text>
               </LinearGradient>
@@ -169,89 +189,100 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: THEME.background,
   },
-  scrollViewContent: {
-    flexGrow: 1,
-  },
-  profileHeader: {
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center',
-    paddingBottom: 20,
+    paddingHorizontal: 20,
+    paddingVertical: 15,
   },
-  avatar: {
-    width: 90,
-    height: 90,
-    borderRadius: 45,
+  greeting: {
+    fontSize: 20,
+    color: THEME.lightText,
+  },
+  userName: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: THEME.text,
+  },
+  iconButton: {
+    padding: 12,
     backgroundColor: THEME.card,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 15,
-    elevation: 4,
+    borderRadius: 30,
+    elevation: 2,
     shadowColor: 'rgba(93, 64, 55, 0.4)',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
-    shadowRadius: 5,
+    shadowRadius: 2,
   },
-  userName: {
-    fontSize: 24,
-    fontWeight: '600',
-    color: THEME.text,
-    marginBottom: 8,
-  },
-  actionsContainer: {
+  statsContainer: {
     flexDirection: 'row',
+    justifyContent: 'space-around',
+    paddingHorizontal: 15,
     marginTop: 10,
   },
-  iconButton: {
+  statCard: {
+    flex: 1,
+    alignItems: 'center',
     backgroundColor: THEME.card,
+    borderRadius: 20,
     padding: 15,
-    borderRadius: 50,
-    marginHorizontal: 10,
-    elevation: 4,
+    marginHorizontal: 5,
+    elevation: 2,
+    shadowColor: 'rgba(93, 64, 55, 0.4)',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+  },
+  statValue: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: THEME.text,
+    marginTop: 8,
+  },
+  statLabel: {
+    fontSize: 12,
+    color: THEME.lightText,
+    marginTop: 2,
+  },
+  card: {
+    backgroundColor: THEME.card,
+    borderRadius: 20,
+    paddingVertical: 15,
+    paddingHorizontal: 10,
+    margin: 20,
+    elevation: 2,
     shadowColor: 'rgba(93, 64, 55, 0.4)',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
   },
-  // --- New Styles ---
-  progressContainer: {
-    paddingHorizontal: 20,
-    paddingBottom: 20,
+  cardTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: THEME.text,
+    marginBottom: 15,
+    paddingHorizontal: 10,
+    textAlign: 'center'
   },
   calendar: {
-    marginBottom: 20,
+    marginBottom: 10,
   },
   dailyTotalCard: {
-    borderRadius: 24,
-    paddingVertical: 20,
-    paddingHorizontal: 25,
-    alignItems: 'center',
-    justifyContent: 'center',
-    elevation: 8,
-    shadowColor: THEME.gradientEnd,
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.3,
-    shadowRadius: 12,
-  },
-  dailyTotalIcon: {
-    position: 'absolute',
-    top: -15,
-    backgroundColor: THEME.accent,
     borderRadius: 15,
-    padding: 8,
-    elevation: 10,
+    padding: 20,
+    alignItems: 'center',
+    marginHorizontal: 10,
   },
   dailyTotalText: {
     fontSize: 16,
-    color: 'white',
-    textAlign: 'center',
+    color: THEME.card,
     fontWeight: '500',
-    opacity: 0.9,
-    marginTop: 10,
   },
   dailyTotalTimeText: {
-    fontSize: 32,
-    color: 'white',
-    fontWeight: '700',
-    fontVariant: ['tabular-nums'],
-    marginTop: 8,
+    fontSize: 28,
+    color: THEME.card,
+    fontWeight: 'bold',
+    marginTop: 5,
   },
 });

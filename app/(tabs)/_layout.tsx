@@ -1,5 +1,7 @@
+import * as Haptics from 'expo-haptics';
 import { Tabs } from 'expo-router';
 import { BookOpen, Home, Library, Sun, UserRound } from 'lucide-react-native';
+import { Pressable } from 'react-native';
 import { SessionProvider } from '../../context/SessionContext';
 
 // --- Theme Colors ---
@@ -11,9 +13,22 @@ const THEME = {
   white: '#FFFFFF',
 };
 
+// Haptic Pressable Component
+const HapticPressable = (props: any) => (
+  <Pressable
+    {...props}
+    onPress={(e) => {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+      if (props.onPress) {
+        props.onPress(e);
+      }
+    }}
+  />
+);
+
 export default function TabsLayout() {
   return (
-    <SessionProvider> 
+    <SessionProvider>
       <Tabs
         screenOptions={{
           headerShown: false,
@@ -43,6 +58,7 @@ export default function TabsLayout() {
           options={{
             title: 'Home',
             tabBarIcon: ({ color }) => <Home size={26} color={color} strokeWidth={2.5} />,
+            tabBarButton: (props) => <HapticPressable {...props} />,
           }}
         />
         <Tabs.Screen
@@ -50,13 +66,15 @@ export default function TabsLayout() {
           options={{
             title: 'Thoughts',
             tabBarIcon: ({ color }) => <BookOpen size={26} color={color} strokeWidth={2.5} />,
+            tabBarButton: (props) => <HapticPressable {...props} />,
           }}
         />
         <Tabs.Screen
-          name="namasmaran" 
+          name="namasmaran"
           options={{
             title: 'Sadhana',
-            tabBarIcon: ({ color }) => <Sun size={26} color={color} strokeWidth={2.5}/>,
+            tabBarIcon: ({ color }) => <Sun size={26} color={color} strokeWidth={2.5} />,
+            tabBarButton: (props) => <HapticPressable {...props} />,
           }}
         />
         <Tabs.Screen
@@ -64,6 +82,7 @@ export default function TabsLayout() {
           options={{
             title: 'Resources',
             tabBarIcon: ({ color }) => <Library size={26} color={color} strokeWidth={2.5} />,
+            tabBarButton: (props) => <HapticPressable {...props} />,
           }}
         />
         <Tabs.Screen
@@ -71,6 +90,7 @@ export default function TabsLayout() {
           options={{
             title: 'Profile',
             tabBarIcon: ({ color }) => <UserRound size={26} color={color} strokeWidth={2.5} />,
+            tabBarButton: (props) => <HapticPressable {...props} />,
           }}
         />
       </Tabs>

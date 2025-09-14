@@ -200,7 +200,7 @@ export default function TimerScreen() {
           <View style={styles.dailyTotalContainer}>
             <View style={styles.divider} />
             <Text style={styles.dailyTotalText}>
-              Today you have meditated on the Divine Name for
+              Today's meditaiton on the Divine Name
             </Text>
             <View style={styles.divider} />
             <Text style={styles.dailyTotalTime}>{formatDescriptiveTime(todayTotal)}</Text>

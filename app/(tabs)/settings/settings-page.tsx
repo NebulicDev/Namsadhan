@@ -96,7 +96,7 @@ export default function SettingsPage() {
           <View style={styles.separator} />
           <SettingsItem
             icon={<MapPin size={24} color={THEME.text} />}
-            text="Map / Address"
+            text="Address"
             onPress={handleMap}
           />
         </View>
