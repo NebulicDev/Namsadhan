@@ -33,25 +33,25 @@ const spiritualGuides = [
   {
     id: '1',
     name: 'Shri Nimbargi Maharaj',
-    photo: require('../../assets/images/nimbargi-maharaj.png'),
+    photo: require('../../assets/images/shri-nimbargi-maharaj.jpeg'),
     bio: bios['Shri Nimbargi Maharaj'],
   },
   {
     id: '2',
     name: 'Shri Amburao Maharaj',
-    photo: require('../../assets/images/amburao-maharaj.png'),
+    photo: require('../../assets/images/shri-amburao-maharaj.jpeg'),
     bio: bios['Shri Amburao Maharaj'],
   },
   {
     id: '3',
     name: 'Shri Bhausaheb Maharaj',
-    photo: require('../../assets/images/bhausaheb-maharaj.png'),
+    photo: require('../../assets/images/shri-bhausaheb-maharaj.jpeg'),
     bio: bios['Shri Bhausaheb Maharaj'],
   },
   {
     id: '4',
     name: 'Shri Gurudev Ranade',
-    photo: require('../../assets/images/gurudeo-ranade.png'),
+    photo: require('../../assets/images/shri-gurudev-ranade.jpeg'),
     bio: bios['Shri Gurudev Ranade'],
   },
 ];
