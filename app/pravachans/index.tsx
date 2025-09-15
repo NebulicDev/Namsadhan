@@ -4,14 +4,14 @@ import { useRouter } from 'expo-router';
 import { ChevronLeft } from 'lucide-react-native';
 import { useEffect, useState } from 'react';
 import {
-    ActivityIndicator,
-    Alert,
-    FlatList,
-    SafeAreaView,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
+  ActivityIndicator,
+  Alert,
+  FlatList,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 
 import { db } from '../../firebaseConfig';
@@ -23,40 +23,24 @@ const THEME = {
   primary: '#D2B48C',
 };
 
+// This represents a single track object within the app
 type TrackType = {
   id: string;
   title: string;
   speaker: string;
   driveId: string;
-  url: string;
-  year: number;
+  url: string; // Generated on the client-side
+  year: number; // Added from the document ID
 };
 
+// This represents a single year's document structure
 type YearType = {
   year: string;
   tracks: TrackType[];
 };
 
-const groupAndSortPravachans = (pravachansList: TrackType[]): YearType[] => {
-  const groupedByYear = pravachansList.reduce(
-    (acc, track) => {
-      const year = track.year.toString();
-      if (!acc[year]) {
-        acc[year] = [];
-      }
-      acc[year].push(track);
-      return acc;
-    },
-    {} as { [key: string]: TrackType[] }
-  );
-
-  return Object.keys(groupedByYear)
-    .map((year) => ({
-      year,
-      tracks: groupedByYear[year],
-    }))
-    .sort((a, b) => parseInt(b.year) - parseInt(a.year));
-};
+// A unique key for our new cache structure
+const CACHE_KEY = 'pravachans_data_v2';
 
 export default function PravachansScreen() {
   const router = useRouter();
@@ -65,45 +49,52 @@ export default function PravachansScreen() {
 
   useEffect(() => {
     const loadPravachans = async () => {
+      // 1. Try to load from cache first
       try {
-        const cachedPravachans = await AsyncStorage.getItem('pravachans_data');
-        if (cachedPravachans) {
-          const parsedPravachans: TrackType[] = JSON.parse(cachedPravachans);
-          setPravachansData(groupAndSortPravachans(parsedPravachans));
-          setIsLoading(false);
+        const cachedData = await AsyncStorage.getItem(CACHE_KEY);
+        if (cachedData) {
+          setPravachansData(JSON.parse(cachedData));
+          setIsLoading(false); // Stop loading, show cached data
         }
       } catch (e) {
         console.error('Failed to load cached pravachans:', e);
       }
 
+      // 2. Fetch from Firestore to get the latest data
       try {
-        const pravachansCollection = db.collection('pravachans');
-        const pravachansSnapshot = await pravachansCollection.get();
-        const pravachansList: TrackType[] = pravachansSnapshot.docs.map(
-          (doc) => ({
-            id: doc.id,
-            ...(doc.data() as Omit<TrackType, 'id' | 'url'>),
-            url: `https://drive.google.com/uc?export=download&id=${
-              doc.data().driveId
-            }`,
-          })
-        );
+        const collectionRef = db.collection('pravachans_by_year');
+        const snapshot = await collectionRef.get();
 
-        const currentDataString = await AsyncStorage.getItem('pravachans_data');
-        if (JSON.stringify(pravachansList) !== currentDataString) {
-          setPravachansData(groupAndSortPravachans(pravachansList));
-          await AsyncStorage.setItem(
-            'pravachans_data',
-            JSON.stringify(pravachansList)
-          );
+        // Transform Firestore data into the structure our app uses
+        const fetchedData: YearType[] = snapshot.docs.map((doc) => {
+          const year = doc.id;
+          const yearNumber = parseInt(year);
+          const tracksData = doc.data().tracks || [];
+
+          return {
+            year,
+            tracks: tracksData.map((track: Omit<TrackType, 'url' | 'year'>) => ({
+              ...track,
+              year: yearNumber,
+              url: `https://drive.google.com/uc?export=download&id=${track.driveId}`,
+            })),
+          };
+        });
+
+        // Sort by year descending
+        fetchedData.sort((a, b) => parseInt(b.year) - parseInt(a.year));
+        
+        // 3. Update state and cache if new data is different
+        const currentDataString = await AsyncStorage.getItem(CACHE_KEY);
+        if (JSON.stringify(fetchedData) !== currentDataString) {
+          setPravachansData(fetchedData);
+          await AsyncStorage.setItem(CACHE_KEY, JSON.stringify(fetchedData));
         }
+
       } catch (error) {
-        console.error('Error fetching pravachans:', error);
+        console.error("Error fetching pravachans:", error);
         if (pravachansData.length === 0) {
-          Alert.alert(
-            'Error',
-            'Could not fetch pravachans. Please check your internet connection.'
-          );
+          Alert.alert("Error", "Could not fetch pravachans. Please check your internet connection.");
         }
       } finally {
         setIsLoading(false);

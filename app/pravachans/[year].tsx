@@ -4,22 +4,22 @@ import Slider from '@react-native-community/slider';
 import * as FileSystem from 'expo-file-system';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import {
-    ChevronLeft,
-    Download,
-    Pause,
-    Play,
-    Trash2,
+  ChevronLeft,
+  Download,
+  Pause,
+  Play,
+  Trash2,
 } from 'lucide-react-native';
 import { useEffect, useState } from 'react';
 import {
-    ActivityIndicator,
-    Alert,
-    FlatList,
-    SafeAreaView,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
+  ActivityIndicator,
+  Alert,
+  FlatList,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 import { useAudio } from '../../context/AudioContext';
 
@@ -41,10 +41,17 @@ type TrackType = {
   year: number;
 };
 
+type YearType = {
+  year: string;
+  tracks: TrackType[];
+};
+
 type PlayStatusType = {
   position: number;
   duration: number;
 };
+
+const CACHE_KEY = 'pravachans_data_v2';
 
 export default function YearScreen() {
   const router = useRouter();
@@ -71,13 +78,13 @@ export default function YearScreen() {
       if (!year) return;
       setIsLoading(true);
       try {
-        const cachedPravachans = await AsyncStorage.getItem('pravachans_data');
-        if (cachedPravachans) {
-          const parsedPravachans: TrackType[] = JSON.parse(cachedPravachans);
-          const yearTracks = parsedPravachans.filter(
-            (track) => track.year.toString() === year
-          );
-          setTracks(yearTracks);
+        const cachedData = await AsyncStorage.getItem(CACHE_KEY);
+        if (cachedData) {
+          const allPravachans: YearType[] = JSON.parse(cachedData);
+          const yearData = allPravachans.find((item) => item.year === year);
+          if (yearData) {
+            setTracks(yearData.tracks);
+          }
         }
       } catch (e) {
         console.error('Failed to load cached pravachans for year:', e);
