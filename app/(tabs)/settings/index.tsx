@@ -4,7 +4,7 @@ import { authInstance } from '@/firebaseConfig';
 import * as Haptics from 'expo-haptics';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
-import { Award, BarChart2, Calendar as CalendarIcon, LogOut, Settings as SettingsIcon } from 'lucide-react-native';
+import { LogOut, Settings as SettingsIcon } from 'lucide-react-native';
 import React, { useMemo, useState } from 'react';
 import {
   ActivityIndicator,
@@ -31,7 +31,8 @@ const THEME = {
   gradientEnd: '#FFB88D',
   selected: '#FFB88D',
   icon: '#5D4037',
-  disabled: '#D9D9D9'
+  disabled: '#D9D9D9',
+  divider: '#F0EBE4'
 };
 
 const formatTime = (timeInSeconds: number) => {
@@ -111,7 +112,7 @@ export default function ProfileScreen() {
         {/* --- HEADER --- */}
         <View style={styles.header}>
           <View>
-            <Text style={styles.greeting}>Hello,</Text>
+            <Text style={styles.greeting}>Namaskar,</Text>
             <Text style={styles.userName}>{firstName}</Text>
           </View>
 
@@ -125,23 +126,20 @@ export default function ProfileScreen() {
             </TouchableOpacity>
           </View>
         </View>
-
-        <View style={styles.card}> 
-          <Text style={styles.cardTitle}>Your Progress</Text>
-        </View>
-
+        
         {/* --- STATS --- */}
-        <View style={styles.statsContainer}>
+        {/* <View style={styles.statsContainer}>
           <StatCard icon={<BarChart2 size={24} color={THEME.primary}/>} label="Total Sadhana" value={formatTime(totalSadhana)} />
           <StatCard icon={<CalendarIcon size={24} color={THEME.primary}/>} label="Current Streak" value="12 days" />
           <StatCard icon={<Award size={24} color={THEME.primary}/>} label="Longest Streak" value="45 days" />
-        </View>
+        </View> */}
         
         
 
         {/* --- CALENDAR & PROGRESS --- */}
         <View style={styles.card}>
-          
+          <Text style={styles.cardTitle}>Your Progress</Text>
+          <View style={styles.divider} />
           {loading ? (
             <ActivityIndicator style={{ marginVertical: 40 }} size="large" color={THEME.accent} />
           ) : (
@@ -233,6 +231,11 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 2,
+  },
+  divider: {
+    height: 1,
+    backgroundColor: THEME.divider,
+    width: '100%',
   },
   statValue: {
     fontSize: 18,
