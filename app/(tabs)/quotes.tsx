@@ -13,9 +13,13 @@ import {
 } from 'react-native';
 
 import { dailyInspiration } from '../../assets/text/dailyInspiration';
+import { devotee } from '../../assets/text/devotee';
+import { god } from '../../assets/text/god';
 import { morality } from '../../assets/text/morality';
 import { mysticism } from '../../assets/text/mysticism';
 import { namasadan } from '../../assets/text/namasadhan';
+import { sadhguru } from '../../assets/text/sadhguru';
+import { saint } from '../../assets/text/saint';
 
 const THEME = {
   background: '#FFF8F0',
@@ -86,13 +90,26 @@ const QuoteSection = ({ title, quote, onShuffle }) => {
 export default function QuotesScreen() {
   const [displayedQuotes, setDisplayedQuotes] = useState({});
   const [loading, setLoading] = useState(true);
-  const categories = ['Daily Inspiration', 'Namasadhan', 'Morality', 'Mysticism'];
+  const categories = [
+  'Daily Inspiration',
+  'Namasadhan',
+  'Morality',
+  'Mysticism',
+  'Sadhguru',
+  'God',
+  'Saint',
+  'Devotee',
+];
 
   const allQuotesByCategory = {
     'Daily Inspiration': dailyInspiration,
-    Namasadhan: namasadan,
-    Morality: morality,
-    Mysticism: mysticism,
+    'Namasadhan': namasadan,
+    'Morality': morality,
+    'Mysticism': mysticism,
+    'Sadhguru': sadhguru,
+    'God': god,
+    'Saint': saint,
+    'Devotee': devotee,
   };
 
   const selectDailyQuotes = useCallback(() => {
