@@ -112,7 +112,7 @@ export default function ProfileScreen() {
         {/* --- HEADER --- */}
         <View style={styles.header}>
           <View>
-            <Text style={styles.greeting}>Namaskar,</Text>
+            <Text style={styles.greeting}>Sadhak,</Text>
             <Text style={styles.userName}>{firstName}</Text>
           </View>
 
