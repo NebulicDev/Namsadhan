@@ -1,4 +1,5 @@
 // app/(tabs)/quotes.tsx
+import * as Haptics from 'expo-haptics';
 import { RefreshCw, Share2 } from 'lucide-react-native';
 import { useCallback, useEffect, useState } from 'react';
 import {
@@ -50,6 +51,7 @@ const getDayOfYear = () => {
 const QuoteSection = ({ title, quote, onShuffle }) => {
   const handleShare = async () => {
     if (!quote) return;
+    Haptics.selectionAsync();
     try {
       const message = `"${quote.text}"\n\n- ${quote.reference}\n\nShared from Namsadhan App`;
       await Share.share({
@@ -61,12 +63,17 @@ const QuoteSection = ({ title, quote, onShuffle }) => {
     }
   };
 
+  const handleShuffle = () => {
+    Haptics.selectionAsync();
+    onShuffle();
+  };
+
   return (
     <View style={styles.card}>
       <View style={styles.cardHeader}>
         <Text style={styles.sectionTitle}>{title}</Text>
         <View style={styles.cardActions}>
-          <TouchableOpacity onPress={onShuffle} style={styles.shuffleIcon}>
+          <TouchableOpacity onPress={handleShuffle} style={styles.shuffleIcon}>
             <RefreshCw size={22} color={THEME.gradientEnd} />
           </TouchableOpacity>
           <TouchableOpacity onPress={handleShare} style={styles.shareIcon}>
@@ -157,7 +164,7 @@ export default function QuotesScreen() {
     <SafeAreaView style={styles.screenContainer}>
       <ScrollView contentContainerStyle={styles.listContent}>
         <View style={styles.header}>
-          <Text style={styles.title}>Today's Divine Thoughts</Text>
+          <Text style={styles.title} numberOfLines={1} adjustsFontSizeToFit={true}>Today's Divine Thoughts</Text>
         </View>
 
         {categories.map((category) => (

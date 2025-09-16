@@ -50,7 +50,9 @@ const formatDescriptiveTime = (timeInSeconds: number) => {
 
 const getResponsiveFontSize = (baseFontSize: number) => {
   const scale = screenWidth / 375; // 375 is a common base width
-  return Math.round(baseFontSize * scale);
+  const newSize = Math.round(baseFontSize * scale);
+  // Clamp to avoid overly large text on huge screens
+  return Math.min(newSize, baseFontSize * 1.3);
 };
 
 export default function TimerScreen() {
@@ -179,8 +181,15 @@ export default function TimerScreen() {
           >
             {() => (
               <View style={styles.timerContent}>
-                <Text style={styles.timerText}>{formatTime(time)}</Text>
-                {/* <Text style={styles.timerSubtitle}>CURRENT SESSION</Text> */}
+                <Text
+                  style={styles.timerText}
+                  numberOfLines={1}
+                  ellipsizeMode="clip"
+                  adjustsFontSizeToFit
+                  minimumFontScale={0.6}
+                >
+                  {formatTime(time)}
+                </Text>
               </View>
             )}
           </CircularProgress>
@@ -213,7 +222,7 @@ export default function TimerScreen() {
 
           <View style={styles.dailyTotalContainer}>
             <View style={styles.divider} />
-            <Text style={styles.dailyTotalText}>Today's meditaiton on the Divine Name</Text>
+            <Text style={styles.dailyTotalText}>Today's meditation on the Divine Name</Text>
             <View style={styles.divider} />
             <Text style={styles.dailyTotalTime}>{formatDescriptiveTime(todayTotal)}</Text>
           </View>
@@ -259,19 +268,16 @@ const styles = StyleSheet.create({
   timerContent: {
     justifyContent: 'center',
     alignItems: 'center',
+    minWidth: '60%',
   },
   timerText: {
     fontSize: getResponsiveFontSize(55),
     fontWeight: '300',
     color: THEME.text,
     fontVariant: ['tabular-nums'],
-  },
-  timerSubtitle: {
-    fontSize: 12,
-    color: THEME.lightText,
+    textAlign: 'center',
+    includeFontPadding: false,
     letterSpacing: 2,
-    marginTop: 4,
-    textTransform: 'uppercase',
   },
   bottomContainer: {
     paddingHorizontal: 20,

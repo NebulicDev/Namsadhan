@@ -113,7 +113,7 @@ export default function HomeScreen() {
     <SafeAreaView style={styles.screenContainer}>
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <View style={styles.header}>
-          <Text style={styles.title}>Nimbargi Sampradaya</Text>
+          <Text style={styles.title} numberOfLines={1} adjustsFontSizeToFit={true} >Nimbargi Sampradaya</Text>
           <Text style={styles.subtitle}>Shri Gurudev Ranade Samadhi Trust</Text>
         </View>
 
