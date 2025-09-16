@@ -9,13 +9,16 @@ import {
   Animated,
   AppState,
   AppStateStatus,
+  Dimensions,
   SafeAreaView,
   StyleSheet,
   Text,
   TouchableOpacity,
-  View
+  View,
 } from 'react-native';
 import { CircularProgress } from 'react-native-circular-progress';
+
+const { width: screenWidth } = Dimensions.get('window');
 
 const THEME = {
   background: '#FFF8F0',
@@ -43,6 +46,11 @@ const formatDescriptiveTime = (timeInSeconds: number) => {
   const seconds = timeInSeconds % 60;
   const pad = (num: number) => (num < 10 ? `0${num}` : num);
   return `${pad(hours)} h ${pad(minutes)} m ${pad(seconds)} s`;
+};
+
+const getResponsiveFontSize = (baseFontSize: number) => {
+  const scale = screenWidth / 375; // 375 is a common base width
+  return Math.round(baseFontSize * scale);
 };
 
 export default function TimerScreen() {
@@ -120,7 +128,7 @@ export default function TimerScreen() {
           setAlertInfo({ ...alertInfo, visible: false });
           setTime(0);
           startTimeRef.current = 0;
-        }
+        },
       });
     }
     setIsActive(false);
@@ -142,13 +150,15 @@ export default function TimerScreen() {
         startTimeRef.current = 0;
         progressAnim.setValue(0);
         setAlertInfo({ ...alertInfo, visible: false });
-      }
+      },
     });
   };
 
   const today = new Date().toISOString().split('T')[0];
   const todayTotal = dailyTotals.find((d) => d.date === today)?.totalDuration ?? 0;
   const isTimerIdle = time === 0 && !isActive;
+
+  const circularProgressSize = screenWidth * 0.7;
 
   return (
     <SafeAreaView style={styles.screenContainer}>
@@ -159,7 +169,7 @@ export default function TimerScreen() {
 
         <View style={styles.timerContainer}>
           <CircularProgress
-            size={260}
+            size={circularProgressSize}
             width={12}
             fill={(time % 60) * (100 / 60)}
             tintColor={THEME.accent}
@@ -186,7 +196,11 @@ export default function TimerScreen() {
               <RotateCcw size={28} color={isTimerIdle ? THEME.lightText : THEME.text} />
             </TouchableOpacity>
             <TouchableOpacity style={styles.startPauseButton} onPress={handleStartPause}>
-              {isActive ? <Pause size={32} color={THEME.white} /> : <Play size={32} color={THEME.white} style={{ marginLeft: 4 }} />}
+              {isActive ? (
+                <Pause size={32} color={THEME.white} />
+              ) : (
+                <Play size={32} color={THEME.white} style={{ marginLeft: 4 }} />
+              )}
             </TouchableOpacity>
             <TouchableOpacity
               style={[styles.controlButton, isTimerIdle && styles.disabledButton]}
@@ -199,9 +213,7 @@ export default function TimerScreen() {
 
           <View style={styles.dailyTotalContainer}>
             <View style={styles.divider} />
-            <Text style={styles.dailyTotalText}>
-              Today's meditaiton on the Divine Name
-            </Text>
+            <Text style={styles.dailyTotalText}>Today's meditaiton on the Divine Name</Text>
             <View style={styles.divider} />
             <Text style={styles.dailyTotalTime}>{formatDescriptiveTime(todayTotal)}</Text>
           </View>
@@ -222,7 +234,7 @@ export default function TimerScreen() {
 }
 
 const styles = StyleSheet.create({
-    screenContainer: {
+  screenContainer: {
     flex: 1,
     backgroundColor: THEME.background,
   },
@@ -249,7 +261,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   timerText: {
-    fontSize: 60,
+    fontSize: getResponsiveFontSize(55),
     fontWeight: '300',
     color: THEME.text,
     fontVariant: ['tabular-nums'],

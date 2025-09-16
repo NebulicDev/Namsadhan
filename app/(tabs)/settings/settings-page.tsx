@@ -21,7 +21,6 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { WebView } from 'react-native-webview';
 
 const THEME = {
   background: '#FFF8F0',
@@ -157,13 +156,6 @@ export default function SettingsPage() {
           </View>
           <ScrollView contentContainerStyle={styles.pageContainer}>
             <View style={styles.infoCard}>
-              <Text style={styles.sectionTitle}>Cheque Info</Text>
-              <Text style={styles.infoText}>
-                Cheque should be drawn in the favour of:{'\n'}
-                <Text style={{ fontWeight: 'bold' }}>Shri Gurudev Ranade Samadhi Trust</Text>
-              </Text>
-            </View>
-            <View style={styles.infoCard}>
               <Text style={styles.sectionTitle}>Online Bank Transfer</Text>
               <Text style={styles.infoText}><Text style={{ fontWeight: 'bold' }}>Name:</Text> Shri Gurudev Ranade Samadhi Trust</Text>
               <Text style={styles.infoText}><Text style={{ fontWeight: 'bold' }}>Bank:</Text> IDBI</Text>
@@ -184,10 +176,18 @@ export default function SettingsPage() {
                 <Text style={styles.actionText}>+91-63633 83415 (JIO)</Text>
               </TouchableOpacity>
             </View>
-            <View style={[styles.infoCard, { height: 400 }]}>
+
+            <View style={styles.infoCard}>
+              <Text style={styles.sectionTitle}>Cheque Information</Text>
+              <Text style={styles.infoText}>
+                Cheques should be made payable to:{'\n'}
+                <Text style={{ fontWeight: 'bold' }}>Shri Gurudev Ranade Samadhi Trust</Text>
+              </Text>
+            </View>
+            {/* <View style={[styles.infoCard, { height: 400 }]}>
               <Text style={styles.sectionTitle}>Donate via Website</Text>
               <WebView source={{ uri: 'https://www.nimbargisampradaya.org/donation' }} />
-            </View>
+            </View> */}
           </ScrollView>
         </SafeAreaView>
       </Modal>
