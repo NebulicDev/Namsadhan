@@ -8,6 +8,7 @@ export default {
     "scheme": "namsadhan",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
+    assetBundlePatterns: ['**/*'],
     "ios": {
       "supportsTablet": true
     },
