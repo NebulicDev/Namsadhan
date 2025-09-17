@@ -136,9 +136,9 @@ export default function HomeScreen() {
         </View>
 
         <View style={styles.prayerContainer}>
-          <Text style={styles.scrollLine}>{"─".repeat(40)}</Text>
-          <Text style={styles.prayerText}>{typedText}</Text>
-          <Text style={styles.scrollLine}>{"─".repeat(40)}</Text>
+          <Text style={styles.scrollLine} numberOfLines={1} adjustsFontSizeToFit={true}>{"─".repeat(40)}</Text>
+          <Text style={styles.prayerText} numberOfLines={1} adjustsFontSizeToFit={true}>{typedText}</Text>
+          <Text style={styles.scrollLine} numberOfLines={1} adjustsFontSizeToFit={true}>{"─".repeat(40)}</Text>
         </View>
       </ScrollView>
 
