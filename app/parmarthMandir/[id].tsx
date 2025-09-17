@@ -1,3 +1,4 @@
+// app/parmarthMandir/[id].tsx
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { ChevronLeft } from 'lucide-react-native';
 import { useEffect, useState } from 'react';
@@ -11,16 +12,16 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { nityaNemavaliContent } from '../../assets/text/nityaNemavaliContent'; // Import the local content
+// UPDATED IMPORT: We remove the curly braces {}
+import parmarthMandirContent from '../../assets/text/parmarthMandirContent';
 
 const THEME = {
   background: '#FFF8F0',
   text: '#5D4037',
   primary: '#D2B48C',
-  lightText: '#A1887F',
 };
 
-export default function NityanemavaliDetailsScreen() {
+export default function ParmarthMandirDetailsScreen() {
   const router = useRouter();
   const params = useLocalSearchParams();
   const { id: sectionId, sectionTitle } = params;
@@ -30,14 +31,16 @@ export default function NityanemavaliDetailsScreen() {
   useEffect(() => {
     setIsLoading(true);
     if (sectionId && typeof sectionId === 'string') {
-      // Check if the content for the given sectionId exists in our local file
-      if (nityaNemavaliContent[sectionId]) {
-        setContent(nityaNemavaliContent[sectionId]);
+      // UPDATED CHECK: This is a safer way to check if the key exists in the object.
+      if (sectionId in parmarthMandirContent) {
+        setContent(parmarthMandirContent[sectionId]);
       } else {
         Alert.alert('Error', 'Content for this section was not found.');
+        setContent(''); // Ensure content is not undefined
       }
     } else {
       Alert.alert('Error', 'Invalid section ID.');
+      setContent(''); // Ensure content is not undefined
     }
     setIsLoading(false);
   }, [sectionId]);

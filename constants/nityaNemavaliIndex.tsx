@@ -27,8 +27,8 @@ export const nityaNemavaliIndex = [
   { id: 'section_15', title: '१५. पंचपदी' },
   { id: 'section_16', title: '१६. दासबोध दशक ४, समास ३ रा' },
   { id: 'section_17', title: '१७. दासबोध दशक ४, समास ८ वा' },
-  { id: 'section_18', title: '१८. मनाचे श्लोक (१ ते १०)' },
+  { id: 'section_18', title: '१८. मनाचे श्र्लोक (१ ते १०)' },
   { id: 'section_19', title: '१९. नारायण स्तोत्र' },
   { id: 'section_20', title: '२०. निर्वाणषटकम्' },
-  { id: 'section_21', title: '२१. आरती नंतर म्हटले जाणारे श्लोक व पदे' },
+  { id: 'section_21', title: '२१. आरती नंतर म्हटले जाणारे श्र्लोक व पदे' },
 ];

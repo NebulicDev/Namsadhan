@@ -5,7 +5,16 @@ import * as FileSystem from 'expo-file-system';
 import { useRouter } from 'expo-router';
 import { ChevronLeft, Download, Music4, Pause, Play, Trash2 } from 'lucide-react-native';
 import { useEffect, useState } from 'react';
-import { ActivityIndicator, Alert, FlatList, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import {
+  ActivityIndicator,
+  Alert,
+  FlatList,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import { useAudio } from '../context/AudioContext';
 
 const THEME = {
@@ -14,15 +23,35 @@ const THEME = {
   lightText: '#A1887F',
   card: '#FFFFFF',
   primary: '#D2B48C',
-  accent: '#FFA07A',
+  accent: '#FFB88D',
 };
 
 const MUSIC_DATA = [
-  { id: '1', title: 'Prastavik', url: 'https://drive.google.com/uc?export=download&id=1ZE4IOKTcwbWDVsIfEg6t_y6ouv9N57W2' },
-  { id: '2', title: 'Kakad Arti',  url: 'https://drive.google.com/uc?export=download&id=1QE4obQNx2RebmgXtgyvIoLscu7EIBigZ' },
-  { id: '3', title: 'Sakalche Bhajan', url: 'https://drive.google.com/uc?export=download&id=1s9Me_3pQlmSchAmRzGvSFQZUOTJRfw-G' },
-  { id: '4', title: 'Duparche Bhajan', url: 'https://drive.google.com/uc?export=download&id=1KRfT9noKVEtnAVu2Okl23WKFCPQEpb7O' },
-  { id: '5', title: 'Ratriche Bhajan', url: 'https://drive.google.com/uc?export=download&id=1s8cyIaOGAcQHXAUB5PouJF7dde-HDFdg' },
+  {
+    id: '1',
+    title: 'Prastavik',
+    url: 'https://drive.google.com/uc?export=download&id=1ZE4IOKTcwbWDVsIfEg6t_y6ouv9N57W2',
+  },
+  {
+    id: '2',
+    title: 'Kakad Arti',
+    url: 'https://drive.google.com/uc?export=download&id=1QE4obQNx2RebmgXtgyvIoLscu7EIBigZ',
+  },
+  {
+    id: '3',
+    title: 'Sakalche Bhajan',
+    url: 'https://drive.google.com/uc?export=download&id=1s9Me_3pQlmSchAmRzGvSFQZUOTJRfw-G',
+  },
+  {
+    id: '4',
+    title: 'Duparche Bhajan',
+    url: 'https://drive.google.com/uc?export=download&id=1KRfT9noKVEtnAVu2Okl23WKFCPQEpb7O',
+  },
+  {
+    id: '5',
+    title: 'Ratriche Bhajan',
+    url: 'https://drive.google.com/uc?export=download&id=1s8cyIaOGAcQHXAUB5PouJF7dde-HDFdg',
+  },
 ];
 
 export default function BhajansScreen() {
@@ -55,7 +84,7 @@ export default function BhajansScreen() {
   };
 
   const downloadTrack = async (track: any) => {
-    setDownloadingTracks(prev => ({ ...prev, [track.id]: true }));
+    setDownloadingTracks((prev) => ({ ...prev, [track.id]: true }));
     const fileUri = FileSystem.documentDirectory + `${track.id}.mp3`;
     try {
       const { uri } = await FileSystem.downloadAsync(track.url, fileUri);
@@ -64,8 +93,38 @@ export default function BhajansScreen() {
       console.error('Error downloading track:', error);
       Alert.alert('Download Error', 'Could not download the bhajan. Please try again.');
     } finally {
-      setDownloadingTracks(prev => ({ ...prev, [track.id]: false }));
+      setDownloadingTracks((prev) => ({ ...prev, [track.id]: false }));
     }
+  };
+
+  const deleteTrack = async (trackId: string) => {
+    Alert.alert(
+      'Delete Bhajan',
+      'Are you sure you want to delete this downloaded bhajan?',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Delete',
+          onPress: async () => {
+            try {
+              if (currentTrackId === trackId) {
+                await pauseSound();
+              }
+              await FileSystem.deleteAsync(downloadedTracks[trackId], { idempotent: true });
+              const updatedTracks = { ...downloadedTracks };
+              delete updatedTracks[trackId];
+              setDownloadedTracks(updatedTracks);
+              await AsyncStorage.setItem('downloaded_bhajans', JSON.stringify(updatedTracks));
+              Alert.alert('Success', 'The bhajan has been deleted.');
+            } catch (error) {
+              console.error('Failed to delete bhajan', error);
+              Alert.alert('Error', 'Could not delete the bhajan.');
+            }
+          },
+          style: 'destructive',
+        },
+      ]
+    );
   };
 
   const handlePlayPause = async (track: any) => {
@@ -85,40 +144,12 @@ export default function BhajansScreen() {
       await playSound(isDownloaded, track.id);
     }
   };
-  
-  const clearDownloads = async () => {
-    Alert.alert(
-      "Clear All Downloads",
-      "Are you sure you want to delete all downloaded bhajans? This cannot be undone.",
-      [
-        { text: "Cancel", style: "cancel" },
-        {
-          text: "Clear",
-          onPress: async () => {
-            try {
-              await pauseSound();
-              for (const trackId in downloadedTracks) {
-                await FileSystem.deleteAsync(downloadedTracks[trackId], { idempotent: true });
-              }
-              await AsyncStorage.removeItem('downloaded_bhajans');
-              setDownloadedTracks({});
-              Alert.alert('Success', 'All downloaded bhajans have been cleared.');
-            } catch (error) {
-              console.error('Failed to clear downloads', error);
-              Alert.alert('Error', 'Could not clear all downloads.');
-            }
-          },
-          style: "destructive",
-        },
-      ]
-    );
-  };
-  
+
   const formatTime = (millis: number) => {
     if (!millis) return '0:00';
     const minutes = Math.floor(millis / 60000);
     const seconds = ((millis % 60000) / 1000).toFixed(0);
-    return `${minutes}:${(parseInt(seconds) < 10 ? '0' : '')}${seconds}`;
+    return `${minutes}:${parseInt(seconds) < 10 ? '0' : ''}${seconds}`;
   };
 
   const onSlidingComplete = async (value: number) => {
@@ -133,19 +164,36 @@ export default function BhajansScreen() {
     return (
       <View style={styles.card}>
         <View style={styles.trackRow}>
-          <View style={styles.iconContainer}><Music4 size={28} color={THEME.primary} /></View>
+          <View style={styles.iconContainer}>
+            <Music4 size={28} color={THEME.primary} />
+          </View>
           <View style={styles.trackInfo}>
             <Text style={styles.trackTitle}>{item.title}</Text>
           </View>
-          {isDownloaded ? (
-            <TouchableOpacity style={styles.playButton} onPress={() => handlePlayPause(item)}>
-              {isActive && isPlaying ? <Pause size={28} color={THEME.accent} /> : <Play size={28} color={THEME.accent} />}
-            </TouchableOpacity>
-          ) : (
-            <TouchableOpacity style={styles.playButton} onPress={() => downloadTrack(item)} disabled={isDownloading}>
-              {isDownloading ? <ActivityIndicator color={THEME.primary} /> : <Download size={28} color={THEME.primary} />}
+
+          {isDownloaded && (
+            <TouchableOpacity style={styles.actionButton} onPress={() => deleteTrack(item.id)}>
+              <Trash2 size={24} color={THEME.lightText} />
             </TouchableOpacity>
           )}
+
+          <TouchableOpacity
+            style={styles.actionButton}
+            onPress={() => (isDownloaded ? handlePlayPause(item) : downloadTrack(item))}
+            disabled={isDownloading}
+          >
+            {isDownloading ? (
+              <ActivityIndicator color={THEME.primary} />
+            ) : isDownloaded ? (
+              isActive && isPlaying ? (
+                <Pause size={28} color={THEME.accent} />
+              ) : (
+                <Play size={28} color={THEME.accent} />
+              )
+            ) : (
+              <Download size={28} color={THEME.primary} />
+            )}
+          </TouchableOpacity>
         </View>
         {isActive && (
           <View style={styles.sliderView}>
@@ -172,13 +220,11 @@ export default function BhajansScreen() {
   return (
     <SafeAreaView style={styles.screenContainer}>
       <View style={styles.header}>
-         <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
+        <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
           <ChevronLeft size={28} color={THEME.text} />
         </TouchableOpacity>
         <Text style={styles.title}>Bhajans</Text>
-        <TouchableOpacity onPress={clearDownloads} style={styles.clearButton}>
-          <Trash2 size={24} color={THEME.text} />
-        </TouchableOpacity>
+        <View style={{ width: 28 }} />
       </View>
       <FlatList
         data={MUSIC_DATA}
@@ -192,16 +238,45 @@ export default function BhajansScreen() {
 
 const styles = StyleSheet.create({
   screenContainer: { flex: 1, backgroundColor: THEME.background },
-  header: { paddingTop: 60, paddingHorizontal: 20, marginBottom: 10, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
+  header: {
+    paddingTop: 60,
+    paddingHorizontal: 20,
+    marginBottom: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
   backButton: { marginRight: 15 },
   title: { fontSize: 28, fontWeight: 'bold', color: THEME.text, flex: 1 },
-  clearButton: { padding: 5 },
   listContent: { paddingHorizontal: 20, paddingBottom: 40 },
-  card: { backgroundColor: THEME.card, borderRadius: 15, padding: 20, marginBottom: 15, elevation: 3, shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.05, shadowRadius: 5 },
-  iconContainer: { width: 50, height: 50, borderRadius: 10, backgroundColor: THEME.background, justifyContent: 'center', alignItems: 'center', marginRight: 15 },
+  card: {
+    backgroundColor: THEME.card,
+    borderRadius: 15,
+    padding: 20,
+    marginBottom: 15,
+    elevation: 3,
+    shadowColor: 'rgba(93, 64, 55, 0.4)',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 5,
+  },
+  iconContainer: {
+    width: 50,
+    height: 50,
+    borderRadius: 10,
+    backgroundColor: THEME.background,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 15,
+  },
   trackInfo: { flex: 1 },
   trackTitle: { fontSize: 18, fontWeight: '600', color: THEME.text },
-  playButton: { width: 50, height: 50, justifyContent: 'center', alignItems: 'center' },
+  actionButton: {
+    width: 50,
+    height: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   trackRow: {
     flexDirection: 'row',
     alignItems: 'center',

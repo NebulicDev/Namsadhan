@@ -1,106 +1,152 @@
-import { CheckCircle } from 'lucide-react-native';
+// components/CustomAlert.tsx
+import { AlertTriangle, CheckCircle2, X } from 'lucide-react-native';
 import React from 'react';
-import { Modal, Pressable, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 const THEME = {
-  primary: '#D2B48C',
+  background: 'rgba(59, 44, 39, 0.18)',
+  card: '#FFFFFF',
   text: '#5D4037',
   lightText: '#A1887F',
-  white: '#FFFFFF',
-  success: '#5cb85c',
-  card: '#FFFFFF',
+  accent: '#FFB88D',
+  danger: '#D9534F',
+  shadow: 'rgba(93, 64, 55, 0.15)',
+  disabled: '#EAE3DA',
 };
+
+export type AlertType = 'success' | 'confirm';
 
 interface CustomAlertProps {
   visible: boolean;
   title: string;
   message: string;
+  type?: AlertType;
   onClose: () => void;
+  onConfirm?: () => void;
+  confirmText?: string;
+  cancelText?: string;
 }
 
-export default function CustomAlert({ visible, title, message, onClose }: CustomAlertProps) {
+const CustomAlert: React.FC<CustomAlertProps> = ({
+  visible,
+  title,
+  message,
+  type = 'success',
+  onClose,
+  onConfirm,
+  confirmText = 'OK',
+  cancelText = 'Cancel',
+}) => {
+  const Icon = type === 'success' ? CheckCircle2 : AlertTriangle;
+  const iconColor = type === 'success' ? THEME.accent : THEME.danger;
+
   return (
-    <Modal
-      animationType="fade"
-      transparent={true}
-      visible={visible}
-      onRequestClose={onClose}
-    >
-      <Pressable style={styles.modalOverlay} onPress={onClose}>
-        <Pressable style={styles.modalContent}>
-          <View style={styles.iconContainer}>
-            <CheckCircle size={48} color={THEME.white} />
-          </View>
-          <Text style={styles.modalTitle}>{title}</Text>
-          <Text style={styles.modalMessage}>{message}</Text>
+    <Modal animationType="fade" transparent={true} visible={visible} onRequestClose={onClose}>
+      <View style={styles.container}>
+        <View style={styles.alertBox}>
           <TouchableOpacity style={styles.closeButton} onPress={onClose}>
-            <Text style={styles.closeButtonText}>OK</Text>
+            <X size={20} color={THEME.lightText} />
           </TouchableOpacity>
-        </Pressable>
-      </Pressable>
+
+          <View style={styles.iconContainer}>
+            <Icon size={40} color={iconColor} />
+          </View>
+
+          <Text style={styles.title}>{title}</Text>
+          <Text style={styles.message}>{message}</Text>
+
+          <View style={styles.buttonContainer}>
+            {type === 'confirm' && (
+              <TouchableOpacity style={[styles.button, styles.cancelButton]} onPress={onClose}>
+                <Text style={[styles.buttonText, styles.cancelButtonText]}>{cancelText}</Text>
+              </TouchableOpacity>
+            )}
+            <TouchableOpacity
+              style={[styles.button, type === 'confirm' ? styles.confirmButton : styles.successButton]}
+              onPress={onConfirm || onClose}
+            >
+              <Text style={styles.buttonText}>{confirmText}</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </View>
     </Modal>
   );
-}
+};
 
 const styles = StyleSheet.create({
-  modalOverlay: {
+  container: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(255, 255, 255, 0.6)', // Using a semi-transparent text color for the overlay
+    backgroundColor: THEME.background,
   },
-  modalContent: {
+  alertBox: {
     width: '85%',
     maxWidth: 320,
     backgroundColor: THEME.card,
-    borderRadius: 20,
-    paddingHorizontal: 25,
-    paddingBottom: 25,
-    paddingTop: 60, // Top padding to make space for the icon
+    borderRadius: 24,
+    padding: 25,
     alignItems: 'center',
-    elevation: 10,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.2,
-    shadowRadius: 10,
+    elevation: 20,
+    shadowColor: THEME.shadow,
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 1,
+    shadowRadius: 30,
+  },
+  closeButton: {
+    position: 'absolute',
+    top: 15,
+    right: 15,
   },
   iconContainer: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    backgroundColor: THEME.success,
-    justifyContent: 'center',
-    alignItems: 'center',
-    position: 'absolute',
-    top: -40, // Position the icon half-way outside the top of the card
-    borderWidth: 4,
-    borderColor: THEME.card,
+    marginBottom: 15,
   },
-  modalTitle: {
+  title: {
     fontSize: 22,
     fontWeight: 'bold',
     color: THEME.text,
-    marginBottom: 10,
     textAlign: 'center',
+    marginBottom: 10,
   },
-  modalMessage: {
+  message: {
     fontSize: 16,
     color: THEME.lightText,
     textAlign: 'center',
     marginBottom: 25,
-    lineHeight: 24,
+    lineHeight: 22,
   },
-  closeButton: {
-    backgroundColor: THEME.primary,
-    borderRadius: 12,
-    paddingVertical: 12,
-    paddingHorizontal: 40,
-    alignSelf: 'stretch',
+  buttonContainer: {
+    flexDirection: 'row',
+    width: '100%',
+    justifyContent: 'space-around',
+  },
+  button: {
+    flex: 1,
+    paddingVertical: 14,
+    borderRadius: 16,
+    justifyContent: 'center',
     alignItems: 'center',
+    marginHorizontal: 5,
   },
-  closeButtonText: {
-    color: THEME.white,
+  cancelButton: {
+    backgroundColor: THEME.disabled,
+  },
+  confirmButton: {
+    backgroundColor: THEME.danger,
+  },
+  successButton: {
+    backgroundColor: THEME.accent,
+    flex: 0.8,
+  },
+  buttonText: {
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: 'bold',
+    color: THEME.white,
+  },
+  cancelButtonText: {
+    color: THEME.text,
   },
 });
+
+export default CustomAlert;

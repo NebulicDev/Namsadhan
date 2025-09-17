@@ -1,8 +1,8 @@
+// app/parmarthMandir/index.tsx
 import { useRouter } from 'expo-router';
 import { ChevronLeft, ChevronRight } from 'lucide-react-native';
 import { FlatList, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-
-import { nityaNemavaliIndex } from '../../constants/nityaNemavaliIndex';
+import { parmarthMandirIndex } from '../../constants/parmarthMandirIndex';
 
 const THEME = {
   background: '#FFF8F0',
@@ -11,28 +11,26 @@ const THEME = {
   card: '#FFFFFF',
 };
 
-export default function NityanemavaliIndexScreen() {
+export default function ParmarthMandirIndexScreen() {
   const router = useRouter();
 
-  // Flatten data with indentation for subsections
-  const flattenedIndex = [];
-  nityaNemavaliIndex.forEach(item => {
-    flattenedIndex.push({ ...item, isSubsection: false, indent: 0 });
-    if (item.subsections) {
-      item.subsections.forEach(subItem =>
-        flattenedIndex.push({ ...subItem, isSubsection: true, indent: 20 })
-      );
-    }
-  });
-
   const handlePressItem = (item) => {
-    router.push({ pathname: `/nityaNemavali/${item.id}`, params: { sectionTitle: item.title } });
+    // If the item is section 8, navigate to the special grid screen
+    if (item.id === 'section_8') {
+      router.push({ pathname: `/parmarthMandir/section8`, params: { sectionTitle: item.title } });
+    } else if (item.subsections) {
+      // **NEW LOGIC**: If it has subsections, go to the subsection list screen
+      router.push({ pathname: `/parmarthMandir/subsections/${item.id}`, params: { parentTitle: item.title } });
+    } else {
+      // Otherwise, navigate to the standard content screen
+      router.push({ pathname: `/parmarthMandir/${item.id}`, params: { sectionTitle: item.title } });
+    }
   };
 
   const renderItem = ({ item }) => (
     <TouchableOpacity
       onPress={() => handlePressItem(item)}
-      style={[styles.card, item.isSubsection && { paddingLeft: item.indent + 15 }]}
+      style={styles.card}
       activeOpacity={0.7}
     >
       <Text style={styles.itemText}>{item.title}</Text>
@@ -46,10 +44,10 @@ export default function NityanemavaliIndexScreen() {
         <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
           <ChevronLeft size={24} color={THEME.text} />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Nityanemavali</Text>
+        <Text style={styles.headerTitle}>Parmarth Mandir</Text>
       </View>
       <FlatList
-        data={flattenedIndex}
+        data={parmarthMandirIndex}
         keyExtractor={(item) => item.id}
         renderItem={renderItem}
         contentContainerStyle={styles.listContent}

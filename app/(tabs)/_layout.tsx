@@ -1,20 +1,34 @@
+import * as Haptics from 'expo-haptics';
 import { Tabs } from 'expo-router';
-import { BookOpen, Home, Library, Settings, Sun } from 'lucide-react-native';
-import React from 'react';
+import { BookOpen, Home, Library, Sun, UserRound } from 'lucide-react-native';
+import { Pressable } from 'react-native';
 import { SessionProvider } from '../../context/SessionContext';
 
 // --- Theme Colors ---
 const THEME = {
   background: '#FFF8F0',
   primary: '#D2B48C',
-  accent: '#FFA07A',
+  accent: '#FFB88D',
   text: '#5D4037',
   white: '#FFFFFF',
 };
 
+// Haptic Pressable Component
+const HapticPressable = (props: any) => (
+  <Pressable
+    {...props}
+    onPress={(e) => {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+      if (props.onPress) {
+        props.onPress(e);
+      }
+    }}
+  />
+);
+
 export default function TabsLayout() {
   return (
-    <SessionProvider> 
+    <SessionProvider>
       <Tabs
         screenOptions={{
           headerShown: false,
@@ -25,7 +39,7 @@ export default function TabsLayout() {
             paddingBottom: 30,
             paddingTop: 10,
             elevation: 10,
-            shadowColor: '#000',
+            shadowColor: 'rgba(93, 64, 55, 0.4)',
             shadowOffset: { width: 0, height: -3 },
             shadowOpacity: 0.05,
             shadowRadius: 4,
@@ -44,6 +58,7 @@ export default function TabsLayout() {
           options={{
             title: 'Home',
             tabBarIcon: ({ color }) => <Home size={26} color={color} strokeWidth={2.5} />,
+            tabBarButton: (props) => <HapticPressable {...props} />,
           }}
         />
         <Tabs.Screen
@@ -51,13 +66,15 @@ export default function TabsLayout() {
           options={{
             title: 'Thoughts',
             tabBarIcon: ({ color }) => <BookOpen size={26} color={color} strokeWidth={2.5} />,
+            tabBarButton: (props) => <HapticPressable {...props} />,
           }}
         />
         <Tabs.Screen
-          name="namasmaran" 
+          name="namasmaran"
           options={{
             title: 'Sadhana',
-            tabBarIcon: ({ color }) => <Sun size={26} color={color} strokeWidth={2.5}/>,
+            tabBarIcon: ({ color }) => <Sun size={26} color={color} strokeWidth={2.5} />,
+            tabBarButton: (props) => <HapticPressable {...props} />,
           }}
         />
         <Tabs.Screen
@@ -65,13 +82,15 @@ export default function TabsLayout() {
           options={{
             title: 'Resources',
             tabBarIcon: ({ color }) => <Library size={26} color={color} strokeWidth={2.5} />,
+            tabBarButton: (props) => <HapticPressable {...props} />,
           }}
         />
         <Tabs.Screen
           name="settings"
           options={{
-            title: 'Settings',
-            tabBarIcon: ({ color }) => <Settings size={26} color={color} strokeWidth={2.5} />,
+            title: 'Profile',
+            tabBarIcon: ({ color }) => <UserRound size={26} color={color} strokeWidth={2.5} />,
+            tabBarButton: (props) => <HapticPressable {...props} />,
           }}
         />
       </Tabs>
