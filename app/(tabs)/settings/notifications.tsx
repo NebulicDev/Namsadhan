@@ -18,6 +18,7 @@ import {
     scheduleIntervalNotification,
 } from '../../../services/NotificationService';
 
+
 const THEME = {
   background: '#FFF8F0',
   text: '#5D4037',
@@ -25,6 +26,7 @@ const THEME = {
   card: '#FFFFFF',
   primary: '#D2B48C',
 };
+
 
 const FREQUENCY_OPTIONS = [
   { label: 'Every hour', value: 1 },
@@ -34,13 +36,16 @@ const FREQUENCY_OPTIONS = [
   { label: 'Off', value: 0 },
 ];
 
+
 const STORAGE_KEY = 'notification_frequency';
+
 
 export default function NotificationSettingsPage() {
   const [selectedFrequency, setSelectedFrequency] = useState<number>(3); // default 3 hrs
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
   const insets = useSafeAreaInsets();
+
 
   useEffect(() => {
     const loadFrequency = async () => {
@@ -61,10 +66,12 @@ export default function NotificationSettingsPage() {
     loadFrequency();
   }, []);
 
+
   const handleSelectFrequency = async (hours: number) => {
     try {
       setSelectedFrequency(hours);
       await AsyncStorage.setItem(STORAGE_KEY, String(hours));
+
 
       if (hours > 0) {
         await scheduleIntervalNotification(hours);
@@ -82,6 +89,7 @@ export default function NotificationSettingsPage() {
     }
   };
 
+
   if (isLoading) {
     return (
       <SafeAreaView style={[styles.screenContainer, { paddingTop: insets.top, justifyContent: 'center', alignItems: 'center' }]}>
@@ -89,6 +97,7 @@ export default function NotificationSettingsPage() {
       </SafeAreaView>
     );
   }
+
 
   return (
     <SafeAreaView style={[styles.screenContainer, { paddingTop: insets.top }]}>
@@ -98,13 +107,13 @@ export default function NotificationSettingsPage() {
           <ChevronLeft size={28} color={THEME.text} />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Notifications</Text>
-        <View style={{ width: 40 }} />
       </View>
+
 
       {/* Content */}
       <ScrollView contentContainerStyle={styles.container}>
         <Text style={styles.subtitle}>
-          How often you would like get reminded.
+          Namasmaran reminder frequency
         </Text>
         <View style={styles.card}>
           {FREQUENCY_OPTIONS.map((option, index) => (
@@ -125,6 +134,7 @@ export default function NotificationSettingsPage() {
   );
 }
 
+
 const styles = StyleSheet.create({
   screenContainer: {
     flex: 1,
@@ -133,16 +143,14 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
     paddingHorizontal: 10,
     paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: '#F0EAE4',
   },
   headerTitle: {
     fontSize: 20,
     fontWeight: 'bold',
     color: THEME.text,
+    marginLeft: 10,
   },
   backButton: {
     padding: 5,
