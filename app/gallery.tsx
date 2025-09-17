@@ -13,10 +13,10 @@ const THEME = {
 
 // --- Dummy Data for Albums ---
 const ALBUMS_DATA = [
-  { id: '1', title: 'Shri Gurudev', images: [require('@/assets/images/gurudeo-ranade.png'), require('@/assets/images/nimbargi-maharaj.png')] },
-  { id: '2', title: 'Nimbal Ashram', images: [require('@/assets/images/bhausaheb-maharaj.png')] },
-  { id: '3', title: 'Gurudev\'s Nivas', images: [require('@/assets/images/amburao-maharaj.png')] },
-  { id: '4', title: 'Events', images: [require('@/assets/images/nimbargi-maharaj.png')] },
+  { id: '1', title: 'Shri Gurudev', images: [require('@/assets/images/shri-gurudev-ranade.jpeg'), require('@/assets/images/shri-nimbargi-maharaj.jpeg')] },
+  { id: '2', title: 'Nimbal Ashram', images: [require('@/assets/images/shri-bhausaheb-maharaj.jpeg')] },
+  { id: '3', title: 'Gurudev\'s Nivas', images: [require('@/assets/images/shri-amburao-maharaj.jpeg')] },
+  { id: '4', title: 'Events', images: [require('@/assets/images/shri-nimbargi-maharaj.jpeg')] },
 ];
 
 // --- Component for a single album list item ---
