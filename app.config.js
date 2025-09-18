@@ -4,18 +4,17 @@ export default {
     "slug": "Namsadhan",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/images/splash-icon.png",
     "scheme": "namsadhan",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
-    assetBundlePatterns: ['**/*'],
     "ios": {
       "supportsTablet": true
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/app-icon.png",
-        "backgroundColor": "#ffffff"
+        "foregroundImage": "./assets/images/splash-icon.png",
+        "backgroundColor": "#fff8f0"
       },
       "edgeToEdgeEnabled": true,
       "package": "com.namsadhan.app",
@@ -35,7 +34,7 @@ export default {
           "image": "./assets/images/splash-icon.png",
           "imageWidth": 200,
           "resizeMode": "contain",
-          "backgroundColor": "#ffffff"
+          "backgroundColor": "#fff8f0",
         }
       ],
       "expo-asset",
