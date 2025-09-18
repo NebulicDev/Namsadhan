@@ -4,15 +4,15 @@ import { GoogleSignin, statusCodes } from '@react-native-google-signin/google-si
 import { useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import {
-    ActivityIndicator,
-    Alert,
-    Image,
-    KeyboardAvoidingView,
-    Platform,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
+  ActivityIndicator,
+  Alert,
+  Image,
+  KeyboardAvoidingView,
+  Platform,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 import { authInstance } from '../../firebaseConfig';
 
@@ -122,10 +122,10 @@ const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: THEME.background },
   inner: { flex: 1, justifyContent: 'center', alignItems: 'center', paddingHorizontal: 30 },
   appIcon: {
-    width: 120,
-    height: 120,
+    width: 200,
+    height: 150,
     borderRadius: 60,
-    marginBottom: 20,
+    marginBottom: 10,
   },
   title: { fontSize: 34, fontWeight: 'bold', color: THEME.text, marginBottom: 10 },
   subtitle: { fontSize: 16, color: THEME.lightText, marginBottom: 30, textAlign: 'center' },
