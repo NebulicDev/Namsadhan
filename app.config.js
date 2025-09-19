@@ -41,7 +41,8 @@ export default {
         }
       ],
       "expo-asset",
-      "@react-native-firebase/app"
+      "@react-native-firebase/app",
+      "expo-secure-store"
     ],
     "experiments": {
       "typedRoutes": true

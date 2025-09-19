@@ -54,7 +54,8 @@
     "react-native-webview": "13.13.5",
     "expo-notifications": "~0.31.4",
     "expo-device": "~7.1.4",
-    "@react-native-firebase/app-check": "23.3.0"
+    "@react-native-firebase/app-check": "23.3.0",
+    "expo-secure-store": "~14.2.4"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",

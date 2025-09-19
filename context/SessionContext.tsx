@@ -1,6 +1,6 @@
 // context/SessionContext.tsx
 import { db } from '@/firebaseConfig';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as SecureStore from 'expo-secure-store'; // Use SecureStore
 import React, { createContext, ReactNode, useContext, useEffect, useState } from 'react';
 import { useAuth } from './AuthContext';
 
@@ -17,8 +17,9 @@ interface SessionContextType {
 
 const SessionContext = createContext<SessionContextType | undefined>(undefined);
 
-const STORAGE_KEY = '@dailyTotals';
-const LAST_SYNC_KEY = '@lastSync';
+// REMOVED THE '@' SYMBOL FROM KEYS
+const STORAGE_KEY = 'dailyTotals';
+const LAST_SYNC_KEY = 'lastSync';
 
 export const SessionProvider = ({ children }: { children: ReactNode }) => {
   const { user } = useAuth();
@@ -36,7 +37,7 @@ export const SessionProvider = ({ children }: { children: ReactNode }) => {
 
         // 2. Check if it's time to sync with Firestore
         const now = new Date();
-        const lastSyncString = await AsyncStorage.getItem(`${LAST_SYNC_KEY}_${user.uid}`);
+        const lastSyncString = await SecureStore.getItemAsync(`${LAST_SYNC_KEY}_${user.uid}`);
         const lastSync = lastSyncString ? new Date(lastSyncString) : new Date(0);
         const oneDay = 24 * 60 * 60 * 1000;
 
@@ -54,7 +55,7 @@ export const SessionProvider = ({ children }: { children: ReactNode }) => {
             // 5. Save the merged data back to Firestore and local storage
             await docRef.set({ totals: mergedData });
             await saveToStorage(mergedData);
-            await AsyncStorage.setItem(`${LAST_SYNC_KEY}_${user.uid}`, now.toISOString());
+            await SecureStore.setItemAsync(`${LAST_SYNC_KEY}_${user.uid}`, now.toISOString());
             setDailyTotals(mergedData);
             console.log('Sync complete.');
           } catch (error) {
@@ -75,7 +76,7 @@ export const SessionProvider = ({ children }: { children: ReactNode }) => {
 
   const loadFromStorage = async (): Promise<DailyMeditation[]> => {
     try {
-      const storedTotals = await AsyncStorage.getItem(`${STORAGE_KEY}_${user?.uid}`);
+      const storedTotals = await SecureStore.getItemAsync(`${STORAGE_KEY}_${user?.uid}`);
       return storedTotals ? JSON.parse(storedTotals) : [];
     } catch (error) {
       console.error('Error loading data from local storage:', error);
@@ -85,7 +86,7 @@ export const SessionProvider = ({ children }: { children: ReactNode }) => {
 
   const saveToStorage = async (data: DailyMeditation[]) => {
     try {
-      await AsyncStorage.setItem(`${STORAGE_KEY}_${user?.uid}`, JSON.stringify(data));
+      await SecureStore.setItemAsync(`${STORAGE_KEY}_${user?.uid}`, JSON.stringify(data));
     } catch (error) {
       console.error('Error saving data to local storage:', error);
     }
