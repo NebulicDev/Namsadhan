@@ -114,7 +114,7 @@ export default function HomeScreen() {
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <View style={styles.header}>
           <Text style={styles.title} numberOfLines={1} adjustsFontSizeToFit={true} >Nimbargi Sampradaya</Text>
-          <Text style={styles.subtitle}>Shri Gurudev Ranade Samadhi Trust</Text>
+          <Text style={styles.subtitle} numberOfLines={1} adjustsFontSizeToFit={true}>Shri Gurudev Ranade Samadhi Trust</Text>
         </View>
 
         <TouchableOpacity style={styles.topCard} onPress={() => setSelectedGuide(spiritualGuides[0])}>

@@ -1,7 +1,8 @@
 // context/SessionContext.tsx
 import { db } from '@/firebaseConfig';
-import * as SecureStore from 'expo-secure-store'; // Use SecureStore
+import * as SecureStore from 'expo-secure-store';
 import React, { createContext, ReactNode, useContext, useEffect, useState } from 'react';
+import logger from '../utils/logger'; // Import the new logger
 import { useAuth } from './AuthContext';
 
 interface DailyMeditation {
@@ -17,7 +18,6 @@ interface SessionContextType {
 
 const SessionContext = createContext<SessionContextType | undefined>(undefined);
 
-// REMOVED THE '@' SYMBOL FROM KEYS
 const STORAGE_KEY = 'dailyTotals';
 const LAST_SYNC_KEY = 'lastSync';
 
@@ -26,46 +26,38 @@ export const SessionProvider = ({ children }: { children: ReactNode }) => {
   const [dailyTotals, setDailyTotals] = useState<DailyMeditation[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Effect to load data and sync with Firestore
   useEffect(() => {
     const manageData = async () => {
       if (user) {
         setLoading(true);
-        // 1. Load local data first for a snappy UI
         const localData = await loadFromStorage();
         setDailyTotals(localData);
 
-        // 2. Check if it's time to sync with Firestore
         const now = new Date();
         const lastSyncString = await SecureStore.getItemAsync(`${LAST_SYNC_KEY}_${user.uid}`);
         const lastSync = lastSyncString ? new Date(lastSyncString) : new Date(0);
         const oneDay = 24 * 60 * 60 * 1000;
 
         if (now.getTime() - lastSync.getTime() > oneDay) {
-          console.log('Time to sync with Firestore.');
-          // 3. Fetch from Firestore
+          logger.log('Time to sync with Firestore.'); // Use logger
           const docRef = db.collection('users').doc(user.uid).collection('sadhana').doc('dailyTotals');
           try {
             const doc = await docRef.get();
             const firestoreData = doc.exists ? doc.data()?.totals || [] : [];
             
-            // 4. Merge local and Firestore data
             const mergedData = mergeTotals(localData, firestoreData);
             
-            // 5. Save the merged data back to Firestore and local storage
             await docRef.set({ totals: mergedData });
             await saveToStorage(mergedData);
             await SecureStore.setItemAsync(`${LAST_SYNC_KEY}_${user.uid}`, now.toISOString());
             setDailyTotals(mergedData);
-            console.log('Sync complete.');
+            logger.log('Sync complete.'); // Use logger
           } catch (error) {
-            console.error("Error during Firestore sync:", error);
-            // If sync fails, we still have the local data loaded
+            logger.error("Error during Firestore sync:", error); // Use logger
           }
         }
         setLoading(false);
       } else {
-        // Clear data when user logs out
         setDailyTotals([]);
         setLoading(false);
       }
@@ -79,7 +71,7 @@ export const SessionProvider = ({ children }: { children: ReactNode }) => {
       const storedTotals = await SecureStore.getItemAsync(`${STORAGE_KEY}_${user?.uid}`);
       return storedTotals ? JSON.parse(storedTotals) : [];
     } catch (error) {
-      console.error('Error loading data from local storage:', error);
+      logger.error('Error loading data from local storage:', error); // Use logger
       return [];
     }
   };
@@ -88,24 +80,18 @@ export const SessionProvider = ({ children }: { children: ReactNode }) => {
     try {
       await SecureStore.setItemAsync(`${STORAGE_KEY}_${user?.uid}`, JSON.stringify(data));
     } catch (error) {
-      console.error('Error saving data to local storage:', error);
+      logger.error('Error saving data to local storage:', error); // Use logger
     }
   };
 
   const mergeTotals = (local: DailyMeditation[], remote: DailyMeditation[]): DailyMeditation[] => {
     const mergedMap = new Map<string, number>();
-
-    // Add all remote entries to the map first
     remote.forEach(item => {
         mergedMap.set(item.date, item.totalDuration);
     });
-
-    // Add or update with local entries. Local data for a given day is considered more current.
     local.forEach(item => {
         mergedMap.set(item.date, item.totalDuration);
     });
-
-    // Convert map back to an array and sort by date
     return Array.from(mergedMap, ([date, totalDuration]) => ({ date, totalDuration }))
         .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
   };

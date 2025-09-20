@@ -15,6 +15,7 @@ import {
   View,
 } from 'react-native';
 import { authInstance } from '../../firebaseConfig';
+import logger from '../../utils/logger'; // Import the new logger
 
 const WEB_CLIENT_ID = '124322613000-7ifkvsv3nkhl1mb2vcbdhkouk77nm20m.apps.googleusercontent.com';
 
@@ -49,7 +50,7 @@ export default function LoginScreen() {
       const idToken = userInfo.data?.idToken;
 
       if (!idToken) {
-        console.log('Google Sign-In Response was missing ID token:', JSON.stringify(userInfo, null, 2));
+        logger.log('Google Sign-In Response was missing ID token:', JSON.stringify(userInfo, null, 2));
         throw new Error('Something went wrong obtaining the ID token.');
       }
 
@@ -58,12 +59,12 @@ export default function LoginScreen() {
       router.replace({ pathname: '/' } as any);
 
     } catch (error: any) {
-      console.log('--- DETAILED GOOGLE SIGN-IN ERROR ---');
-      console.log(JSON.stringify(error, null, 2));
-      console.log('--- END OF ERROR ---');
+      logger.log('--- DETAILED GOOGLE SIGN-IN ERROR ---');
+      logger.log(JSON.stringify(error, null, 2));
+      logger.log('--- END OF ERROR ---');
 
       if (error.code === statusCodes.SIGN_IN_CANCELLED) {
-        console.log('User cancelled Google Sign-In.');
+        logger.log('User cancelled Google Sign-In.');
       } else {
         Alert.alert('Google Sign-In Error', error.message || 'An unknown error occurred. Please check the console logs.');
       }

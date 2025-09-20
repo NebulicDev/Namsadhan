@@ -1,8 +1,8 @@
 // app/pravachans/[year].tsx
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import Slider from '@react-native-community/slider';
 import * as FileSystem from 'expo-file-system';
 import { useLocalSearchParams, useRouter } from 'expo-router';
+import * as SecureStore from 'expo-secure-store'; // Use SecureStore
 import {
   ChevronLeft,
   Download,
@@ -22,6 +22,7 @@ import {
   View,
 } from 'react-native';
 import { useAudio } from '../../context/AudioContext';
+import logger from '../../utils/logger'; // Import the logger
 
 const THEME = {
   background: '#FFF8F0',
@@ -52,6 +53,7 @@ type PlayStatusType = {
 };
 
 const CACHE_KEY = 'pravachans_data_v2';
+const DOWNLOADED_TRACKS_KEY = 'downloaded_pravachans'; // Key for downloaded tracks
 
 export default function YearScreen() {
   const router = useRouter();
@@ -78,7 +80,7 @@ export default function YearScreen() {
       if (!year) return;
       setIsLoading(true);
       try {
-        const cachedData = await AsyncStorage.getItem(CACHE_KEY);
+        const cachedData = await SecureStore.getItemAsync(CACHE_KEY);
         if (cachedData) {
           const allPravachans: YearType[] = JSON.parse(cachedData);
           const yearData = allPravachans.find((item) => item.year === year);
@@ -87,7 +89,7 @@ export default function YearScreen() {
           }
         }
       } catch (e) {
-        console.error('Failed to load cached pravachans for year:', e);
+        logger.error('Failed to load cached pravachans for year:', e);
         Alert.alert('Error', 'Could not load the tracks for this year.');
       } finally {
         setIsLoading(false);
@@ -100,12 +102,12 @@ export default function YearScreen() {
 
   const loadDownloadedTracks = async () => {
     try {
-      const tracks = await AsyncStorage.getItem('downloaded_pravachans');
+      const tracks = await SecureStore.getItemAsync(DOWNLOADED_TRACKS_KEY);
       if (tracks) {
         setDownloadedTracks(JSON.parse(tracks));
       }
     } catch (error) {
-      console.error('Failed to load downloaded tracks from storage', error);
+      logger.error('Failed to load downloaded tracks from storage', error);
     }
   };
 
@@ -113,12 +115,12 @@ export default function YearScreen() {
     try {
       const updatedTracks = { ...downloadedTracks, [trackId]: fileUri };
       setDownloadedTracks(updatedTracks);
-      await AsyncStorage.setItem(
-        'downloaded_pravachans',
+      await SecureStore.setItemAsync(
+        DOWNLOADED_TRACKS_KEY,
         JSON.stringify(updatedTracks)
       );
     } catch (error) {
-      console.error('Failed to save downloaded track to storage', error);
+      logger.error('Failed to save downloaded track to storage', error);
     }
   };
 
@@ -129,7 +131,7 @@ export default function YearScreen() {
       const { uri } = await FileSystem.downloadAsync(track.url, fileUri);
       saveDownloadedTrack(track.id, uri);
     } catch (error) {
-      console.error('Error downloading track:', error);
+      logger.error('Error downloading track:', error);
       Alert.alert(
         'Download Error',
         'Could not download the pravachan. Please try again.'
@@ -157,12 +159,12 @@ export default function YearScreen() {
               const updatedTracks = { ...downloadedTracks };
               delete updatedTracks[track.id];
               setDownloadedTracks(updatedTracks);
-              await AsyncStorage.setItem(
-                'downloaded_pravachans',
+              await SecureStore.setItemAsync(
+                DOWNLOADED_TRACKS_KEY,
                 JSON.stringify(updatedTracks)
               );
             } catch (error) {
-              console.error('Failed to delete track', error);
+              logger.error('Failed to delete track', error);
               Alert.alert('Error', 'Could not delete the pravachan.');
             }
           },
@@ -252,104 +254,106 @@ export default function YearScreen() {
   );
 }
 
+// TrackItem component remains the same
 type TrackItemProps = {
-  item: TrackType;
-  downloadedTracks: { [key: string]: string };
-  downloadingTracks: { [key: string]: boolean };
-  handlePlayPause: (track: TrackType) => Promise<void>;
-  downloadTrack: (track: TrackType) => Promise<void>;
-  deleteTrack: (track: TrackType) => Promise<void>;
-  currentTrackId: string | null;
-  isPlaying: boolean;
-  playbackStatus: PlayStatusType;
-  onSlidingComplete: (value: number) => Promise<void>;
-  formatTime: (millis: number) => string;
+    item: TrackType;
+    downloadedTracks: { [key: string]: string };
+    downloadingTracks: { [key: string]: boolean };
+    handlePlayPause: (track: TrackType) => Promise<void>;
+    downloadTrack: (track: TrackType) => Promise<void>;
+    deleteTrack: (track: TrackType) => Promise<void>;
+    currentTrackId: string | null;
+    isPlaying: boolean;
+    playbackStatus: PlayStatusType;
+    onSlidingComplete: (value: number) => Promise<void>;
+    formatTime: (millis: number) => string;
 };
 
 const TrackItem = ({
-  item,
-  downloadedTracks,
-  downloadingTracks,
-  handlePlayPause,
-  downloadTrack,
-  deleteTrack,
-  currentTrackId,
-  isPlaying,
-  playbackStatus,
-  onSlidingComplete,
-  formatTime,
+    item,
+    downloadedTracks,
+    downloadingTracks,
+    handlePlayPause,
+    downloadTrack,
+    deleteTrack,
+    currentTrackId,
+    isPlaying,
+    playbackStatus,
+    onSlidingComplete,
+    formatTime,
 }: TrackItemProps) => {
-  const isDownloaded = !!downloadedTracks[item.id];
-  const isDownloading = downloadingTracks[item.id];
-  const isActive = item.id === currentTrackId;
+    const isDownloaded = !!downloadedTracks[item.id];
+    const isDownloading = downloadingTracks[item.id];
+    const isActive = item.id === currentTrackId;
 
-  return (
-    <View style={styles.card}>
-      <View style={styles.trackRow}>
-        <View style={styles.trackInfo}>
-          <Text style={styles.trackTitle}>{item.title}</Text>
-          <Text style={styles.trackArtist}>{item.speaker}</Text>
+    return (
+        <View style={styles.card}>
+            <View style={styles.trackRow}>
+                <View style={styles.trackInfo}>
+                    <Text style={styles.trackTitle}>{item.title}</Text>
+                    <Text style={styles.trackArtist}>{item.speaker}</Text>
+                </View>
+                <View style={styles.actionsContainer}>
+                    {isDownloaded ? (
+                        <>
+                            <TouchableOpacity
+                                style={styles.actionButton}
+                                onPress={() => handlePlayPause(item)}
+                            >
+                                {isPlaying && isActive ? (
+                                    <Pause size={24} color={THEME.accent} />
+                                ) : (
+                                    <Play size={24} color={THEME.accent} />
+                                )}
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                style={styles.actionButton}
+                                onPress={() => deleteTrack(item)}
+                            >
+                                <Trash2 size={24} color={THEME.lightText} />
+                            </TouchableOpacity>
+                        </>
+                    ) : (
+                        <TouchableOpacity
+                            style={styles.actionButton}
+                            onPress={() => downloadTrack(item)}
+                            disabled={isDownloading}
+                        >
+                            {isDownloading ? (
+                                <ActivityIndicator color={THEME.primary} />
+                            ) : (
+                                <Download size={24} color={THEME.primary} />
+                            )}
+                        </TouchableOpacity>
+                    )}
+                </View>
+            </View>
+            {isActive && (
+                <View>
+                    <Slider
+                        style={styles.slider}
+                        minimumValue={0}
+                        maximumValue={playbackStatus.duration}
+                        value={playbackStatus.position}
+                        onSlidingComplete={onSlidingComplete}
+                        minimumTrackTintColor={THEME.accent}
+                        maximumTrackTintColor={THEME.lightText}
+                        thumbTintColor={THEME.primary}
+                    />
+                    <View style={styles.timeRow}>
+                        <Text style={styles.timeText}>
+                            {formatTime(playbackStatus.position)}
+                        </Text>
+                        <Text style={styles.timeText}>
+                            {formatTime(playbackStatus.duration)}
+                        </Text>
+                    </View>
+                </View>
+            )}
         </View>
-        <View style={styles.actionsContainer}>
-          {isDownloaded ? (
-            <>
-              <TouchableOpacity
-                style={styles.actionButton}
-                onPress={() => handlePlayPause(item)}
-              >
-                {isPlaying && isActive ? (
-                  <Pause size={24} color={THEME.accent} />
-                ) : (
-                  <Play size={24} color={THEME.accent} />
-                )}
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.actionButton}
-                onPress={() => deleteTrack(item)}
-              >
-                <Trash2 size={24} color={THEME.lightText} />
-              </TouchableOpacity>
-            </>
-          ) : (
-            <TouchableOpacity
-              style={styles.actionButton}
-              onPress={() => downloadTrack(item)}
-              disabled={isDownloading}
-            >
-              {isDownloading ? (
-                <ActivityIndicator color={THEME.primary} />
-              ) : (
-                <Download size={24} color={THEME.primary} />
-              )}
-            </TouchableOpacity>
-          )}
-        </View>
-      </View>
-      {isActive && (
-        <View>
-          <Slider
-            style={styles.slider}
-            minimumValue={0}
-            maximumValue={playbackStatus.duration}
-            value={playbackStatus.position}
-            onSlidingComplete={onSlidingComplete}
-            minimumTrackTintColor={THEME.accent}
-            maximumTrackTintColor={THEME.lightText}
-            thumbTintColor={THEME.primary}
-          />
-          <View style={styles.timeRow}>
-            <Text style={styles.timeText}>
-              {formatTime(playbackStatus.position)}
-            </Text>
-            <Text style={styles.timeText}>
-              {formatTime(playbackStatus.duration)}
-            </Text>
-          </View>
-        </View>
-      )}
-    </View>
-  );
+    );
 };
+
 
 const styles = StyleSheet.create({
   screenContainer: { flex: 1, backgroundColor: THEME.background },
