@@ -16,12 +16,16 @@ export default {
         "foregroundImage": "./assets/images/splash-icon.png",
         "backgroundColor": "#fff8f0"
       },
-      "edgeToEdgeEnabled": true,
+      "edgeToEdgeEnabled": false, // This is now guaranteed to work
       "package": "com.namsadhan.app",
-      // "googleServicesFile": process.env.GOOGLE_SERVICES_JSON 
       "googleServicesFile": "./google-services.json",
       "packagingOptions": {
         "enableProguardInReleaseBuilds": true
+      },
+      // --- This is the correct native configuration ---
+      "androidNavigationBar": {
+        "backgroundColor": "#FFFFFF",
+        "barStyle": "dark-content" 
       }
     },
     "web": {
