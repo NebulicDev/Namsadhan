@@ -18,6 +18,7 @@ import {
 } from 'react-native';
 import { Calendar, DateData } from 'react-native-calendars';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import logger from '../../../utils/logger';
 
 const THEME = {
   background: '#FFF8F0',
@@ -61,7 +62,6 @@ export default function ProfileScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
 
-  // ✅ FIX: use Firebase logout directly (not from AuthContext)
   const handleSignOut = () => {
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
     Alert.alert("Logout", "Are you sure you want to logout?", [
@@ -69,9 +69,9 @@ export default function ProfileScreen() {
       { text: "Logout", style: "destructive", onPress: async () => {
           try {
             await authInstance.signOut();
-            router.replace('/(auth)/login'); // redirect to login
+            router.replace('/(auth)/login');
           } catch (err) {
-            console.error("Logout error:", err);
+            logger.error("Logout error:", err); // Use logger
             Alert.alert("Error", "Failed to logout. Please try again.");
           }
         }
@@ -116,7 +116,6 @@ export default function ProfileScreen() {
             <Text style={styles.userName}>{firstName}</Text>
           </View>
 
-          {/* Settings + Logout icons side by side */}
           <View style={{ flexDirection: 'row' }}>
             <TouchableOpacity onPress={handleSettings} style={styles.iconButton}>
               <SettingsIcon size={24} color={THEME.icon} />

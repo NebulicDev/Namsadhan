@@ -1,17 +1,8 @@
+import { Link } from 'expo-router'; // Import the Link component
+import { Bell, ChevronRight, HandHeart, Info, Mail, MapPin, Phone, Shield, X } from 'lucide-react-native';
+import React, { useEffect, useState } from 'react';
 import {
-  Bell,
-  ChevronRight,
-  HandHeart,
-  Info,
-  Mail,
-  MapPin,
-  Phone,
-  Shield,
-  X,
-} from 'lucide-react-native';
-import { useState } from 'react';
-import {
-  Alert, // Added this import
+  Alert,
   Linking,
   Modal,
   Platform,
@@ -23,6 +14,19 @@ import {
   View,
 } from 'react-native';
 
+import * as Notifications from 'expo-notifications';
+import { registerForPushNotificationsAsync } from '../../../services/NotificationService';
+
+// Notification Handler
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldPlaySound: true,
+    shouldSetBadge: false,
+    shouldShowBanner: true,
+    shouldShowList: true,
+  }),
+});
+
 const THEME = {
   background: '#FFF8F0',
   text: '#5D4037',
@@ -32,19 +36,37 @@ const THEME = {
   white: '#FFFFFF',
 };
 
-const SettingsItem = ({ icon, text, onPress }) => (
-  <TouchableOpacity style={styles.settingsItem} onPress={onPress}>
-    <View style={styles.iconContainer}>{icon}</View>
-    <Text style={styles.itemText}>{text}</Text>
-    <ChevronRight size={24} color={THEME.lightText} />
-  </TouchableOpacity>
-);
+// This component remains the same, but we make it more robust for linking
+const SettingsItem = ({ icon, text, onPress, href }) => {
+  const content = (
+    <View style={styles.settingsItem}>
+      <View style={styles.iconContainer}>{icon}</View>
+      <Text style={styles.itemText}>{text}</Text>
+      <ChevronRight size={24} color={THEME.lightText} />
+    </View>
+  );
+
+  if (href) {
+    return (
+      <Link href={href} asChild>
+        <TouchableOpacity>{content}</TouchableOpacity>
+      </Link>
+    );
+  }
+
+  return <TouchableOpacity onPress={onPress}>{content}</TouchableOpacity>;
+};
+
 
 export default function SettingsPage() {
   const [contactModalVisible, setContactModalVisible] = useState(false);
   const [donationModalVisible, setDonationModalVisible] = useState(false);
   const [aboutModalVisible, setAboutModalVisible] = useState(false);
   const [privacyModalVisible, setPrivacyModalVisible] = useState(false);
+
+  useEffect(() => {
+    registerForPushNotificationsAsync();
+  }, []);
 
   const handleContact = () => setContactModalVisible(true);
   const handleDonation = () => setDonationModalVisible(true);
@@ -69,10 +91,6 @@ export default function SettingsPage() {
     }
   };
 
-  const handleNotifications = () => {
-    Alert.alert('Notifications', 'Functionality to be implemented.');
-  };
-
   return (
     <SafeAreaView style={styles.screenContainer}>
       <ScrollView contentContainerStyle={styles.container}>
@@ -85,11 +103,13 @@ export default function SettingsPage() {
         </View>
 
         <View style={styles.card}>
+          {/* --- MODIFIED NOTIFICATION ITEM --- */}
           <SettingsItem
             icon={<Bell size={24} color={THEME.text} />}
             text="Notifications"
-            onPress={handleNotifications}
+            href="/(tabs)/settings/notifications" // This links to our new page
           />
+          {/* ------------------------------------ */}
           <View style={styles.separator} />
           <SettingsItem
             icon={<Shield size={24} color={THEME.text} />}
@@ -105,7 +125,7 @@ export default function SettingsPage() {
         </View>
       </ScrollView>
 
-      {/* Contact Modal */}
+      {/* --- ALL YOUR MODALS REMAIN UNCHANGED --- */}
       <Modal animationType="slide" visible={contactModalVisible} onRequestClose={() => setContactModalVisible(false)}>
         <SafeAreaView style={{ flex: 1, backgroundColor: THEME.background }}>
           <View style={styles.modalHeader}>
@@ -146,7 +166,6 @@ export default function SettingsPage() {
         </SafeAreaView>
       </Modal>
 
-      {/* Donation Modal */}
       <Modal animationType="slide" visible={donationModalVisible} onRequestClose={() => setDonationModalVisible(false)}>
         <SafeAreaView style={{ flex: 1, backgroundColor: THEME.background }}>
           <View style={styles.modalHeader}>
@@ -185,15 +204,10 @@ export default function SettingsPage() {
                 <Text style={{ fontWeight: 'bold' }}>Shri Gurudev Ranade Samadhi Trust</Text>
               </Text>
             </View>
-            {/* <View style={[styles.infoCard, { height: 400 }]}>
-              <Text style={styles.sectionTitle}>Donate via Website</Text>
-              <WebView source={{ uri: 'https://www.nimbargisampradaya.org/donation' }} />
-            </View> */}
           </ScrollView>
         </SafeAreaView>
       </Modal>
 
-      {/* About Modal */}
       <Modal animationType="slide" visible={aboutModalVisible} onRequestClose={() => setAboutModalVisible(false)}>
         <SafeAreaView style={{ flex: 1, backgroundColor: THEME.background }}>
           <View style={styles.modalHeader}>
@@ -221,7 +235,6 @@ export default function SettingsPage() {
         </SafeAreaView>
       </Modal>
 
-      {/* Privacy Policy Modal */}
       <Modal animationType="slide" visible={privacyModalVisible} onRequestClose={() => setPrivacyModalVisible(false)}>
         <SafeAreaView style={{ flex: 1, backgroundColor: THEME.background }}>
           <View style={styles.modalHeader}>
@@ -263,7 +276,6 @@ export default function SettingsPage() {
           </ScrollView>
         </SafeAreaView>
       </Modal>
-
     </SafeAreaView>
   );
 }

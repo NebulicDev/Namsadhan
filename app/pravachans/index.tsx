@@ -1,6 +1,6 @@
 // app/pravachans/index.tsx
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
+import * as SecureStore from 'expo-secure-store'; // Use SecureStore
 import { ChevronLeft } from 'lucide-react-native';
 import { useEffect, useState } from 'react';
 import {
@@ -13,8 +13,8 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-
 import { db } from '../../firebaseConfig';
+import logger from '../../utils/logger'; // Import the logger
 
 const THEME = {
   background: '#FFF8F0',
@@ -23,23 +23,20 @@ const THEME = {
   primary: '#D2B48C',
 };
 
-// This represents a single track object within the app
 type TrackType = {
   id: string;
   title: string;
   speaker: string;
   driveId: string;
-  url: string; // Generated on the client-side
-  year: number; // Added from the document ID
+  url: string;
+  year: number;
 };
 
-// This represents a single year's document structure
 type YearType = {
   year: string;
   tracks: TrackType[];
 };
 
-// A unique key for our new cache structure
 const CACHE_KEY = 'pravachans_data_v2';
 
 export default function PravachansScreen() {
@@ -49,23 +46,22 @@ export default function PravachansScreen() {
 
   useEffect(() => {
     const loadPravachans = async () => {
-      // 1. Try to load from cache first
+      // 1. Try to load from secure cache first
       try {
-        const cachedData = await AsyncStorage.getItem(CACHE_KEY);
+        const cachedData = await SecureStore.getItemAsync(CACHE_KEY);
         if (cachedData) {
           setPravachansData(JSON.parse(cachedData));
-          setIsLoading(false); // Stop loading, show cached data
+          setIsLoading(false);
         }
       } catch (e) {
-        console.error('Failed to load cached pravachans:', e);
+        logger.error('Failed to load cached pravachans:', e); // Use logger
       }
 
-      // 2. Fetch from Firestore to get the latest data
+      // 2. Fetch from Firestore
       try {
         const collectionRef = db.collection('pravachans_by_year');
         const snapshot = await collectionRef.get();
 
-        // Transform Firestore data into the structure our app uses
         const fetchedData: YearType[] = snapshot.docs.map((doc) => {
           const year = doc.id;
           const yearNumber = parseInt(year);
@@ -81,18 +77,17 @@ export default function PravachansScreen() {
           };
         });
 
-        // Sort by year descending
         fetchedData.sort((a, b) => parseInt(b.year) - parseInt(a.year));
         
-        // 3. Update state and cache if new data is different
-        const currentDataString = await AsyncStorage.getItem(CACHE_KEY);
+        // 3. Update state and cache if data has changed
+        const currentDataString = await SecureStore.getItemAsync(CACHE_KEY);
         if (JSON.stringify(fetchedData) !== currentDataString) {
           setPravachansData(fetchedData);
-          await AsyncStorage.setItem(CACHE_KEY, JSON.stringify(fetchedData));
+          await SecureStore.setItemAsync(CACHE_KEY, JSON.stringify(fetchedData));
         }
 
       } catch (error) {
-        console.error("Error fetching pravachans:", error);
+        logger.error("Error fetching pravachans:", error); // Use logger
         if (pravachansData.length === 0) {
           Alert.alert("Error", "Could not fetch pravachans. Please check your internet connection.");
         }

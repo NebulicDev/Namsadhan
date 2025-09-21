@@ -4,7 +4,7 @@ export default {
     "slug": "Namsadhan",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/images/splash-icon.png",
     "scheme": "namsadhan",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
@@ -13,13 +13,16 @@ export default {
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/app-icon.png",
-        "backgroundColor": "#ffffff"
+        "foregroundImage": "./assets/images/splash-icon.png",
+        "backgroundColor": "#fff8f0"
       },
       "edgeToEdgeEnabled": true,
       "package": "com.namsadhan.app",
       // "googleServicesFile": process.env.GOOGLE_SERVICES_JSON 
-       "googleServicesFile": "./google-services.json" 
+      "googleServicesFile": "./google-services.json",
+      "packagingOptions": {
+        "enableProguardInReleaseBuilds": true
+      }
     },
     "web": {
       "bundler": "metro",
@@ -29,16 +32,25 @@ export default {
     "plugins": [
       "expo-router",
       [
+        "expo-navigation-bar",
+        {
+          "position": "absolute",
+          "visibility": "visible",
+          "backgroundColor": "#FFFFFF00"
+        }
+      ],
+      [
         "expo-splash-screen",
         {
           "image": "./assets/images/splash-icon.png",
           "imageWidth": 200,
           "resizeMode": "contain",
-          "backgroundColor": "#ffffff"
+          "backgroundColor": "#fff8f0",
         }
       ],
       "expo-asset",
-      "@react-native-firebase/app"
+      "@react-native-firebase/app",
+      "expo-secure-store"
     ],
     "experiments": {
       "typedRoutes": true
