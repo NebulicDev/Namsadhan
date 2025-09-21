@@ -32,6 +32,14 @@ export default {
     "plugins": [
       "expo-router",
       [
+        "expo-navigation-bar",
+        {
+          "position": "absolute",
+          "visibility": "visible",
+          "backgroundColor": "#FFFFFF00"
+        }
+      ],
+      [
         "expo-splash-screen",
         {
           "image": "./assets/images/splash-icon.png",
