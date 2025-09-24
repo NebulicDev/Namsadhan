@@ -18,7 +18,7 @@ export default {
       },
       "edgeToEdgeEnabled": true,
       "package": "com.namsadhan.app",
-      // "googleServicesFile": process.env.GOOGLE_SERVICES_JSON 
+      // "googleServicesFile": process.env.GOOGLE_SERVICES_JSON, 
       "googleServicesFile": "./google-services.json",
       "packagingOptions": {
         "enableProguardInReleaseBuilds": true
