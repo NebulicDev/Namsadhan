@@ -7,6 +7,7 @@ import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-cont
 import { initializeSslPinning } from 'react-native-ssl-public-key-pinning';
 import { AudioProvider } from '../context/AudioContext';
 import { AuthProvider } from '../context/AuthContext';
+import { DownloadProvider } from '../context/DownloadContext'; // Import DownloadProvider
 import { SessionProvider } from '../context/SessionContext';
 import logger from '../utils/logger';
 
@@ -77,7 +78,9 @@ export default function RootLayout() {
       <AudioProvider>
         <AuthProvider>
           <SessionProvider>
-            <RootLayoutNav />
+            <DownloadProvider>
+              <RootLayoutNav />
+            </DownloadProvider>
           </SessionProvider>
         </AuthProvider>
       </AudioProvider>

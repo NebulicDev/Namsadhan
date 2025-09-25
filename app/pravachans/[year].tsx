@@ -1,8 +1,7 @@
 // app/pravachans/[year].tsx
 import Slider from '@react-native-community/slider';
-import * as FileSystem from 'expo-file-system';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import * as SecureStore from 'expo-secure-store'; // Use SecureStore
+import * as SecureStore from 'expo-secure-store';
 import {
   ChevronLeft,
   Download,
@@ -22,6 +21,7 @@ import {
   View,
 } from 'react-native';
 import { useAudio } from '../../context/AudioContext';
+import { useDownload } from '../../context/DownloadContext'; // Import useDownload
 import logger from '../../utils/logger'; // Import the logger
 
 const THEME = {
@@ -53,7 +53,6 @@ type PlayStatusType = {
 };
 
 const CACHE_KEY = 'pravachans_data_v2';
-const DOWNLOADED_TRACKS_KEY = 'downloaded_pravachans'; // Key for downloaded tracks
 
 export default function YearScreen() {
   const router = useRouter();
@@ -66,12 +65,13 @@ export default function YearScreen() {
     currentTrackId,
     playbackStatus,
   } = useAudio();
-  const [downloadedTracks, setDownloadedTracks] = useState<{
-    [key: string]: string;
-  }>({});
-  const [downloadingTracks, setDownloadingTracks] = useState<{
-    [key: string]: boolean;
-  }>({});
+  const {
+    downloadState,
+    startDownload,
+    getDownloadedFileUri,
+    deleteDownloadedTrack,
+    loadDownloadedTracks,
+  } = useDownload(); // Use the download context
   const [tracks, setTracks] = useState<TrackType[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -100,47 +100,6 @@ export default function YearScreen() {
     loadDownloadedTracks();
   }, [year]);
 
-  const loadDownloadedTracks = async () => {
-    try {
-      const tracks = await SecureStore.getItemAsync(DOWNLOADED_TRACKS_KEY);
-      if (tracks) {
-        setDownloadedTracks(JSON.parse(tracks));
-      }
-    } catch (error) {
-      logger.error('Failed to load downloaded tracks from storage', error);
-    }
-  };
-
-  const saveDownloadedTrack = async (trackId: string, fileUri: string) => {
-    try {
-      const updatedTracks = { ...downloadedTracks, [trackId]: fileUri };
-      setDownloadedTracks(updatedTracks);
-      await SecureStore.setItemAsync(
-        DOWNLOADED_TRACKS_KEY,
-        JSON.stringify(updatedTracks)
-      );
-    } catch (error) {
-      logger.error('Failed to save downloaded track to storage', error);
-    }
-  };
-
-  const downloadTrack = async (track: TrackType) => {
-    setDownloadingTracks((prev) => ({ ...prev, [track.id]: true }));
-    const fileUri = FileSystem.documentDirectory + `${track.id}.mp3`;
-    try {
-      const { uri } = await FileSystem.downloadAsync(track.url, fileUri);
-      saveDownloadedTrack(track.id, uri);
-    } catch (error) {
-      logger.error('Error downloading track:', error);
-      Alert.alert(
-        'Download Error',
-        'Could not download the pravachan. Please try again.'
-      );
-    } finally {
-      setDownloadingTracks((prev) => ({ ...prev, [track.id]: false }));
-    }
-  };
-
   const deleteTrack = async (track: TrackType) => {
     Alert.alert(
       'Delete Download',
@@ -154,15 +113,7 @@ export default function YearScreen() {
               if (currentTrackId === track.id) {
                 await pauseSound();
               }
-              const fileUri = downloadedTracks[track.id];
-              await FileSystem.deleteAsync(fileUri, { idempotent: true });
-              const updatedTracks = { ...downloadedTracks };
-              delete updatedTracks[track.id];
-              setDownloadedTracks(updatedTracks);
-              await SecureStore.setItemAsync(
-                DOWNLOADED_TRACKS_KEY,
-                JSON.stringify(updatedTracks)
-              );
+              await deleteDownloadedTrack(track.id);
             } catch (error) {
               logger.error('Failed to delete track', error);
               Alert.alert('Error', 'Could not delete the pravachan.');
@@ -175,8 +126,8 @@ export default function YearScreen() {
   };
 
   const handlePlayPause = async (track: TrackType) => {
-    const isDownloaded = downloadedTracks[track.id];
-    if (!isDownloaded) {
+    const fileUri = getDownloadedFileUri(track.id);
+    if (!fileUri) {
       Alert.alert(
         'Not Downloaded',
         'Please download the pravachan before playing.'
@@ -188,10 +139,10 @@ export default function YearScreen() {
       if (isPlaying) {
         await pauseSound();
       } else {
-        await playSound(isDownloaded, track.id);
+        await playSound(fileUri, track.id);
       }
     } else {
-      await playSound(isDownloaded, track.id);
+      await playSound(fileUri, track.id);
     }
   };
 
@@ -235,10 +186,9 @@ export default function YearScreen() {
         renderItem={({ item }) => (
           <TrackItem
             item={item}
-            downloadedTracks={downloadedTracks}
-            downloadingTracks={downloadingTracks}
+            downloadState={downloadState[item.id]}
             handlePlayPause={handlePlayPause}
-            downloadTrack={downloadTrack}
+            downloadTrack={startDownload}
             deleteTrack={deleteTrack}
             currentTrackId={currentTrackId}
             isPlaying={isPlaying}
@@ -257,8 +207,7 @@ export default function YearScreen() {
 // TrackItem component remains the same
 type TrackItemProps = {
     item: TrackType;
-    downloadedTracks: { [key: string]: string };
-    downloadingTracks: { [key: string]: boolean };
+    downloadState: any;
     handlePlayPause: (track: TrackType) => Promise<void>;
     downloadTrack: (track: TrackType) => Promise<void>;
     deleteTrack: (track: TrackType) => Promise<void>;
@@ -271,8 +220,7 @@ type TrackItemProps = {
 
 const TrackItem = ({
     item,
-    downloadedTracks,
-    downloadingTracks,
+    downloadState,
     handlePlayPause,
     downloadTrack,
     deleteTrack,
@@ -282,8 +230,8 @@ const TrackItem = ({
     onSlidingComplete,
     formatTime,
 }: TrackItemProps) => {
-    const isDownloaded = !!downloadedTracks[item.id];
-    const isDownloading = downloadingTracks[item.id];
+    const isDownloaded = downloadState?.isCompleted ?? false;
+    const isDownloading = downloadState?.isDownloading ?? false;
     const isActive = item.id === currentTrackId;
 
     return (
@@ -353,7 +301,6 @@ const TrackItem = ({
         </View>
     );
 };
-
 
 const styles = StyleSheet.create({
   screenContainer: { flex: 1, backgroundColor: THEME.background },
