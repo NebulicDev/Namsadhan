@@ -23,9 +23,9 @@ export default function MusicScreen() {
 
   return (
     <SafeAreaView style={styles.screenContainer}>
-        <View style={styles.header}>
-            {/* <Text style={styles.title}>Media</Text> */}
-        </View>
+        {/* <View style={styles.header}>
+            <Text style={styles.title}>Media</Text> 
+        </View> */}
         <View style={styles.cardContainer}>
             <SectionCard 
                 title="Live Darshan" 
@@ -72,6 +72,7 @@ const styles = StyleSheet.create({
   screenContainer: {
     flex: 1,
     backgroundColor: THEME.background,
+    paddingTop: 60, 
   },
   header: {
     paddingTop: 60,
