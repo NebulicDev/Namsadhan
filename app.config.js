@@ -18,11 +18,8 @@ export default {
       },
       "edgeToEdgeEnabled": true,
       "package": "com.namsadhan.app",
-      "googleServicesFile": process.env.GOOGLE_SERVICES_JSON, 
-      // "googleServicesFile": "./google-services.json",
-      "packagingOptions": {
-        "enableProguardInReleaseBuilds": true
-      }
+      "googleServicesFile": process.env.GOOGLE_SERVICES_JSON,
+      // "googleServicesFile": "./google-services.json"
     },
     "web": {
       "bundler": "metro",
@@ -50,7 +47,15 @@ export default {
       ],
       "expo-asset",
       "@react-native-firebase/app",
-      "expo-secure-store"
+      "expo-secure-store",
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "enableProguardInReleaseBuilds": true
+          }
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true
