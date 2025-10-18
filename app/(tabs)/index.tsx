@@ -50,9 +50,9 @@ const spiritualGuides = [
   },
   {
     id: '4',
-    name: 'Shri Gurudev Ranade',
+    name: 'Shri Gurudev R. D. Ranade',
     photo: require('../../assets/images/shri-gurudev-ranade.jpeg'),
-    bio: bios['Shri Gurudev Ranade'],
+    bio: bios['Shri Gurudev R. D. Ranade'],
   },
 ];
 
@@ -157,7 +157,7 @@ export default function HomeScreen() {
               </TouchableOpacity>
               <ScrollView contentContainerStyle={styles.modalContent}>
                 <Image source={selectedGuide.photo} style={styles.modalImage} resizeMode="cover" />
-                <Text style={styles.modalTitle}>{selectedGuide.name}</Text>
+                <Text style={styles.modalTitle} numberOfLines={1} adjustsFontSizeToFit={true}>{selectedGuide.name}</Text>
                 <Text style={styles.modalBio}>{selectedGuide.bio}</Text>
               </ScrollView>
             </Animated.View>

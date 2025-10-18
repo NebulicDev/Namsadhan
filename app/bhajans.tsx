@@ -1,10 +1,8 @@
 // app/bhajans.tsx
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import Slider from '@react-native-community/slider';
-import * as FileSystem from 'expo-file-system';
 import { useRouter } from 'expo-router';
 import { ChevronLeft, Download, Music4, Pause, Play, Trash2 } from 'lucide-react-native';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import {
   ActivityIndicator,
   Alert,
@@ -16,6 +14,7 @@ import {
   View,
 } from 'react-native';
 import { useAudio } from '../context/AudioContext';
+import { useDownload } from '../context/DownloadContext';
 
 const THEME = {
   background: '#FFF8F0',
@@ -57,45 +56,17 @@ const MUSIC_DATA = [
 export default function BhajansScreen() {
   const router = useRouter();
   const { playSound, pauseSound, seekSound, isPlaying, currentTrackId, playbackStatus } = useAudio();
-  const [downloadedTracks, setDownloadedTracks] = useState<{ [key: string]: string }>({});
-  const [downloadingTracks, setDownloadingTracks] = useState<{ [key: string]: boolean }>({});
+  const {
+    downloadState,
+    startDownload,
+    getDownloadedFileUri,
+    deleteDownloadedTrack,
+    loadDownloadedTracks,
+  } = useDownload();
 
   useEffect(() => {
     loadDownloadedTracks();
   }, []);
-
-  const loadDownloadedTracks = async () => {
-    try {
-      const tracks = await AsyncStorage.getItem('downloaded_bhajans');
-      if (tracks) setDownloadedTracks(JSON.parse(tracks));
-    } catch (error) {
-      console.error('Failed to load downloaded tracks from storage', error);
-    }
-  };
-
-  const saveDownloadedTrack = async (trackId: string, fileUri: string) => {
-    try {
-      const updatedTracks = { ...downloadedTracks, [trackId]: fileUri };
-      setDownloadedTracks(updatedTracks);
-      await AsyncStorage.setItem('downloaded_bhajans', JSON.stringify(updatedTracks));
-    } catch (error) {
-      console.error('Failed to save downloaded track to storage', error);
-    }
-  };
-
-  const downloadTrack = async (track: any) => {
-    setDownloadingTracks((prev) => ({ ...prev, [track.id]: true }));
-    const fileUri = FileSystem.documentDirectory + `${track.id}.mp3`;
-    try {
-      const { uri } = await FileSystem.downloadAsync(track.url, fileUri);
-      saveDownloadedTrack(track.id, uri);
-    } catch (error) {
-      console.error('Error downloading track:', error);
-      Alert.alert('Download Error', 'Could not download the bhajan. Please try again.');
-    } finally {
-      setDownloadingTracks((prev) => ({ ...prev, [track.id]: false }));
-    }
-  };
 
   const deleteTrack = async (trackId: string) => {
     Alert.alert(
@@ -110,11 +81,7 @@ export default function BhajansScreen() {
               if (currentTrackId === trackId) {
                 await pauseSound();
               }
-              await FileSystem.deleteAsync(downloadedTracks[trackId], { idempotent: true });
-              const updatedTracks = { ...downloadedTracks };
-              delete updatedTracks[trackId];
-              setDownloadedTracks(updatedTracks);
-              await AsyncStorage.setItem('downloaded_bhajans', JSON.stringify(updatedTracks));
+              await deleteDownloadedTrack(trackId);
               Alert.alert('Success', 'The bhajan has been deleted.');
             } catch (error) {
               console.error('Failed to delete bhajan', error);
@@ -128,8 +95,8 @@ export default function BhajansScreen() {
   };
 
   const handlePlayPause = async (track: any) => {
-    const isDownloaded = downloadedTracks[track.id];
-    if (!isDownloaded) {
+    const fileUri = getDownloadedFileUri(track.id);
+    if (!fileUri) {
       Alert.alert('Not Downloaded', 'Please download the bhajan before playing.');
       return;
     }
@@ -138,10 +105,10 @@ export default function BhajansScreen() {
       if (isPlaying) {
         await pauseSound();
       } else {
-        await playSound(isDownloaded, track.id);
+        await playSound(fileUri, track.id);
       }
     } else {
-      await playSound(isDownloaded, track.id);
+      await playSound(fileUri, track.id);
     }
   };
 
@@ -157,8 +124,9 @@ export default function BhajansScreen() {
   };
 
   const TrackItem = ({ item }: { item: any }) => {
-    const isDownloaded = !!downloadedTracks[item.id];
-    const isDownloading = downloadingTracks[item.id];
+    const trackDownloadState = downloadState[item.id];
+    const isDownloaded = trackDownloadState?.isCompleted ?? false;
+    const isDownloading = trackDownloadState?.isDownloading ?? false;
     const isActive = item.id === currentTrackId;
 
     return (
@@ -179,7 +147,7 @@ export default function BhajansScreen() {
 
           <TouchableOpacity
             style={styles.actionButton}
-            onPress={() => (isDownloaded ? handlePlayPause(item) : downloadTrack(item))}
+            onPress={() => (isDownloaded ? handlePlayPause(item) : startDownload(item))}
             disabled={isDownloading}
           >
             {isDownloading ? (

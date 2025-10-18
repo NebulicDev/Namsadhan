@@ -99,7 +99,7 @@ export default function SettingsPage() {
           <View style={styles.separator} />
           <SettingsItem icon={<HandHeart size={24} color={THEME.text} />} text="Donate" onPress={handleDonation} />
           <View style={styles.separator} />
-          <SettingsItem icon={<MapPin size={24} color={THEME.text} />} text="Address" onPress={handleMap} />
+          <SettingsItem icon={<MapPin size={24} color={THEME.text} />} text="Nimbal Ashram" onPress={handleMap} />
         </View>
 
         <View style={styles.card}>
@@ -177,7 +177,7 @@ export default function SettingsPage() {
           <ScrollView contentContainerStyle={styles.pageContainer}>
             <View style={styles.infoCard}>
               <Text style={styles.sectionTitle}>Online Bank Transfer</Text>
-              <Text style={styles.infoText}><Text style={{ fontWeight: 'bold' }}>Name:</Text> Shri Gurudev Ranade Samadhi Trust</Text>
+              {/* <Text style={styles.infoText}><Text style={{ fontWeight: 'bold' }}>Name:</Text> Shri Gurudev Ranade Samadhi Trust</Text>
               <Text style={styles.infoText}><Text style={{ fontWeight: 'bold' }}>Bank:</Text> IDBI</Text>
               <Text style={styles.infoText}><Text style={{ fontWeight: 'bold' }}>Branch:</Text> Vijayapur, Pin - 586103</Text>
               <Text style={styles.infoText}><Text style={{ fontWeight: 'bold' }}>Account No.:</Text> 0744104000210218</Text>
@@ -194,15 +194,15 @@ export default function SettingsPage() {
               <TouchableOpacity style={styles.actionButton} onPress={() => handlePhone('+916363383415')}>
                 <Phone size={24} color={THEME.primary} />
                 <Text style={styles.actionText}>+91-63633 83415 (JIO)</Text>
-              </TouchableOpacity>
+              </TouchableOpacity> */}
             </View>
 
             <View style={styles.infoCard}>
               <Text style={styles.sectionTitle}>Cheque Information</Text>
-              <Text style={styles.infoText}>
+              {/* <Text style={styles.infoText}>
                 Cheques should be made payable to:{'\n'}
                 <Text style={{ fontWeight: 'bold' }}>Shri Gurudev Ranade Samadhi Trust</Text>
-              </Text>
+              </Text> */}
             </View>
           </ScrollView>
         </SafeAreaView>
@@ -219,13 +219,13 @@ export default function SettingsPage() {
           <ScrollView contentContainerStyle={styles.pageContainer}>
             <View style={styles.infoCard}>
               <Text style={styles.paragraph}>
-                This application is a humble offering dedicated to the teachings and lineage of the Nimbargi Sampradaya, with special reverence for the revered saint, Shri Gurudev Ranade.
+                This application is a humble offering dedicated to the teachings and lineage of the Nimbargi Sampradaya.
               </Text>
               <Text style={styles.paragraph}>
-                Our mission is to provide a comprehensive digital platform for all the devotees and sadhaks to access spiritual resources, engage with the timeless wisdom of the Sampradaya, and foster a deeper connection with the path layed down by our revered Gurus.
+                Our mission is to provide a comprehensive digital platform for all the devotees and sadhaks to access spiritual resources, engage with the timeless teachings of the Sampradaya, and foster a deeper connection with the path layed down by our revered Gurus.
               </Text>
               <Text style={styles.paragraph}>
-                Through this app, users can access daily inspirations, listen to devotional bhajans, read sacred texts, and engage in the meditation on the Divine Name. We aim to support the spiritual journey of all sadhaks, making the profound teachings of our Sampradaya accessible in this digital age.
+                Through this app, users can access excrepts from Shri Gurudev Ranade's teachings, writings, etc. , listen to bhajans and pravachans. Have a digital copy of the sacred Nityanemavali. Track Sadhana and be mindful of their daily progress. We aim to support the spiritual journey of all sadhaks, making the profound teachings of our Sampradaya accessible in this digital age.
               </Text>
               <Text style={styles.paragraph}>
                 We are continuously working to improve and expand the app's features and content. Your support and feedback are invaluable to us on this journey.
@@ -245,9 +245,9 @@ export default function SettingsPage() {
           </View>
           <ScrollView contentContainerStyle={styles.pageContainer}>
             <View style={styles.infoCard}>
-              <Text style={styles.lastUpdated}>Last updated: September 15, 2025</Text>
+              <Text style={styles.lastUpdated}>Last updated: September 29, 2025</Text>
               <Text style={styles.paragraph}>
-                Namsadhan ("we," "our," or "us") is committed to protecting your privacy. This Privacy Policy explains how your personal information is collected, used, and disclosed by our application.
+                Namsadhan  is committed to protecting your privacy. This Privacy Policy explains how your personal information is collected, used, and disclosed by our application.
               </Text>
               <Text style={styles.sectionTitle}>Information We Collect</Text>
               <Text style={styles.paragraph}>
@@ -255,7 +255,7 @@ export default function SettingsPage() {
               </Text>
               <Text style={styles.sectionTitle}>How We Use Your Information</Text>
               <Text style={styles.paragraph}>
-                We use the information we collect to operate, maintain, and provide you with the features and functionality of the app, to personalize your experience, and to analyze usage to improve our services.
+                We use the information we collect to operate, maintain, and provide you with the features and functionality of the app, to personalize your experience, and to analyze usage to improve the app.
               </Text>
               <Text style={styles.sectionTitle}>Data Security</Text>
               <Text style={styles.paragraph}>
@@ -263,15 +263,15 @@ export default function SettingsPage() {
               </Text>
               <Text style={styles.sectionTitle}>Third-Party Services</Text>
               <Text style={styles.paragraph}>
-                Our app does not share personal information with third-party services for marketing purposes.
+                Our app does not share personal information with third-party services.
               </Text>
               <Text style={styles.sectionTitle}>Changes to This Policy</Text>
               <Text style={styles.paragraph}>
                 We may update our Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page.
               </Text>
-              <Text style={styles.disclaimer}>
+              {/* <Text style={styles.disclaimer}>
                 Disclaimer: This is a temporary placeholder text. Please consult with a legal professional to create a comprehensive privacy policy tailored to your specific data practices.
-              </Text>
+              </Text> */}
             </View>
           </ScrollView>
         </SafeAreaView>
