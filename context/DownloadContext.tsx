@@ -1,11 +1,13 @@
 // context/DownloadContext.tsx
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as FileSystem from 'expo-file-system';
+import * as Notifications from 'expo-notifications'; // Import Notifications
 import React, { createContext, ReactNode, useContext, useEffect, useState } from 'react';
 
 type DownloadableTrack = {
   id: string;
   url: string;
+  title: string; // ADDED: Title is needed for notifications
 };
 
 type DownloadProgress = {
@@ -20,6 +22,7 @@ type DownloadState = {
     isCompleted: boolean;
     fileUri?: string;
     downloadResumable?: FileSystem.DownloadResumable;
+    lastNotifiedProgress?: number; // ADDED: For throttling notification updates
   };
 };
 
@@ -80,8 +83,13 @@ export const DownloadProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  // This identifier will be used to update or dismiss the notification
+  const getNotificationId = (trackId: string) => `download-progress-${trackId}`;
+
   const startDownload = async (track: DownloadableTrack) => {
     const fileUri = FileSystem.documentDirectory + `${track.id}.mp3`;
+    const notificationId = getNotificationId(track.id);
+
     const downloadResumable = FileSystem.createDownloadResumable(
       track.url,
       fileUri,
@@ -89,17 +97,44 @@ export const DownloadProvider = ({ children }: { children: ReactNode }) => {
       (downloadProgress: FileSystem.DownloadProgressData) => {
         const progress =
           downloadProgress.totalBytesWritten / downloadProgress.totalBytesExpectedToWrite;
-        setDownloadState((prev) => ({
-          ...prev,
-          [track.id]: {
-            ...prev[track.id],
-            progress,
-            isDownloading: true,
-          },
-        }));
+        const percentage = Math.floor(progress * 100);
+
+        // Update state and throttle notifications
+        setDownloadState((prev) => {
+          const currentTrackState = prev[track.id];
+          const lastNotified = currentTrackState?.lastNotifiedProgress ?? 0;
+
+          // Notify only every 5% or at 100%
+          const shouldNotify = percentage - lastNotified >= 5 || percentage === 100;
+
+          if (shouldNotify) {
+            Notifications.scheduleNotificationAsync({
+              identifier: notificationId,
+              content: {
+                title: 'Downloading',
+                body: track.title,
+                subtitle: `${percentage}% Completed`,
+                sound: false,
+                vibrationPattern: [0],
+              },
+              trigger: null, // Schedule immediately
+            });
+          }
+
+          return {
+            ...prev,
+            [track.id]: {
+              ...currentTrackState,
+              progress,
+              isDownloading: true,
+              lastNotifiedProgress: shouldNotify ? percentage : lastNotified,
+            },
+          };
+        });
       }
     );
 
+    // Set initial download state
     setDownloadState((prev) => ({
       ...prev,
       [track.id]: {
@@ -107,12 +142,39 @@ export const DownloadProvider = ({ children }: { children: ReactNode }) => {
         isDownloading: true,
         isCompleted: false,
         downloadResumable,
+        lastNotifiedProgress: 0,
       },
     }));
+
+    // Schedule the initial "Starting" notification
+    await Notifications.scheduleNotificationAsync({
+      identifier: notificationId,
+      content: {
+        title: 'Downloading',
+        body: track.title,
+        subtitle: '0% Completed',
+        sound: false,
+        vibrationPattern: [0],
+      },
+      trigger: null,
+    });
 
     try {
       const result = await downloadResumable.downloadAsync();
       if (result) {
+        // Dismiss progress notification
+        await Notifications.dismissNotificationAsync(notificationId);
+
+        // Show "Complete" notification
+        await Notifications.scheduleNotificationAsync({
+          content: {
+            title: 'Download Complete',
+            body: `${track.title} has been downloaded.`,
+            sound: true, // Play sound on completion
+          },
+          trigger: null,
+        });
+
         setDownloadState((prev) => ({
           ...prev,
           [track.id]: {
@@ -127,6 +189,19 @@ export const DownloadProvider = ({ children }: { children: ReactNode }) => {
       }
     } catch (e) {
       console.error(e);
+
+      // Dismiss progress notification
+      await Notifications.dismissNotificationAsync(notificationId);
+
+      // Show "Failed" notification
+      await Notifications.scheduleNotificationAsync({
+        content: {
+          title: 'Download Failed',
+          body: `Could not download ${track.title}.`,
+        },
+        trigger: null,
+      });
+
       setDownloadState((prev) => ({
         ...prev,
         [track.id]: {
@@ -145,6 +220,9 @@ export const DownloadProvider = ({ children }: { children: ReactNode }) => {
     const trackState = downloadState[trackId];
     if (trackState && trackState.fileUri) {
       try {
+        // Dismiss any lingering notifications for this track
+        await Notifications.dismissNotificationAsync(getNotificationId(trackId));
+
         await FileSystem.deleteAsync(trackState.fileUri, { idempotent: true });
         const tracks = await AsyncStorage.getItem('downloaded_tracks');
         if (tracks) {
