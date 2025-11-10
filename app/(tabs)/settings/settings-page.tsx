@@ -95,7 +95,7 @@ export default function SettingsPage() {
     <SafeAreaView style={styles.screenContainer}>
       <ScrollView contentContainerStyle={styles.container}>
         <View style={styles.card}>
-          <SettingsItem icon={<Mail size={24} color={THEME.text} />} text="Contact Us" onPress={handleContact} />
+          <SettingsItem icon={<Mail size={24} color={THEME.text} />} text="Contact Ashram" onPress={handleContact} />
           <View style={styles.separator} />
           <SettingsItem icon={<HandHeart size={24} color={THEME.text} />} text="Donate" onPress={handleDonation} />
           <View style={styles.separator} />
@@ -129,14 +129,14 @@ export default function SettingsPage() {
       <Modal animationType="slide" visible={contactModalVisible} onRequestClose={() => setContactModalVisible(false)}>
         <SafeAreaView style={{ flex: 1, backgroundColor: THEME.background }}>
           <View style={styles.modalHeader}>
-            <Text style={styles.modalTitle}>Contact Us</Text>
+            <Text style={styles.modalTitle}>Contact Ashram</Text>
             <TouchableOpacity style={styles.modalCloseButton} onPress={() => setContactModalVisible(false)}>
               <X size={28} color={THEME.text} />
             </TouchableOpacity>
           </View>
           <ScrollView contentContainerStyle={styles.pageContainer}>
             <View style={styles.infoCard}>
-              <Text style={styles.sectionTitle}>Our Address</Text>
+              <Text style={styles.sectionTitle}>Address</Text>
               <Text style={styles.addressText}>
                 Shri Gurudev Ranade Samadhi Trust, Nimbal (R.S.){'\n'}
                 Tal. Indi, Dist. Biajapur,{'\n'}
@@ -245,7 +245,7 @@ export default function SettingsPage() {
           </View>
           <ScrollView contentContainerStyle={styles.pageContainer}>
             <View style={styles.infoCard}>
-              <Text style={styles.lastUpdated}>Last updated: September 29, 2025</Text>
+              <Text style={styles.lastUpdated}>Last updated: November 4, 2025</Text>
               <Text style={styles.paragraph}>
                 Namsadhan  is committed to protecting your privacy. This Privacy Policy explains how your personal information is collected, used, and disclosed by our application.
               </Text>

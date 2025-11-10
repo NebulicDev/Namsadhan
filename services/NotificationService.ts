@@ -41,8 +41,8 @@ export async function scheduleIntervalNotification(hours: number) {
 
   await Notifications.scheduleNotificationAsync({
     content: {
-      title: "Don't Forget",
-      body: 'Remember to continue your Namasmaran ',
+      title: "Time is slipping away",
+      body: "Don't forget to meditate on the Divine Name",
       sound: 'meditation-bell.mp3', // Custom sound for both platforms
     },
     trigger: {

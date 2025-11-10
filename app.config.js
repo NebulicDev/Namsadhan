@@ -9,7 +9,11 @@ export default {
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      // ADDED: Re-adding for background downloads
+      "infoPlist": {
+        "UIBackgroundModes": ["audio", "fetch"]
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -19,7 +23,9 @@ export default {
       "edgeToEdgeEnabled": true,
       "package": "com.namsadhan.app",
       // "googleServicesFile": process.env.GOOGLE_SERVICES_JSON,
-      "googleServicesFile": "./google-services.json"
+      "googleServicesFile": "./google-services.json",
+      // ADDED: Re-adding for background downloads
+      "permissions": ["android.permission.FOREGROUND_SERVICE", "android.permission.WAKE_LOCK"]
     },
     "web": {
       "bundler": "metro",
@@ -54,6 +60,20 @@ export default {
           "android": {
             "enableProguardInReleaseBuilds": true
           }
+        }
+      ],
+      // ADDED: Re-adding for background downloads/audio
+      "expo-av",
+      // ADDED: This plugin configures native notifications
+      // and bundles your custom sound file.
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/images/app-icon.png",
+          "color": "#FFFFFF",
+          "sounds": [
+            "./assets/sounds/meditation-bell.mp3"
+          ]
         }
       ]
     ],
