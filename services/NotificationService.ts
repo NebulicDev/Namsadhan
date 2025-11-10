@@ -11,7 +11,7 @@ export async function registerForPushNotificationsAsync(): Promise<string | unde
       importance: Notifications.AndroidImportance.MAX,
       vibrationPattern: [0, 250, 250, 250],
       lightColor: '#FF231F7C',
-      sound: 'meditation-bell.mp3', // Important for Android custom sound
+      sound: 'meditation_bell.mp3', // Important for Android custom sound
     });
   }
 
@@ -43,7 +43,7 @@ export async function scheduleIntervalNotification(hours: number) {
     content: {
       title: "Time is slipping away",
       body: "Don't forget to meditate on the Divine Name",
-      sound: 'meditation-bell.mp3', // Custom sound for both platforms
+      sound: 'meditation_bell.mp3', // Custom sound for both platforms
     },
     trigger: {
       seconds: hours * 3600, // Convert hours to seconds

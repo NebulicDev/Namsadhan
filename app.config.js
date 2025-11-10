@@ -72,7 +72,7 @@ export default {
           "icon": "./assets/images/app-icon.png",
           "color": "#FFFFFF",
           "sounds": [
-            "./assets/sounds/meditation-bell.mp3"
+            "./assets/sounds/meditation_bell.mp3"
           ]
         }
       ]
