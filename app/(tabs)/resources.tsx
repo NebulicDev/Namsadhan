@@ -1,6 +1,6 @@
 // app/(tabs)/resources.tsx
 import { useRouter } from 'expo-router';
-import { BellRing, Book, BookOpenText, Mic2, Scroll, TvMinimalPlay } from 'lucide-react-native';
+import { BellRing, Book, BookOpen, BookOpenText, Mic2, Scroll, TvMinimalPlay } from 'lucide-react-native';
 import React from 'react';
 import { SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
@@ -44,8 +44,13 @@ export default function MusicScreen() {
             />
             <SectionCard 
                 title="Nityanemavali" 
-                icon={<BookOpenText  size={32} color={THEME.text} />} 
+                icon={<BookOpen  size={32} color={THEME.text} />} 
                 onPress={() => router.push('/nityaNemavali')}
+            />
+            <SectionCard 
+                title="Nemavali Vivaran" 
+                icon={<BookOpenText  size={32} color={THEME.text} />} 
+                onPress={() => router.push('/nemavaliVivaran')}
             />
             {/* THIS IS THE NEW CARD WE ARE ADDING */}
             <SectionCard 
