@@ -1,8 +1,23 @@
 // app/(tabs)/resources.tsx
 import { useRouter } from 'expo-router';
-import { BellRing, Book, BookOpen, BookOpenText, Mic2, Scroll, TvMinimalPlay } from 'lucide-react-native';
+import {
+  BellRing,
+  Book,
+  BookOpen,
+  BookOpenText,
+  BookText,
+  Mic2,
+  Scroll,
+  TvMinimalPlay,
+} from 'lucide-react-native';
 import React from 'react';
-import { SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import {
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity
+} from 'react-native';
 
 const THEME = {
   background: '#FFF8F0',
@@ -11,11 +26,19 @@ const THEME = {
   card: '#FFFFFF',
 };
 
-const SectionCard = ({ title, icon, onPress }: { title: string, icon: React.ReactNode, onPress: () => void }) => (
-    <TouchableOpacity style={styles.card} onPress={onPress}>
-        {icon}
-        <Text style={styles.cardTitle}>{title}</Text>
-    </TouchableOpacity>
+const SectionCard = ({
+  title,
+  icon,
+  onPress,
+}: {
+  title: string;
+  icon: React.ReactNode;
+  onPress: () => void;
+}) => (
+  <TouchableOpacity style={styles.card} onPress={onPress}>
+    {icon}
+    <Text style={styles.cardTitle}>{title}</Text>
+  </TouchableOpacity>
 );
 
 export default function MusicScreen() {
@@ -23,52 +46,52 @@ export default function MusicScreen() {
 
   return (
     <SafeAreaView style={styles.screenContainer}>
-        {/* <View style={styles.header}>
-            <Text style={styles.title}>Media</Text> 
-        </View> */}
-        <View style={styles.cardContainer}>
-            <SectionCard 
-                title="Live Darshan" 
-                icon={<TvMinimalPlay size={32} color={THEME.text} />} 
-                onPress={() => router.push('/liveDarshan')}
-            />
-            <SectionCard 
-                title="Bhajans" 
-                icon={<BellRing size={32} color={THEME.text} />} 
-                onPress={() => router.push('/bhajans')}
-            />
-            <SectionCard 
-                title="Pravachans" 
-                icon={<Mic2 size={32} color={THEME.text} />} 
-                onPress={() => router.push('/pravachans')}
-            />
-            <SectionCard 
-                title="Nityanemavali" 
-                icon={<BookOpen  size={32} color={THEME.text} />} 
-                onPress={() => router.push('/nityaNemavali')}
-            />
-            <SectionCard 
-                title="Nemavali Vivaran" 
-                icon={<BookOpenText  size={32} color={THEME.text} />} 
-                onPress={() => router.push('/nemavaliVivaran')}
-            />
-            {/* THIS IS THE NEW CARD WE ARE ADDING */}
-            <SectionCard 
-                title="Parmarth Mandir" 
-                icon={<Book  size={32} color={THEME.text} />} 
-                onPress={() => router.push('/parmarthMandir')}
-            />
-            <SectionCard 
-                title="Manache Shlok" 
-                icon={<Scroll size={32} color={THEME.text} />} 
-                onPress={() => router.push('/manacheShlok')}
-            />
-            {/* <SectionCard 
-                title="Gallery" 
-                icon={<Image size={32} color={THEME.text} />} 
-                onPress={() => router.push('/gallery')}
-            /> */}
-        </View>
+      {/* 3. HERE IS THE FIX:
+        We replaced the <View> with <ScrollView>
+        and used 'contentContainerStyle' instead of 'style'
+      */}
+      <ScrollView contentContainerStyle={styles.cardContainer}>
+        <SectionCard
+          title="Live Darshan"
+          icon={<TvMinimalPlay size={32} color={THEME.text} />}
+          onPress={() => router.push('/liveDarshan')}
+        />
+        <SectionCard
+          title="Bhajans"
+          icon={<BellRing size={32} color={THEME.text} />}
+          onPress={() => router.push('/bhajans')}
+        />
+        <SectionCard
+          title="Pravachans"
+          icon={<Mic2 size={32} color={THEME.text} />}
+          onPress={() => router.push('/pravachans')}
+        />
+        <SectionCard
+          title="Nityanemavali"
+          icon={<BookOpen size={32} color={THEME.text} />}
+          onPress={() => router.push('/nityaNemavali')}
+        />
+        <SectionCard
+          title="Nemavali Vivaran"
+          icon={<BookOpenText size={32} color={THEME.text} />}
+          onPress={() => router.push('/nemavaliVivaran')}
+        />
+        <SectionCard
+          title="Parmarth Mandir"
+          icon={<Book size={32} color={THEME.text} />}
+          onPress={() => router.push('/parmarthMandir')}
+        />
+        <SectionCard
+          title="Manache Shlok"
+          icon={<Scroll size={32} color={THEME.text} />}
+          onPress={() => router.push('/manacheShlok')}
+        />
+        <SectionCard
+          title="Glossary"
+          icon={<BookText size={32} color={THEME.text} />}
+          onPress={() => router.push('/glossary')}
+        />
+      </ScrollView>
     </SafeAreaView>
   );
 }
@@ -77,7 +100,7 @@ const styles = StyleSheet.create({
   screenContainer: {
     flex: 1,
     backgroundColor: THEME.background,
-    paddingTop: 60, 
+    paddingTop: 60,
   },
   header: {
     paddingTop: 60,
@@ -96,6 +119,7 @@ const styles = StyleSheet.create({
   },
   cardContainer: {
     paddingHorizontal: 20,
+    paddingBottom: 20, // 5. Added padding for a nice space at the bottom
   },
   card: {
     backgroundColor: THEME.card,

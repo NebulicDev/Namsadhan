@@ -69,6 +69,8 @@ function RootLayoutNav() {
         <Stack.Screen name="nityaNemavali" options={{ headerShown: false }} />
         <Stack.Screen name="nemavaliVivaran" options={{ headerShown: false  }} />
         <Stack.Screen name="parmarthMandir" options={{ headerShown: false }} />
+        <Stack.Screen name="glossary" options={{ headerShown: false }} />
+
       </Stack>
     </View>
   );
