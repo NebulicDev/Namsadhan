@@ -9,6 +9,7 @@ import { AudioProvider } from '../context/AudioContext';
 import { AuthProvider } from '../context/AuthContext';
 import { DownloadProvider } from '../context/DownloadContext'; // Import DownloadProvider
 import { SessionProvider } from '../context/SessionContext';
+import { registerForPushNotificationsAsync } from '../services/NotificationService'; // ADDED: Import notification service
 import logger from '../utils/logger';
 
 // SSL Pinning Initialization
@@ -68,12 +69,24 @@ function RootLayoutNav() {
         <Stack.Screen name="nityaNemavali" options={{ headerShown: false }} />
         <Stack.Screen name="nemavaliVivaran" options={{ headerShown: false  }} />
         <Stack.Screen name="parmarthMandir" options={{ headerShown: false }} />
+        <Stack.Screen name="glossary" options={{ headerShown: false }} />
+
       </Stack>
     </View>
   );
 }
 
 export default function RootLayout() {
+  // ADDED: This hook registers the notification channel when the app loads.
+  useEffect(() => {
+    registerForPushNotificationsAsync().then((token) => {
+      // You might want to send this token to your server
+      console.log('Expo Push Token:', token);
+    }).catch(error => {
+      logger.error('Failed to register for push notifications:', error);
+    });
+  }, []);
+
   return (
     <SafeAreaProvider>
       <AudioProvider>
