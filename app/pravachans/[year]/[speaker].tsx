@@ -1,28 +1,27 @@
-// app/pravachans/[year].tsx
 import Slider from '@react-native-community/slider';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import * as SecureStore from 'expo-secure-store';
 import {
-  ChevronLeft,
-  Download,
-  Pause,
-  Play,
-  Trash2,
+    ChevronLeft,
+    Download,
+    Pause,
+    Play,
+    Trash2,
 } from 'lucide-react-native';
 import { useEffect, useState } from 'react';
 import {
-  ActivityIndicator,
-  Alert,
-  FlatList,
-  SafeAreaView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
+    ActivityIndicator,
+    Alert,
+    FlatList,
+    SafeAreaView,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View,
 } from 'react-native';
-import { useAudio } from '../../context/AudioContext';
-import { useDownload } from '../../context/DownloadContext'; // Import useDownload
-import logger from '../../utils/logger'; // Import the logger
+import { useAudio } from '../../../context/AudioContext';
+import { useDownload } from '../../../context/DownloadContext';
+import logger from '../../../utils/logger';
 
 const THEME = {
   background: '#FFF8F0',
@@ -54,9 +53,11 @@ type PlayStatusType = {
 
 const CACHE_KEY = 'pravachans_data_v2';
 
-export default function YearScreen() {
+export default function SpeakerRecordingsScreen() {
   const router = useRouter();
-  const { year } = useLocalSearchParams<{ year: string }>();
+  // Capture both year and speaker parameters
+  const { year, speaker } = useLocalSearchParams<{ year: string; speaker: string }>();
+  
   const {
     playSound,
     pauseSound,
@@ -65,40 +66,47 @@ export default function YearScreen() {
     currentTrackId,
     playbackStatus,
   } = useAudio();
+  
   const {
     downloadState,
     startDownload,
     getDownloadedFileUri,
     deleteDownloadedTrack,
     loadDownloadedTracks,
-  } = useDownload(); // Use the download context
+  } = useDownload();
+
   const [tracks, setTracks] = useState<TrackType[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const loadTracksForYear = async () => {
-      if (!year) return;
+    const loadTracksForSpeaker = async () => {
+      if (!year || !speaker) return;
       setIsLoading(true);
       try {
         const cachedData = await SecureStore.getItemAsync(CACHE_KEY);
         if (cachedData) {
           const allPravachans: YearType[] = JSON.parse(cachedData);
           const yearData = allPravachans.find((item) => item.year === year);
+          
           if (yearData) {
-            setTracks(yearData.tracks);
+            // Filter tracks specifically for this speaker
+            const speakerTracks = yearData.tracks.filter(
+                t => (t.speaker || 'Unknown Speaker') === speaker
+            );
+            setTracks(speakerTracks);
           }
         }
       } catch (e) {
-        logger.error('Failed to load cached pravachans for year:', e);
-        Alert.alert('Error', 'Could not load the tracks for this year.');
+        logger.error('Failed to load tracks for speaker:', e);
+        Alert.alert('Error', 'Could not load the tracks.');
       } finally {
         setIsLoading(false);
       }
     };
 
-    loadTracksForYear();
+    loadTracksForSpeaker();
     loadDownloadedTracks();
-  }, [year]);
+  }, [year, speaker]);
 
   const deleteTrack = async (track: TrackType) => {
     Alert.alert(
@@ -159,12 +167,7 @@ export default function YearScreen() {
 
   if (isLoading) {
     return (
-      <SafeAreaView
-        style={[
-          styles.screenContainer,
-          { justifyContent: 'center', alignItems: 'center' },
-        ]}
-      >
+      <SafeAreaView style={[styles.screenContainer, { justifyContent: 'center', alignItems: 'center' }]}>
         <ActivityIndicator size="large" color={THEME.primary} />
       </SafeAreaView>
     );
@@ -179,7 +182,8 @@ export default function YearScreen() {
         >
           <ChevronLeft size={28} color={THEME.text} />
         </TouchableOpacity>
-        <Text style={styles.title}>Pravachans {year}</Text>
+        {/* Display Speaker name as title */}
+        <Text style={styles.title} numberOfLines={1}>{speaker}</Text>
       </View>
       <FlatList
         data={tracks}
@@ -204,7 +208,8 @@ export default function YearScreen() {
   );
 }
 
-// TrackItem component remains the same
+// ------------------ SUB COMPONENTS ------------------
+
 type TrackItemProps = {
     item: TrackType;
     downloadState: any;
@@ -239,6 +244,8 @@ const TrackItem = ({
             <View style={styles.trackRow}>
                 <View style={styles.trackInfo}>
                     <Text style={styles.trackTitle}>{item.title}</Text>
+                    {/* We don't need to show speaker name here again as it's in the header, 
+                        but we can show it or year if desired. */}
                     <Text style={styles.trackArtist}>{item.speaker}</Text>
                 </View>
                 <View style={styles.actionsContainer}>
@@ -312,7 +319,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   backButton: { marginRight: 15 },
-  title: { fontSize: 28, fontWeight: 'bold', color: THEME.text, flex: 1 },
+  title: { fontSize: 24, fontWeight: 'bold', color: THEME.text, flex: 1 },
   listContent: { paddingHorizontal: 20, paddingBottom: 40 },
   card: {
     backgroundColor: THEME.card,
