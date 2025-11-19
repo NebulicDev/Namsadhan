@@ -3,6 +3,7 @@ import { useRouter } from 'expo-router';
 import {
   BellRing,
   Book,
+  BookA,
   BookOpen,
   BookOpenText,
   BookText,
@@ -67,6 +68,11 @@ export default function MusicScreen() {
           onPress={() => router.push('/pravachans')}
         />
         <SectionCard
+          title="Dasbodh"
+          icon={<BookText size={32} color={THEME.text} />}
+          onPress={() => router.push('/dasbodh')}
+        />
+        <SectionCard
           title="Nityanemavali"
           icon={<BookOpen size={32} color={THEME.text} />}
           onPress={() => router.push('/nityaNemavali')}
@@ -88,7 +94,7 @@ export default function MusicScreen() {
         />
         <SectionCard
           title="Glossary"
-          icon={<BookText size={32} color={THEME.text} />}
+          icon={<BookA size={32} color={THEME.text} />}
           onPress={() => router.push('/glossary')}
         />
       </ScrollView>

@@ -65,6 +65,7 @@ function RootLayoutNav() {
         <Stack.Screen name="liveDarshan" options={{ headerShown: false }} />
         <Stack.Screen name="bhajans" options={{ headerShown: false }} />
         <Stack.Screen name="pravachans" options={{ headerShown: false }} />
+        <Stack.Screen name="dasbodh" options={{ headerShown: false }} />
         <Stack.Screen name="manacheShlok" options={{ headerShown: false }} />
         <Stack.Screen name="nityaNemavali" options={{ headerShown: false }} />
         <Stack.Screen name="nemavaliVivaran" options={{ headerShown: false  }} />
