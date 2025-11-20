@@ -1,17 +1,19 @@
 // app/(tabs)/quotes.tsx
 import * as Haptics from 'expo-haptics';
-import { RefreshCw, Share2 } from 'lucide-react-native';
+import { LinearGradient } from 'expo-linear-gradient';
+import { Quote, Share2, Shuffle } from 'lucide-react-native';
 import { useCallback, useEffect, useState } from 'react';
 import {
   ActivityIndicator,
-  SafeAreaView,
   ScrollView,
   Share,
+  StatusBar,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { dailyInspiration } from '../../assets/text/dailyInspiration';
 import { devotee } from '../../assets/text/devotee';
@@ -22,18 +24,21 @@ import { namasadan } from '../../assets/text/namasadhan';
 import { sadhguru } from '../../assets/text/sadhguru';
 import { saint } from '../../assets/text/saint';
 
+// --- THEME CONSTANTS ---
 const THEME = {
   background: '#FFF8F0',
   text: '#5D4037',
-  lightText: '#A1887F',
-  card: '#FFFFFF',
+  textLight: '#8D6E63',
+  cardBg: '#FFFFFF',
   primary: '#D2B48C',
   accent: '#FFB88D',
-  gradientEnd: '#FFB88D',
-  white: '#FFFFFF'
+  divider: '#F5E6D3',
+  quoteMark: '#EFE5D5',
+  goldAccent: '#D4AF37', // Premium gold for borders
 };
 
-const getRandomInt = (max) => {
+// --- LOGIC HELPERS ---
+const getRandomInt = (max: number) => {
   return Math.floor(Math.random() * max);
 };
 
@@ -48,7 +53,9 @@ const getDayOfYear = () => {
   return Math.floor(diff / oneDay);
 };
 
-const QuoteSection = ({ title, quote, onShuffle }) => {
+// --- COMPONENT: PREMIUM QUOTE CARD ---
+const QuoteSection = ({ title, quote, onShuffle }: { title: string, quote: any, onShuffle: () => void }) => {
+  
   const handleShare = async () => {
     if (!quote) return;
     Haptics.selectionAsync();
@@ -58,57 +65,92 @@ const QuoteSection = ({ title, quote, onShuffle }) => {
         message: message,
         title: `A quote on ${title}`,
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error sharing quote:', error.message);
     }
   };
 
-  const handleShuffle = () => {
-    Haptics.selectionAsync();
+  const handleNext = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     onShuffle();
   };
 
   return (
-    <View style={styles.card}>
-      <View style={styles.cardHeader}>
-        <Text style={styles.sectionTitle}>{title}</Text>
-        <View style={styles.cardActions}>
-          <TouchableOpacity onPress={handleShuffle} style={styles.shuffleIcon}>
-            <RefreshCw size={22} color={THEME.gradientEnd} />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={handleShare} style={styles.shareIcon}>
-            <Share2 size={22} color={THEME.lightText} />
-          </TouchableOpacity>
+    <View style={styles.cardWrapper}>
+      {/* Top Gold Accent */}
+      <View style={styles.goldBar} />
+
+      <LinearGradient
+        colors={['#FFFFFF', '#FFF8E1']} // Warm premium gradient
+        style={styles.cardGradient}
+      >
+        {/* Header: Title */}
+        <View style={styles.cardHeader}>
+             <Text style={styles.categoryTitle}>{title.toUpperCase()}</Text>
         </View>
-      </View>
-      <View style={styles.separator} />
-      {quote ? (
-        <>
-          <Text style={styles.quoteText}>"{quote.text}"</Text>
-          <Text style={styles.referenceText}>- {quote.reference}</Text>
-        </>
-      ) : (
-        <Text style={styles.quoteText}>No quote available for this category.</Text>
-      )}
+
+        {/* Main Content */}
+        <View style={styles.contentContainer}>
+            {/* Decorative Quote Mark */}
+            <View style={styles.watermark}>
+                <Quote size={48} color={THEME.primary} opacity={0.15} />
+            </View>
+
+            {quote ? (
+                <>
+                  <Text style={styles.quoteText}>"{quote.text}"</Text>
+                  <View style={styles.divider} />
+                  <Text style={styles.authorText}>— {quote.reference}</Text>
+                </>
+            ) : (
+                <Text style={styles.emptyText}>Wisdom loading...</Text>
+            )}
+        </View>
+
+        {/* Bottom Action Bar */}
+        <View style={styles.actionBar}>
+            <TouchableOpacity 
+                onPress={handleShare} 
+                style={styles.actionButton}
+                activeOpacity={0.6}
+            >
+                <Share2 size={20} color={THEME.textLight} />
+                <Text style={styles.actionLabel}>Share</Text>
+            </TouchableOpacity>
+            
+            <View style={styles.verticalDivider} />
+
+            <TouchableOpacity 
+                onPress={handleNext} 
+                style={styles.actionButton}
+                activeOpacity={0.6}
+            >
+                {/* <Text style={[styles.actionLabel, styles.nextLabel]}>Shuffle</Text> */}
+                <Shuffle size={20} color={THEME.text} />
+            </TouchableOpacity>
+        </View>
+      </LinearGradient>
     </View>
   );
 };
 
 export default function QuotesScreen() {
-  const [displayedQuotes, setDisplayedQuotes] = useState({});
+  const insets = useSafeAreaInsets();
+  const [displayedQuotes, setDisplayedQuotes] = useState<any>({});
   const [loading, setLoading] = useState(true);
+  
   const categories = [
-  'Daily Inspiration',
-  'Namasadhan',
-  'Morality',
-  'Mysticism',
-  'Sadhguru',
-  'God',
-  'Saint',
-  'Devotee',
-];
+    'Daily Inspiration',
+    'Namasadhan',
+    'Morality',
+    'Mysticism',
+    'Sadhguru',
+    'God',
+    'Saint',
+    'Devotee',
+  ];
 
-  const allQuotesByCategory = {
+  const allQuotesByCategory: any = {
     'Daily Inspiration': dailyInspiration,
     'Namasadhan': namasadan,
     'Morality': morality,
@@ -121,7 +163,7 @@ export default function QuotesScreen() {
 
   const selectDailyQuotes = useCallback(() => {
     const dayOfYear = getDayOfYear();
-    const newDailyQuotes = {};
+    const newDailyQuotes: any = {};
 
     for (const category of categories) {
       const categoryQuotes = allQuotesByCategory[category];
@@ -140,11 +182,11 @@ export default function QuotesScreen() {
     selectDailyQuotes();
   }, [selectDailyQuotes]);
 
-  const handleShuffleCategory = useCallback((category) => {
+  const handleShuffleCategory = useCallback((category: string) => {
     const categoryQuotes = allQuotesByCategory[category];
     if (categoryQuotes && categoryQuotes.length > 0) {
       const randomIndex = getRandomInt(categoryQuotes.length);
-      setDisplayedQuotes(prevQuotes => ({
+      setDisplayedQuotes((prevQuotes: any) => ({
         ...prevQuotes,
         [category]: categoryQuotes[randomIndex]
       }));
@@ -153,20 +195,36 @@ export default function QuotesScreen() {
 
   if (loading) {
     return (
-      <SafeAreaView style={[styles.screenContainer, styles.centered]}>
+      <View style={[styles.screenContainer, styles.centered]}>
         <ActivityIndicator size="large" color={THEME.primary} />
-        <Text style={{ color: THEME.text, marginTop: 10 }}>Loading Divine Thoughts...</Text>
-      </SafeAreaView>
+      </View>
     );
   }
 
   return (
-    <SafeAreaView style={styles.screenContainer}>
-      <ScrollView contentContainerStyle={styles.listContent}>
+    <View style={styles.screenContainer}>
+      <StatusBar barStyle="dark-content" backgroundColor={THEME.background} />
+      
+      <ScrollView 
+        contentContainerStyle={[
+            styles.scrollContent, 
+            { paddingTop: insets.top + 20 }
+        ]}
+        showsVerticalScrollIndicator={false}
+      >
+        {/* FIXED HEADER */}
         <View style={styles.header}>
-          <Text style={styles.title} numberOfLines={1} adjustsFontSizeToFit={true}>Today's Divine Thoughts</Text>
+          <Text 
+            style={styles.title} 
+            numberOfLines={1} 
+            adjustsFontSizeToFit={true} 
+            minimumFontScale={0.8}
+          >
+            Today's Divine Thoughts
+          </Text>
         </View>
 
+        {/* CARDS */}
         {categories.map((category) => (
           <QuoteSection
             key={category}
@@ -175,64 +233,151 @@ export default function QuotesScreen() {
             onShuffle={() => handleShuffleCategory(category)}
           />
         ))}
+
+        <View style={{ height: 40 }} />
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  screenContainer: { flex: 1, backgroundColor: THEME.background },
-  centered: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+  screenContainer: { 
+    flex: 1, 
+    backgroundColor: THEME.background 
+  },
+  centered: { 
+    justifyContent: 'center', 
+    alignItems: 'center' 
+  },
+  
+  // SCROLL
+  scrollContent: {
+    paddingHorizontal: 16,
+    paddingBottom: 20,
+  },
+
+  // HEADER
   header: {
-    paddingTop: 60,
-    marginBottom: 20,
+    marginBottom: 24,
     alignItems: 'center',
-    paddingHorizontal: 20,
+    justifyContent: 'center',
+    height: 50,
   },
   title: {
-    fontSize: 30,
+    fontSize: 28,
     fontWeight: 'bold',
     color: THEME.text,
+    textAlign: 'center',
+    width: '100%',
   },
-  listContent: { paddingHorizontal: 20, paddingBottom: 40 },
-  card: {
-    backgroundColor: THEME.card,
-    borderRadius: 15,
-    padding: 25,
-    marginBottom: 20,
-    elevation: 3,
-    shadowColor: 'rgba(93, 64, 55, 0.4)',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 5,
+
+  // CARD WRAPPER
+  cardWrapper: {
+    marginBottom: 24,
+    borderRadius: 20,
+    // Premium Shadow
+    shadowColor: '#8D6E63',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.12,
+    shadowRadius: 12,
+    elevation: 5,
+    backgroundColor: THEME.cardBg,
+    overflow: 'hidden',
   },
+  goldBar: {
+    width: '100%',
+    height: 5,
+    backgroundColor: THEME.primary, // Gold/Tan accent
+  },
+  cardGradient: {
+    paddingTop: 20,
+    paddingBottom: 0,
+  },
+
+  // CARD HEADER
   cardHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 15,
+    marginBottom: 10,
+    paddingHorizontal: 20,
   },
-  sectionTitle: { fontSize: 22, fontWeight: '700', color: THEME.text, flex: 1 },
-  cardActions: {
-    flexDirection: 'row',
+  categoryTitle: {
+    fontSize: 18, // Increased size
+    fontWeight: '800', // Boldest weight
+    color: THEME.text,
+    letterSpacing: 1.5,
+    textAlign: 'center',
+  },
+
+  // CONTENT
+  contentContainer: {
+    paddingHorizontal: 24,
+    paddingBottom: 24,
     alignItems: 'center',
+    minHeight: 120,
   },
-  shareIcon: { padding: 5, marginLeft: 10 },
-  shuffleIcon: {
-    padding: 5,
+  watermark: {
+    position: 'absolute',
+    top: -10,
+    left: 0,
   },
-  separator: { height: 1, backgroundColor: THEME.primary, opacity: 0.3, marginBottom: 20 },
   quoteText: {
     fontSize: 20,
-    fontStyle: 'italic',
     color: THEME.text,
-    lineHeight: 30,
-    marginBottom: 15,
+    textAlign: 'center',
+    lineHeight: 32,
+    fontFamily: 'System',
+    fontWeight: '500',
+    marginBottom: 16,
+    marginTop: 8,
   },
-  referenceText: {
-    fontSize: 16,
+  emptyText: {
+    color: THEME.textLight,
+    fontStyle: 'italic',
+    marginTop: 10,
+  },
+  
+  // AUTHOR
+  divider: {
+    width: 40,
+    height: 2,
+    backgroundColor: THEME.divider,
+    marginBottom: 12,
+  },
+  authorText: {
+    fontSize: 15,
+    color: THEME.textLight,
     fontWeight: '600',
-    color: THEME.primary,
-    textAlign: 'left',
+    fontStyle: 'italic',
+  },
+
+  // ACTION BAR
+  actionBar: {
+    flexDirection: 'row',
+    borderTopWidth: 1,
+    borderTopColor: 'rgba(0,0,0,0.05)',
+    height: 54,
+    backgroundColor: 'rgba(255,255,255,0.6)', // Slightly distinct footer
+  },
+  actionButton: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  verticalDivider: {
+    width: 1,
+    height: '100%',
+    backgroundColor: 'rgba(0,0,0,0.05)',
+  },
+  actionLabel: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: THEME.textLight,
+    marginLeft: 8,
+  },
+  nextLabel: {
+    color: THEME.text, // Darker color for "Next" to encourage clicking
+    marginRight: 4,
+    marginLeft: 0,
   },
 });
