@@ -1,4 +1,5 @@
 // app/(tabs)/resources.tsx
+import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import {
   BellRing,
@@ -7,98 +8,144 @@ import {
   BookOpen,
   BookOpenText,
   BookText,
+  ChevronRight,
   Mic2,
+  Radio,
   Scroll,
   TvMinimalPlay,
 } from 'lucide-react-native';
 import React from 'react';
 import {
-  SafeAreaView,
   ScrollView,
+  StatusBar,
   StyleSheet,
   Text,
-  TouchableOpacity
+  TouchableOpacity,
+  View,
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+// --- THEME ---
 const THEME = {
   background: '#FFF8F0',
   text: '#5D4037',
-  lightText: '#A1887F',
-  card: '#FFFFFF',
+  textLight: '#8D6E63',
+  cardBg: '#FFFFFF',
+  primary: '#D2B48C',
+  accent: '#FFB74D',
+  iconBg: '#FFF5E1',
+  liveRed: '#E53935',
 };
 
-const SectionCard = ({
-  title,
-  icon,
-  onPress,
-}: {
-  title: string;
-  icon: React.ReactNode;
-  onPress: () => void;
-}) => (
-  <TouchableOpacity style={styles.card} onPress={onPress}>
-    {icon}
-    <Text style={styles.cardTitle}>{title}</Text>
-  </TouchableOpacity>
-);
+// --- DATA ---
+const LIVE_ITEM = { id: 'live', title: 'Samadhi Live Darshan', icon: TvMinimalPlay, route: '/liveDarshan', desc: 'Watch Now' };
 
-export default function MusicScreen() {
+const GRID_ITEMS = [
+  { id: 'bhajans', title: 'Bhajans', icon: BellRing, route: '/bhajans' },
+  { id: 'pravachans', title: 'Pravachans', icon: Mic2, route: '/pravachans' },
+  { id: 'dasbodh', title: 'Dasbodh', icon: BookText, route: '/dasbodh' },
+  { id: 'nitya', title: 'Nityanemavali', icon: BookOpen, route: '/nityaNemavali' },
+  { id: 'vivaran', title: 'Nemavali Vivaran', icon: BookOpenText, route: '/nemavaliVivaran' },
+  { id: 'parmarth', title: 'Parmarth Mandir', icon: Book, route: '/parmarthMandir' },
+  { id: 'shlok', title: 'Manache Shlok', icon: Scroll, route: '/manacheShlok' },
+  { id: 'glossary', title: 'Glossary', icon: BookA, route: '/glossary' },
+];
+
+export default function ResourcesScreen() {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
+
+  // --- RENDER: HERO CARD (LIVE) ---
+  const renderHero = () => {
+    const Icon = LIVE_ITEM.icon;
+    return (
+      <TouchableOpacity
+        style={styles.heroContainer}
+        activeOpacity={0.9}
+        onPress={() => router.push(LIVE_ITEM.route as any)}
+      >
+        <LinearGradient
+          colors={['#FFFFFF', '#FFFDF9']}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={styles.heroGradient}
+        >
+          <View style={styles.watermarkHero}>
+             <Icon size={120} color={THEME.primary} opacity={0.08} />
+          </View>
+
+          <View style={styles.heroContent}>
+            <View style={styles.heroIconRow}>
+                <View style={[styles.iconWrapper, { backgroundColor: '#FFEBEE' }]}>
+                    <Icon size={28} color={THEME.liveRed} />
+                </View>
+                <View style={styles.liveBadge}>
+                    <Radio size={10} color={THEME.cardBg} />
+                    <Text style={styles.liveText}>LIVE</Text>
+                </View>
+            </View>
+            
+            <View>
+                <Text style={styles.heroTitle}>{LIVE_ITEM.title}</Text>
+                <Text style={styles.heroSubtitle}>Nimbal Ashram</Text>
+            </View>
+          </View>
+
+          <View style={styles.arrowCircle}>
+             <ChevronRight size={20} color={THEME.text} />
+          </View>
+        </LinearGradient>
+      </TouchableOpacity>
+    );
+  };
+
+  // --- RENDER: GRID CARD ---
+  const renderGridItem = (item: typeof GRID_ITEMS[0]) => {
+    const Icon = item.icon;
+    return (
+      <TouchableOpacity
+        key={item.id}
+        style={styles.gridItemContainer}
+        activeOpacity={0.9}
+        onPress={() => router.push(item.route as any)}
+      >
+        <LinearGradient
+          colors={['#FFFFFF', '#FFFCF5']}
+          style={styles.gridGradient}
+        >
+            <View style={styles.gridContent}>
+                <View style={styles.iconWrapper}>
+                    <Icon size={24} color={THEME.text} />
+                </View>
+                <Text style={styles.gridTitle} numberOfLines={2}>{item.title}</Text>
+            </View>
+        </LinearGradient>
+      </TouchableOpacity>
+    );
+  };
 
   return (
-    <SafeAreaView style={styles.screenContainer}>
-      {/* 3. HERE IS THE FIX:
-        We replaced the <View> with <ScrollView>
-        and used 'contentContainerStyle' instead of 'style'
-      */}
-      <ScrollView contentContainerStyle={styles.cardContainer}>
-        <SectionCard
-          title="Live Darshan"
-          icon={<TvMinimalPlay size={32} color={THEME.text} />}
-          onPress={() => router.push('/liveDarshan')}
-        />
-        <SectionCard
-          title="Bhajans"
-          icon={<BellRing size={32} color={THEME.text} />}
-          onPress={() => router.push('/bhajans')}
-        />
-        <SectionCard
-          title="Pravachans"
-          icon={<Mic2 size={32} color={THEME.text} />}
-          onPress={() => router.push('/pravachans')}
-        />
-        <SectionCard
-          title="Dasbodh"
-          icon={<BookText size={32} color={THEME.text} />}
-          onPress={() => router.push('/dasbodh')}
-        />
-        <SectionCard
-          title="Nityanemavali"
-          icon={<BookOpen size={32} color={THEME.text} />}
-          onPress={() => router.push('/nityaNemavali')}
-        />
-        <SectionCard
-          title="Nemavali Vivaran"
-          icon={<BookOpenText size={32} color={THEME.text} />}
-          onPress={() => router.push('/nemavaliVivaran')}
-        />
-        <SectionCard
-          title="Parmarth Mandir"
-          icon={<Book size={32} color={THEME.text} />}
-          onPress={() => router.push('/parmarthMandir')}
-        />
-        <SectionCard
-          title="Manache Shlok"
-          icon={<Scroll size={32} color={THEME.text} />}
-          onPress={() => router.push('/manacheShlok')}
-        />
-        <SectionCard
-          title="Glossary"
-          icon={<BookA size={32} color={THEME.text} />}
-          onPress={() => router.push('/glossary')}
-        />
+    <View style={styles.screenContainer}>
+      <StatusBar barStyle="dark-content" backgroundColor={THEME.background} />
+
+      <ScrollView 
+        contentContainerStyle={[
+          styles.scrollContent, 
+          { paddingTop: insets.top + 20 } 
+        ]}
+        showsVerticalScrollIndicator={false}
+      >
+        {/* 1. HERO SECTION */}
+        {renderHero()}
+
+        {/* 2. GRID SECTION */}
+        <View style={styles.gridContainer}>
+          {GRID_ITEMS.map(renderGridItem)}
+        </View>
+
+        <View style={{ height: 40 }} /> 
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 }
 
@@ -106,44 +153,129 @@ const styles = StyleSheet.create({
   screenContainer: {
     flex: 1,
     backgroundColor: THEME.background,
-    paddingTop: 60,
   },
-  header: {
-    paddingTop: 60,
+  scrollContent: {
+    paddingHorizontal: 16,
+  },
+
+  // --- HERO STYLES ---
+  heroContainer: {
+    width: '100%',
+    height: 100,
+    marginBottom: 20,
+    borderRadius: 24,
+    shadowColor: '#8D6E63',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.1,
+    shadowRadius: 12,
+    elevation: 6,
+    backgroundColor: THEME.cardBg,
+  },
+  heroGradient: {
+    flex: 1,
+    borderRadius: 24,
+    flexDirection: 'row',
+    alignItems: 'center',
     paddingHorizontal: 20,
-    marginBottom: 30,
+    borderWidth: 1,
+    borderColor: '#FFF',
+    justifyContent: 'space-between',
+    overflow: 'hidden',
   },
-  title: {
-    fontSize: 34,
+  watermarkHero: {
+    position: 'absolute',
+    right: -20,
+    top: -30,
+    transform: [{ rotate: '-10deg' }],
+  },
+  heroContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  heroIconRow: {
+    marginRight: 16,
+    alignItems: 'center',
+  },
+  liveBadge: {
+    position: 'absolute',
+    bottom: -6,
+    backgroundColor: THEME.liveRed,
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 8,
+    borderWidth: 2,
+    borderColor: '#FFF',
+  },
+  liveText: {
+    color: '#FFF',
+    fontSize: 8,
+    fontWeight: '800',
+    marginLeft: 2,
+  },
+  heroTitle: {
+    fontSize: 18,
     fontWeight: 'bold',
     color: THEME.text,
   },
-  subtitle: {
-    fontSize: 18,
-    color: THEME.lightText,
-    marginTop: 4,
+  heroSubtitle: {
+    fontSize: 12,
+    color: THEME.textLight,
+    marginTop: 2,
   },
-  cardContainer: {
-    paddingHorizontal: 20,
-    paddingBottom: 20, // 5. Added padding for a nice space at the bottom
-  },
-  card: {
-    backgroundColor: THEME.card,
-    borderRadius: 15,
-    padding: 25,
-    marginBottom: 20,
-    flexDirection: 'row',
+  arrowCircle: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: '#F5E6D3',
+    justifyContent: 'center',
     alignItems: 'center',
-    elevation: 4,
-    shadowColor: 'rgba(93, 64, 55, 0.4)',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
   },
-  cardTitle: {
-    fontSize: 20,
+
+  // --- GRID STYLES ---
+  gridContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+  },
+  gridItemContainer: {
+    width: '48%',
+    height: 110, // Rectangular but compact
+    marginBottom: 12,
+    borderRadius: 20,
+    shadowColor: '#8D6E63',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.08,
+    shadowRadius: 8,
+    elevation: 3,
+    backgroundColor: THEME.cardBg,
+  },
+  gridGradient: {
+    flex: 1,
+    borderRadius: 20,
+    padding: 16,
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: '#FFF',
+  },
+  gridContent: {
+    alignItems: 'flex-start',
+  },
+  gridTitle: {
+    fontSize: 15,
     fontWeight: '600',
     color: THEME.text,
-    marginLeft: 20,
+    marginTop: 12,
+  },
+  
+  // SHARED
+  iconWrapper: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: THEME.iconBg,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });

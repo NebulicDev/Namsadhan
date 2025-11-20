@@ -1,28 +1,41 @@
 // app/bhajans.tsx
 import Slider from '@react-native-community/slider';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
-import { ChevronLeft, Download, Music4, Pause, Play, Trash2 } from 'lucide-react-native';
+import {
+  ArrowDownToLine,
+  ChevronLeft,
+  Music,
+  Pause,
+  Play,
+  Trash2,
+} from 'lucide-react-native';
 import { useEffect } from 'react';
 import {
   ActivityIndicator,
   Alert,
   FlatList,
-  SafeAreaView,
+  StatusBar,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useAudio } from '../context/AudioContext';
 import { useDownload } from '../context/DownloadContext';
 
+// --- THEME CONSTANTS ---
 const THEME = {
   background: '#FFF8F0',
   text: '#5D4037',
-  lightText: '#A1887F',
-  card: '#FFFFFF',
+  textLight: '#8D6E63',
+  cardBg: '#FFFFFF',
   primary: '#D2B48C',
-  accent: '#FFB88D',
+  accent: '#FFB74D',
+  sliderThumb: '#5D4037',
+  sliderTrack: '#D7CCC8',
+  sliderActive: '#8D6E63',
 };
 
 const MUSIC_DATA = [
@@ -55,6 +68,7 @@ const MUSIC_DATA = [
 
 export default function BhajansScreen() {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
   const { playSound, pauseSound, seekSound, isPlaying, currentTrackId, playbackStatus } = useAudio();
   const {
     downloadState,
@@ -123,134 +137,223 @@ export default function BhajansScreen() {
     await seekSound(value);
   };
 
-  const TrackItem = ({ item }: { item: any }) => {
+  const renderItem = ({ item }: { item: any }) => {
     const trackDownloadState = downloadState[item.id];
     const isDownloaded = trackDownloadState?.isCompleted ?? false;
     const isDownloading = trackDownloadState?.isDownloading ?? false;
     const isActive = item.id === currentTrackId;
 
     return (
-      <View style={styles.card}>
-        <View style={styles.trackRow}>
-          <View style={styles.iconContainer}>
-            <Music4 size={28} color={THEME.primary} />
-          </View>
-          <View style={styles.trackInfo}>
-            <Text style={styles.trackTitle}>{item.title}</Text>
-          </View>
+      // REPLACED Animated.View with standard View for performance
+      <View style={styles.cardWrapper}>
+        <LinearGradient
+            colors={isActive ? ['#FFFFFF', '#FFF8E1'] : ['#FFFFFF', '#FFFDF9']}
+            style={[styles.card, isActive && styles.cardActive]}
+        >
+            <View style={styles.trackRow}>
+                {/* Left Icon */}
+                <View style={[styles.iconContainer, isActive && styles.iconActive]}>
+                    {isActive && isPlaying ? (
+                        <Pause size={24} color={isActive ? '#FFF' : THEME.primary} fill={isActive ? '#FFF' : 'transparent'} />
+                    ) : (
+                        <Music size={24} color={isActive ? '#FFF' : THEME.primary} />
+                    )}
+                </View>
 
-          {isDownloaded && (
-            <TouchableOpacity style={styles.actionButton} onPress={() => deleteTrack(item.id)}>
-              <Trash2 size={24} color={THEME.lightText} />
-            </TouchableOpacity>
-          )}
+                {/* Title & Subtitle */}
+                <View style={styles.trackInfo}>
+                    <Text style={[styles.trackTitle, isActive && styles.textActive]}>{item.title}</Text>
+                    <Text style={styles.trackSubtitle}>
+                         {isDownloaded ? 'Available Offline' : 'Download to Play'}
+                    </Text>
+                </View>
 
-          <TouchableOpacity
-            style={styles.actionButton}
-            onPress={() => (isDownloaded ? handlePlayPause(item) : startDownload(item))}
-            disabled={isDownloading}
-          >
-            {isDownloading ? (
-              <ActivityIndicator color={THEME.primary} />
-            ) : isDownloaded ? (
-              isActive && isPlaying ? (
-                <Pause size={28} color={THEME.accent} />
-              ) : (
-                <Play size={28} color={THEME.accent} />
-              )
-            ) : (
-              <Download size={28} color={THEME.primary} />
-            )}
-          </TouchableOpacity>
-        </View>
-        {isActive && (
-          <View style={styles.sliderView}>
-            <Slider
-              style={styles.slider}
-              minimumValue={0}
-              maximumValue={playbackStatus.duration}
-              value={playbackStatus.position}
-              onSlidingComplete={onSlidingComplete}
-              minimumTrackTintColor={THEME.accent}
-              maximumTrackTintColor={THEME.lightText}
-              thumbTintColor={THEME.primary}
-            />
-            <View style={styles.timeRow}>
-              <Text style={styles.timeText}>{formatTime(playbackStatus.position)}</Text>
-              <Text style={styles.timeText}>{formatTime(playbackStatus.duration)}</Text>
+                {/* Actions */}
+                <View style={styles.actions}>
+                    {isDownloaded && (
+                         <TouchableOpacity 
+                            style={styles.actionButton} 
+                            onPress={() => deleteTrack(item.id)}
+                            hitSlop={10}
+                        >
+                            <Trash2 size={20} color={THEME.textLight} />
+                        </TouchableOpacity>
+                    )}
+
+                    <TouchableOpacity
+                        style={[styles.actionButton, styles.mainAction]}
+                        onPress={() => (isDownloaded ? handlePlayPause(item) : startDownload(item))}
+                        disabled={isDownloading}
+                    >
+                        {isDownloading ? (
+                            <ActivityIndicator size="small" color={THEME.primary} />
+                        ) : isDownloaded ? (
+                            isActive && isPlaying ? (
+                                <Pause size={24} color={THEME.accent} fill={THEME.accent} />
+                            ) : (
+                                <Play size={24} color={THEME.accent} fill={THEME.accent} style={{ marginLeft: 2 }} />
+                            )
+                        ) : (
+                            <ArrowDownToLine size={24} color={THEME.primary} />
+                        )}
+                    </TouchableOpacity>
+                </View>
             </View>
-          </View>
-        )}
+
+            {/* Slider (Visible when active) */}
+            {isActive && (
+                <View style={styles.sliderView}>
+                    <Slider
+                        style={styles.slider}
+                        minimumValue={0}
+                        maximumValue={playbackStatus.duration}
+                        value={playbackStatus.position}
+                        onSlidingComplete={onSlidingComplete}
+                        minimumTrackTintColor={THEME.sliderActive}
+                        maximumTrackTintColor={THEME.sliderTrack}
+                        thumbTintColor={THEME.sliderThumb}
+                    />
+                    <View style={styles.timeRow}>
+                        <Text style={styles.timeText}>{formatTime(playbackStatus.position)}</Text>
+                        <Text style={styles.timeText}>{formatTime(playbackStatus.duration)}</Text>
+                    </View>
+                </View>
+            )}
+        </LinearGradient>
       </View>
     );
   };
 
   return (
-    <SafeAreaView style={styles.screenContainer}>
-      <View style={styles.header}>
+    <View style={styles.screenContainer}>
+      <StatusBar barStyle="dark-content" backgroundColor={THEME.background} />
+      
+      {/* Header */}
+      <View style={[styles.header, { paddingTop: insets.top > 0 ? insets.top + 10 : 40 }]}>
         <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
           <ChevronLeft size={28} color={THEME.text} />
         </TouchableOpacity>
         <Text style={styles.title}>Bhajans</Text>
         <View style={{ width: 28 }} />
       </View>
+
+      {/* List */}
       <FlatList
         data={MUSIC_DATA}
-        renderItem={TrackItem}
+        renderItem={renderItem}
         keyExtractor={(item) => item.id}
         contentContainerStyle={styles.listContent}
+        showsVerticalScrollIndicator={false}
       />
-    </SafeAreaView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   screenContainer: { flex: 1, backgroundColor: THEME.background },
+  
+  // HEADER
   header: {
-    paddingTop: 60,
     paddingHorizontal: 20,
-    marginBottom: 10,
+    paddingBottom: 20,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    backgroundColor: THEME.background,
+    zIndex: 10,
   },
   backButton: { marginRight: 15 },
   title: { fontSize: 28, fontWeight: 'bold', color: THEME.text, flex: 1 },
+
+  // LIST
   listContent: { paddingHorizontal: 20, paddingBottom: 40 },
+
+  // CARD
+  cardWrapper: {
+    marginBottom: 16,
+    borderRadius: 20,
+    // Shadow
+    shadowColor: '#8D6E63',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.08,
+    shadowRadius: 8,
+    elevation: 4,
+    backgroundColor: THEME.cardBg,
+  },
   card: {
-    backgroundColor: THEME.card,
-    borderRadius: 15,
-    padding: 20,
-    marginBottom: 15,
-    elevation: 3,
-    shadowColor: 'rgba(93, 64, 55, 0.4)',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 5,
+    borderRadius: 20,
+    padding: 16,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.6)',
   },
-  iconContainer: {
-    width: 50,
-    height: 50,
-    borderRadius: 10,
-    backgroundColor: THEME.background,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 15,
+  cardActive: {
+    borderColor: THEME.primary,
+    borderWidth: 1,
   },
-  trackInfo: { flex: 1 },
-  trackTitle: { fontSize: 18, fontWeight: '600', color: THEME.text },
-  actionButton: {
-    width: 50,
-    height: 50,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
+  
   trackRow: {
     flexDirection: 'row',
     alignItems: 'center',
   },
+  
+  // ICON
+  iconContainer: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: '#F5E6D3', // Light tan
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 16,
+  },
+  iconActive: {
+    backgroundColor: THEME.text, // Dark brown
+  },
+
+  // INFO
+  trackInfo: { flex: 1 },
+  trackTitle: { 
+    fontSize: 17, 
+    fontWeight: '600', 
+    color: THEME.text,
+    marginBottom: 2 
+  },
+  textActive: {
+    fontWeight: 'bold',
+  },
+  trackSubtitle: {
+    fontSize: 12,
+    color: THEME.textLight,
+  },
+
+  // ACTIONS
+  actions: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  actionButton: {
+    width: 40,
+    height: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginLeft: 4,
+  },
+  mainAction: {
+    backgroundColor: '#FFF',
+    borderRadius: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 3,
+    elevation: 2,
+  },
+
+  // SLIDER
   sliderView: {
-    marginTop: 10,
+    marginTop: 16,
+    paddingTop: 8,
+    borderTopWidth: 1,
+    borderTopColor: 'rgba(0,0,0,0.03)',
   },
   slider: {
     width: '100%',
@@ -259,11 +362,12 @@ const styles = StyleSheet.create({
   timeRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingHorizontal: 5,
-    marginTop: -10,
+    paddingHorizontal: 2,
+    marginTop: -8,
   },
   timeText: {
-    color: THEME.lightText,
-    fontSize: 12,
+    color: THEME.textLight,
+    fontSize: 11,
+    fontVariant: ['tabular-nums'],
   },
 });

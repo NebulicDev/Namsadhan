@@ -1,36 +1,38 @@
+// app/pravachans/[year]/index.tsx
+import { LinearGradient } from 'expo-linear-gradient';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import * as SecureStore from 'expo-secure-store';
-import { ChevronLeft, User } from 'lucide-react-native';
+import { AudioLines, ChevronLeft, User } from 'lucide-react-native';
 import { useEffect, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
   FlatList,
   Image,
-  SafeAreaView,
+  StatusBar,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import logger from '../../../utils/logger';
 
-// Map specific speaker names to your local assets
-// MAKE SURE these keys match exactly what is in your Firestore "speaker" field
+// --- THEME CONSTANTS ---
+const THEME = {
+  background: '#FFF8F0',
+  text: '#5D4037',
+  textLight: '#8D6E63',
+  cardBg: '#FFFFFF',
+  primary: '#D2B48C',
+  accent: '#FFB74D',
+};
+
 const SPEAKER_IMAGES: Record<string, any> = {
   'Shri Gurudev Ranade': require('../../../assets/images/shri-gurudev-ranade.jpeg'),
   'Shri Bhausaheb Maharaj': require('../../../assets/images/shri-bhausaheb-maharaj.jpeg'),
   'Shri Amburao Maharaj': require('../../../assets/images/shri-amburao-maharaj.jpeg'),
   'Shri Nimbargi Maharaj': require('../../../assets/images/shri-nimbargi-maharaj.jpeg'),
-  // Add others here if needed
-};
-
-const THEME = {
-  background: '#FFF8F0',
-  text: '#5D4037',
-  card: '#FFFFFF',
-  primary: '#D2B48C',
-  accent: '#FFB88D',
 };
 
 type TrackType = {
@@ -52,9 +54,11 @@ const CACHE_KEY = 'pravachans_data_v2';
 export default function SpeakerSelectionScreen() {
   const router = useRouter();
   const { year } = useLocalSearchParams<{ year: string }>();
+  const insets = useSafeAreaInsets();
   const [speakers, setSpeakers] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
+  // --- LOGIC (UNTOUCHED) ---
   useEffect(() => {
     const loadSpeakersForYear = async () => {
       if (!year) return;
@@ -66,7 +70,6 @@ export default function SpeakerSelectionScreen() {
           const yearData = allPravachans.find((item) => item.year === year);
           
           if (yearData && yearData.tracks) {
-            // Extract unique speakers
             const uniqueSpeakers = Array.from(
               new Set(yearData.tracks.map((t) => t.speaker || 'Unknown Speaker'))
             );
@@ -86,9 +89,9 @@ export default function SpeakerSelectionScreen() {
 
   if (isLoading) {
     return (
-      <SafeAreaView style={[styles.screenContainer, styles.center]}>
-        <ActivityIndicator size="large" color={THEME.primary} />
-      </SafeAreaView>
+      <View style={[styles.screenContainer, styles.center]}>
+        <ActivityIndicator size="large" color={THEME.text} />
+      </View>
     );
   }
 
@@ -96,37 +99,70 @@ export default function SpeakerSelectionScreen() {
     const imageSource = SPEAKER_IMAGES[item];
 
     return (
-      <TouchableOpacity
-        style={styles.speakerCard}
-        onPress={() =>
-            // Navigate to the [speaker].tsx file we will create next
+      <View style={styles.cardContainer}>
+        <TouchableOpacity
+          activeOpacity={0.9}
+          style={styles.cardTouchable}
+          onPress={() =>
             router.push({
                 pathname: `/pravachans/[year]/[speaker]`,
                 params: { year: year, speaker: item }
             })
-        }
-      >
-        <View style={styles.imageContainer}>
-          {imageSource ? (
-            <Image source={imageSource} style={styles.speakerImage} resizeMode="cover" />
-          ) : (
-            <View style={styles.placeholderImage}>
-              <User size={40} color={THEME.primary} />
+          }
+        >
+          <LinearGradient
+            colors={['#FFFFFF', '#FFFDF9']}
+            style={styles.cardGradient}
+          >
+            {/* Watermark */}
+            <View style={styles.watermark}>
+                <User size={100} color={THEME.primary} opacity={0.05} />
             </View>
-          )}
-        </View>
-        <Text style={styles.speakerName}>{item}</Text>
-      </TouchableOpacity>
+
+            {/* Image */}
+            <View style={styles.imageWrapper}>
+              <View style={styles.imageContainer}>
+                {imageSource ? (
+                  <Image source={imageSource} style={styles.speakerImage} resizeMode="cover" />
+                ) : (
+                  <View style={styles.placeholderImage}>
+                    <User size={40} color={THEME.primary} opacity={0.6} />
+                  </View>
+                )}
+              </View>
+            </View>
+            
+            {/* Text */}
+            <View style={styles.textContainer}>
+                <Text style={styles.speakerLabel}>SPEAKER</Text>
+                <Text style={styles.speakerName} numberOfLines={2}>{item}</Text>
+            </View>
+
+            {/* Action */}
+            <View style={styles.actionRow}>
+                 <Text style={styles.actionText}>Listen</Text>
+                 <View style={styles.iconCircle}>
+                    <AudioLines size={14} color="#FFF" />
+                 </View>
+            </View>
+          </LinearGradient>
+        </TouchableOpacity>
+      </View>
     );
   };
 
   return (
-    <SafeAreaView style={styles.screenContainer}>
-      <View style={styles.header}>
+    <View style={styles.screenContainer}>
+      <StatusBar barStyle="dark-content" backgroundColor={THEME.background} />
+      
+      <View style={[styles.header, { paddingTop: insets.top > 0 ? insets.top + 10 : 40 }]}>
         <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
           <ChevronLeft size={28} color={THEME.text} />
         </TouchableOpacity>
-        <Text style={styles.title}>{year}</Text>
+        <View>
+            <Text style={styles.headerTitle}>Pravachans</Text>
+            <Text style={styles.headerSubtitle}>Year {year}</Text>
+        </View>
       </View>
 
       <FlatList
@@ -136,52 +172,91 @@ export default function SpeakerSelectionScreen() {
         contentContainerStyle={styles.listContent}
         numColumns={2}
         columnWrapperStyle={styles.columnWrapper}
+        showsVerticalScrollIndicator={false}
         ListEmptyComponent={
-            <Text style={styles.emptyText}>No speakers found for this year.</Text>
+            <View style={styles.center}>
+                <Text style={styles.emptyText}>No speakers found for this year.</Text>
+            </View>
         }
       />
-    </SafeAreaView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   screenContainer: { flex: 1, backgroundColor: THEME.background },
-  center: { justifyContent: 'center', alignItems: 'center' },
+  center: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+  
   header: {
-    paddingTop: 60,
     paddingHorizontal: 20,
-    marginBottom: 20,
+    paddingBottom: 20,
     flexDirection: 'row',
     alignItems: 'center',
+    backgroundColor: THEME.background,
+    zIndex: 10,
   },
   backButton: { marginRight: 15 },
-  title: { fontSize: 28, fontWeight: 'bold', color: THEME.text, flex: 1 },
-  listContent: { paddingHorizontal: 15, paddingBottom: 40 },
+  headerTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: THEME.text,
+  },
+  headerSubtitle: {
+    fontSize: 14,
+    color: THEME.textLight,
+    marginTop: 2,
+  },
+
+  listContent: { paddingHorizontal: 16, paddingBottom: 40, paddingTop: 10 },
   columnWrapper: { justifyContent: 'space-between' },
-  speakerCard: {
+
+  cardContainer: {
     width: '48%',
-    backgroundColor: THEME.card,
-    borderRadius: 15,
-    padding: 15,
-    marginBottom: 15,
-    alignItems: 'center',
-    elevation: 3,
-    shadowColor: '#5D4037',
-    shadowOffset: { width: 0, height: 2 },
+    marginBottom: 16,
+  },
+  cardTouchable: {
+    borderRadius: 24,
+    shadowColor: '#8D6E63',
+    shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.1,
-    shadowRadius: 4,
+    shadowRadius: 8,
+    elevation: 4,
+    backgroundColor: THEME.cardBg,
+  },
+  cardGradient: {
+    borderRadius: 24,
+    padding: 12,
+    minHeight: 220,
+    alignItems: 'center',
+    overflow: 'hidden',
+    borderWidth: 1,
+    borderColor: '#FFF',
+    justifyContent: 'space-between'
+  },
+  watermark: {
+    position: 'absolute',
+    bottom: -20,
+    right: -20,
+    zIndex: 0,
+  },
+  imageWrapper: {
+    marginTop: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 6,
+    elevation: 4,
   },
   imageContainer: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    marginBottom: 10,
+    width: 90,
+    height: 90,
+    borderRadius: 45,
     overflow: 'hidden',
-    backgroundColor: '#F0F0F0',
+    backgroundColor: '#FFF8E1',
+    borderWidth: 3,
+    borderColor: '#FFF',
     justifyContent: 'center',
     alignItems: 'center',
-    borderWidth: 2,
-    borderColor: THEME.primary,
   },
   speakerImage: {
     width: '100%',
@@ -192,18 +267,55 @@ const styles = StyleSheet.create({
     height: '100%',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#EEE',
+  },
+  textContainer: {
+    alignItems: 'center',
+    marginTop: 12,
+    width: '100%',
+    paddingHorizontal: 4,
+    zIndex: 1,
+  },
+  speakerLabel: {
+    fontSize: 10,
+    fontWeight: '700',
+    color: THEME.textLight,
+    letterSpacing: 1.5,
+    marginBottom: 4,
   },
   speakerName: {
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: '700',
     color: THEME.text,
     textAlign: 'center',
+    lineHeight: 22,
+  },
+  actionRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 12,
+    marginBottom: 6,
+    backgroundColor: '#F5E6D3',
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    borderRadius: 20,
+  },
+  actionText: {
+    fontSize: 11,
+    fontWeight: '600',
+    color: THEME.text,
+    marginRight: 6,
+  },
+  iconCircle: {
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    backgroundColor: THEME.text,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   emptyText: {
     textAlign: 'center',
-    marginTop: 50,
-    color: THEME.text,
+    color: THEME.textLight,
     fontSize: 16,
   },
 });
