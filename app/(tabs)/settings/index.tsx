@@ -1,6 +1,8 @@
+// app/(tabs)/settings/index.tsx
 import { useAuth } from '@/context/AuthContext';
 import { useSessions } from '@/context/SessionContext';
 import { authInstance } from '@/firebaseConfig';
+import { signOut } from '@react-native-firebase/auth'; // CHANGED: Import modular signOut
 import * as Haptics from 'expo-haptics';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
@@ -68,10 +70,11 @@ export default function ProfileScreen() {
       { text: "Cancel", style: "cancel" },
       { text: "Logout", style: "destructive", onPress: async () => {
           try {
-            await authInstance.signOut();
+            // CHANGED: Use modular signOut function
+            await signOut(authInstance);
             router.replace('/(auth)/login');
           } catch (err) {
-            logger.error("Logout error:", err); // Use logger
+            logger.error("Logout error:", err);
             Alert.alert("Error", "Failed to logout. Please try again.");
           }
         }
@@ -126,15 +129,6 @@ export default function ProfileScreen() {
           </View>
         </View>
         
-        {/* --- STATS --- */}
-        {/* <View style={styles.statsContainer}>
-          <StatCard icon={<BarChart2 size={24} color={THEME.primary}/>} label="Total Sadhana" value={formatTime(totalSadhana)} />
-          <StatCard icon={<CalendarIcon size={24} color={THEME.primary}/>} label="Current Streak" value="12 days" />
-          <StatCard icon={<Award size={24} color={THEME.primary}/>} label="Longest Streak" value="45 days" />
-        </View> */}
-        
-        
-
         {/* --- CALENDAR & PROGRESS --- */}
         <View style={styles.card}>
           <Text style={styles.cardTitle}>Your Progress</Text>
@@ -211,12 +205,6 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 2,
-  },
-  statsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    paddingHorizontal: 15,
-    marginTop: 10,
   },
   statCard: {
     flex: 1,

@@ -1,8 +1,9 @@
 // context/SessionContext.tsx
 import { db } from '@/firebaseConfig';
+import { doc, getDoc, setDoc } from '@react-native-firebase/firestore'; // CHANGED: Modular imports
 import * as SecureStore from 'expo-secure-store';
 import React, { createContext, ReactNode, useContext, useEffect, useState } from 'react';
-import logger from '../utils/logger'; // Import the new logger
+import logger from '../utils/logger';
 import { useAuth } from './AuthContext';
 
 interface DailyMeditation {
@@ -39,21 +40,28 @@ export const SessionProvider = ({ children }: { children: ReactNode }) => {
         const oneDay = 24 * 60 * 60 * 1000;
 
         if (now.getTime() - lastSync.getTime() > oneDay) {
-          logger.log('Time to sync with Firestore.'); // Use logger
-          const docRef = db.collection('users').doc(user.uid).collection('sadhana').doc('dailyTotals');
+          logger.log('Time to sync with Firestore.');
+
+          // CHANGED: Modular Doc Reference
+          // Path: users -> {uid} -> sadhana -> dailyTotals
+          const docRef = doc(db, 'users', user.uid, 'sadhana', 'dailyTotals');
+
           try {
-            const doc = await docRef.get();
-            const firestoreData = doc.exists ? doc.data()?.totals || [] : [];
+            // CHANGED: Modular getDoc
+            const docSnap = await getDoc(docRef);
+            const firestoreData = docSnap.exists ? docSnap.data()?.totals || [] : [];
             
             const mergedData = mergeTotals(localData, firestoreData);
             
-            await docRef.set({ totals: mergedData });
+            // CHANGED: Modular setDoc
+            await setDoc(docRef, { totals: mergedData });
+            
             await saveToStorage(mergedData);
             await SecureStore.setItemAsync(`${LAST_SYNC_KEY}_${user.uid}`, now.toISOString());
             setDailyTotals(mergedData);
-            logger.log('Sync complete.'); // Use logger
+            logger.log('Sync complete.');
           } catch (error) {
-            logger.error("Error during Firestore sync:", error); // Use logger
+            logger.error("Error during Firestore sync:", error);
           }
         }
         setLoading(false);
@@ -71,7 +79,7 @@ export const SessionProvider = ({ children }: { children: ReactNode }) => {
       const storedTotals = await SecureStore.getItemAsync(`${STORAGE_KEY}_${user?.uid}`);
       return storedTotals ? JSON.parse(storedTotals) : [];
     } catch (error) {
-      logger.error('Error loading data from local storage:', error); // Use logger
+      logger.error('Error loading data from local storage:', error);
       return [];
     }
   };
@@ -80,7 +88,7 @@ export const SessionProvider = ({ children }: { children: ReactNode }) => {
     try {
       await SecureStore.setItemAsync(`${STORAGE_KEY}_${user?.uid}`, JSON.stringify(data));
     } catch (error) {
-      logger.error('Error saving data to local storage:', error); // Use logger
+      logger.error('Error saving data to local storage:', error);
     }
   };
 

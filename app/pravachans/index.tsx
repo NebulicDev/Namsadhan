@@ -1,6 +1,7 @@
 // app/pravachans/index.tsx
+import { collection, getDocs } from '@react-native-firebase/firestore'; // CHANGED: Modular imports
 import { useRouter } from 'expo-router';
-import * as SecureStore from 'expo-secure-store'; // Use SecureStore
+import * as SecureStore from 'expo-secure-store';
 import { ChevronLeft } from 'lucide-react-native';
 import { useEffect, useState } from 'react';
 import {
@@ -14,7 +15,7 @@ import {
   View,
 } from 'react-native';
 import { db } from '../../firebaseConfig';
-import logger from '../../utils/logger'; // Import the logger
+import logger from '../../utils/logger';
 
 const THEME = {
   background: '#FFF8F0',
@@ -54,13 +55,14 @@ export default function PravachansScreen() {
           setIsLoading(false);
         }
       } catch (e) {
-        logger.error('Failed to load cached pravachans:', e); // Use logger
+        logger.error('Failed to load cached pravachans:', e);
       }
 
-      // 2. Fetch from Firestore
+      // 2. Fetch from Firestore (Modular SDK)
       try {
-        const collectionRef = db.collection('pravachans_by_year');
-        const snapshot = await collectionRef.get();
+        // CHANGED: Using modular collection() and getDocs()
+        const collectionRef = collection(db, 'pravachans_by_year');
+        const snapshot = await getDocs(collectionRef);
 
         const fetchedData: YearType[] = snapshot.docs.map((doc) => {
           const year = doc.id;
@@ -87,7 +89,8 @@ export default function PravachansScreen() {
         }
 
       } catch (error) {
-        logger.error("Error fetching pravachans:", error); // Use logger
+        logger.error("Error fetching pravachans:", error);
+        // Only show alert if we have no data at all (cache failed + network failed)
         if (pravachansData.length === 0) {
           Alert.alert("Error", "Could not fetch pravachans. Please check your internet connection.");
         }

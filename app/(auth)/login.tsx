@@ -1,5 +1,5 @@
 // app/(auth)/login.tsx
-import auth from '@react-native-firebase/auth';
+import { GoogleAuthProvider, signInWithCredential } from '@react-native-firebase/auth'; // CHANGED: Modular imports
 import { GoogleSignin, statusCodes } from '@react-native-google-signin/google-signin';
 import { useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
@@ -46,7 +46,6 @@ export default function LoginScreen() {
       await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
       const userInfo = await GoogleSignin.signIn();
 
-      // --- THIS IS THE CORRECTED LINE ---
       const idToken = userInfo.data?.idToken;
 
       if (!idToken) {
@@ -54,8 +53,12 @@ export default function LoginScreen() {
         throw new Error('Something went wrong obtaining the ID token.');
       }
 
-      const googleCredential = auth.GoogleAuthProvider.credential(idToken);
-      await authInstance.signInWithCredential(googleCredential);
+      // CHANGED: Modular SDK usage
+      const googleCredential = GoogleAuthProvider.credential(idToken);
+      
+      // CHANGED: Pass authInstance as the first argument
+      await signInWithCredential(authInstance, googleCredential);
+      
       router.replace({ pathname: '/' } as any);
 
     } catch (error: any) {

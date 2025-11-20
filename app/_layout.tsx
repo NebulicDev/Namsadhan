@@ -7,9 +7,9 @@ import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-cont
 import { initializeSslPinning } from 'react-native-ssl-public-key-pinning';
 import { AudioProvider } from '../context/AudioContext';
 import { AuthProvider } from '../context/AuthContext';
-import { DownloadProvider } from '../context/DownloadContext'; // Import DownloadProvider
+import { DownloadProvider } from '../context/DownloadContext';
 import { SessionProvider } from '../context/SessionContext';
-import { registerForPushNotificationsAsync } from '../services/NotificationService'; // ADDED: Import notification service
+import { registerForPushNotificationsAsync } from '../services/NotificationService';
 import logger from '../utils/logger';
 
 // SSL Pinning Initialization
@@ -46,8 +46,11 @@ function RootLayoutNav() {
     // Configure the navigation bar
     const configureNavigationBar = async () => {
       try {
-        await NavigationBar.setBackgroundColorAsync('#FFFFFF'); // Set background to white
-        await NavigationBar.setButtonStyleAsync('dark'); // Set buttons to dark
+        // CHANGED: Removed setBackgroundColorAsync('#FFFFFF') to fix the "edge-to-edge" warning.
+        // Your app.config.js already sets the bar to transparent/absolute, which is correct for edge-to-edge.
+        
+        // Keep the buttons dark so they are visible
+        await NavigationBar.setButtonStyleAsync('dark'); 
       } catch (error) {
         logger.error('Failed to configure navigation bar:', error);
       }
@@ -78,7 +81,7 @@ function RootLayoutNav() {
 }
 
 export default function RootLayout() {
-  // ADDED: This hook registers the notification channel when the app loads.
+  // This hook registers the notification channel when the app loads.
   useEffect(() => {
     registerForPushNotificationsAsync().then((token) => {
       // You might want to send this token to your server
