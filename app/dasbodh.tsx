@@ -5,6 +5,7 @@ import React, { useEffect, useState } from 'react';
 import {
   BackHandler,
   FlatList,
+  ScrollView, // Added ScrollView back
   StatusBar,
   StyleSheet,
   Text,
@@ -14,15 +15,15 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { dasbodhData, Dashak, Samas } from '../assets/text/dasbodhContent';
 
-// --- THEME CONFIGURATION (Matches your app's specific palette) ---
+// --- THEME CONFIGURATION ---
 const THEME = {
-  background: '#FFF8F0', // Main background
-  card: '#FFFFFF',       // Card background
-  text: '#5D4037',       // Main text (Deep Brown)
-  subText: '#8D6E63',    // Subtitle text
-  primary: '#D2B48C',    // Primary Accent (Tan)
-  highlight: '#FFB74D',  // Highlight (Saffron/Gold) for numbers
-  border: 'rgba(93, 64, 55, 0.1)', // Subtle border
+  background: '#FFF8F0',
+  card: '#FFFFFF',
+  text: '#5D4037',
+  subText: '#8D6E63',
+  primary: '#D2B48C',
+  highlight: '#FFB74D',
+  border: 'rgba(93, 64, 55, 0.1)',
 };
 
 // Helper: Convert to Marathi Numerals
@@ -36,7 +37,7 @@ const toMarathiNum = (n: string | number) => {
 
 export default function DasbodhScreen() {
   const router = useRouter();
-  const insets = useSafeAreaInsets(); // Handles Notch/Status Bar perfectly
+  const insets = useSafeAreaInsets();
   
   const [selectedDashak, setSelectedDashak] = useState<Dashak | null>(null);
   const [selectedSamas, setSelectedSamas] = useState<Samas | null>(null);
@@ -60,28 +61,21 @@ export default function DasbodhScreen() {
 
   // --- RENDERERS ---
 
-  // 1. Modern Dashak Card
   const renderDashakItem = ({ item }: { item: Dashak }) => {
     const displayTitle = item.title.includes(':') ? item.title.split(':')[1].trim() : item.title;
-    
     return (
       <TouchableOpacity 
         style={styles.card} 
         activeOpacity={0.8}
         onPress={() => setSelectedDashak(item)}
       >
-        {/* Number Badge */}
         <View style={styles.numberBadge}>
           <Text style={styles.numberText}>{toMarathiNum(item.id)}</Text>
         </View>
-        
-        {/* Text Content */}
         <View style={styles.cardContent}>
           <Text style={styles.cardTitle}>{displayTitle}</Text>
           <Text style={styles.cardSubtitle}>दशक {toMarathiNum(item.id)}</Text>
         </View>
-        
-        {/* Arrow */}
         <View style={styles.arrowContainer}>
            <ChevronRight size={20} color={THEME.subText} />
         </View>
@@ -89,7 +83,6 @@ export default function DasbodhScreen() {
     );
   };
 
-  // 2. Modern Samas Card
   const renderSamasItem = ({ item }: { item: Samas }) => {
     const samasNum = item.id.includes('.') ? item.id.split('.')[1] : item.id;
     const displayTitle = item.title.includes(':') ? item.title.split(':')[1].trim() : item.title;
@@ -100,16 +93,13 @@ export default function DasbodhScreen() {
         activeOpacity={0.8}
         onPress={() => setSelectedSamas(item)}
       >
-        {/* Smaller Number Badge for Samas */}
         <View style={[styles.numberBadge, styles.samasBadge]}>
           <Text style={styles.samasNumberText}>{toMarathiNum(samasNum)}</Text>
         </View>
-        
         <View style={styles.cardContent}>
           <Text style={styles.cardTitle}>{displayTitle}</Text>
           <Text style={styles.cardSubtitle}>समास {toMarathiNum(samasNum)}</Text>
         </View>
-
         <View style={styles.arrowContainer}>
            <ChevronRight size={20} color={THEME.subText} />
         </View>
@@ -119,7 +109,7 @@ export default function DasbodhScreen() {
 
   // --- MAIN VIEWS ---
 
-  // VIEW 3: Reading Mode
+  // VIEW 3: Reading Mode (Optimized with ScrollView)
   if (selectedSamas && selectedDashak) {
     const samasNum = selectedSamas.id.split('.')[1] || '0';
     const displayTitle = selectedSamas.title.includes(':') ? selectedSamas.title.split(':')[1].trim() : selectedSamas.title;
@@ -140,18 +130,16 @@ export default function DasbodhScreen() {
           <View style={styles.placeholderIcon} />
         </View>
 
-        {/* Content */}
-        <FlatList
-          data={[{ key: 'content', text: selectedSamas.content }]}
-          renderItem={({ item }) => (
-             <View style={styles.contentWrapper}>
-                <Text style={styles.contentText}>{item.text}</Text>
-                <Text style={styles.jaiJai}>॥ जय जय रघुवीर समर्थ ॥</Text>
-             </View>
-          )}
+        {/* Content - Switched to ScrollView for better performance with large text */}
+        <ScrollView 
           contentContainerStyle={styles.scrollContent}
           showsVerticalScrollIndicator={false}
-        />
+        >
+          <View style={styles.contentWrapper}>
+            <Text style={styles.contentText}>{selectedSamas.content}</Text>
+            <Text style={styles.jaiJai}>॥ जय जय रघुवीर समर्थ ॥</Text>
+          </View>
+        </ScrollView>
       </View>
     );
   }
@@ -190,7 +178,6 @@ export default function DasbodhScreen() {
     <View style={[styles.container, { paddingTop: insets.top }]}>
       <StatusBar barStyle="dark-content" backgroundColor={THEME.background} />
 
-      {/* Main Header */}
       <View style={styles.mainHeader}>
         <TouchableOpacity onPress={() => router.back()} style={styles.iconButton}>
           <ChevronLeft size={28} color={THEME.text} />
@@ -199,9 +186,7 @@ export default function DasbodhScreen() {
         <View style={styles.placeholderIcon} />
       </View>
 
-      {/* Book Intro Card */}
       <View style={styles.introCard}>
-        {/* <BookOpen size={24} color={THEME.text} style={{ opacity: 0.8, marginBottom: 8 }} /> */}
         <Text style={styles.introSubtitle}>॥ श्रीसमर्थ रामदासस्वामीकृत ॥</Text>
         <Text style={styles.introTitle}>ग्रंथराज दासबोध</Text>
       </View>
@@ -222,7 +207,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: THEME.background,
   },
-  
   // --- Headers ---
   mainHeader: {
     paddingHorizontal: 16,
@@ -273,7 +257,6 @@ const styles = StyleSheet.create({
   placeholderIcon: {
     width: 40,
   },
-
   // --- Intro Card ---
   introCard: {
     alignItems: 'center',
@@ -284,8 +267,8 @@ const styles = StyleSheet.create({
     paddingVertical: 24,
     backgroundColor: THEME.card,
     borderRadius: 16,
-    elevation: 2, // Android Shadow
-    shadowColor: '#5D4037', // iOS Shadow
+    elevation: 2,
+    shadowColor: '#5D4037',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.08,
     shadowRadius: 8,
@@ -301,8 +284,7 @@ const styles = StyleSheet.create({
     marginBottom: 4,
     fontWeight: '600',
   },
-
-  // --- Modern Cards ---
+  // --- Cards ---
   listPadding: {
     paddingHorizontal: 20,
     paddingBottom: 40,
@@ -314,7 +296,6 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     marginBottom: 12,
     padding: 16,
-    // Modern Shadow
     elevation: 2,
     shadowColor: 'rgba(93, 64, 55, 0.4)',
     shadowOffset: { width: 0, height: 1 },
@@ -338,7 +319,7 @@ const styles = StyleSheet.create({
     width: 38,
     height: 38,
     borderRadius: 12,
-    backgroundColor: '#FFF3E0', // Lighter background for samas
+    backgroundColor: '#FFF3E0',
     borderColor: 'transparent',
   },
   numberText: {
@@ -369,7 +350,6 @@ const styles = StyleSheet.create({
   arrowContainer: {
     paddingLeft: 8,
   },
-
   // --- Reading View ---
   scrollContent: {
     paddingHorizontal: 24,
@@ -383,7 +363,7 @@ const styles = StyleSheet.create({
     fontSize: 21,
     lineHeight: 38,
     color: THEME.text,
-    textAlign: 'center', // <--- UPDATED TO CENTER
+    textAlign: 'center',
     fontWeight: '400',
   },
   jaiJai: {
