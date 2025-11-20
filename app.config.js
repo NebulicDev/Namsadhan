@@ -22,8 +22,8 @@ export default {
       },
       "edgeToEdgeEnabled": true,
       "package": "com.namsadhan.app",
-      "googleServicesFile": process.env.GOOGLE_SERVICES_JSON,
-      // "googleServicesFile": "./google-services.json",
+      // "googleServicesFile": process.env.GOOGLE_SERVICES_JSON,
+      "googleServicesFile": "./google-services.json",
       // ADDED: Re-adding for background downloads
       "permissions": ["android.permission.FOREGROUND_SERVICE", "android.permission.WAKE_LOCK"]
     },
