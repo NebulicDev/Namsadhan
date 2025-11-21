@@ -39,7 +39,7 @@ const THEME = {
 };
 
 // --- DATA ---
-const LIVE_ITEM = { id: 'live', title: 'Samadhi Live Darshan', icon: TvMinimalPlay, route: '/liveDarshan', desc: 'Watch Now' };
+const LIVE_ITEM = { id: 'live', title: 'Samadhi Darshan', icon: TvMinimalPlay, route: '/liveDarshan', desc: 'Watch Now' };
 
 const GRID_ITEMS = [
   { id: 'bhajans', title: 'Bhajans', icon: BellRing, route: '/bhajans' },

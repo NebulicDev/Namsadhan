@@ -145,7 +145,7 @@ export default function PravachansScreen() {
             <View style={styles.cardFooter}>
               <View>
                 <Text style={styles.countText}>{count} Discourses</Text>
-                <Text style={styles.subText}>Tap to listen</Text>
+                <Text style={styles.subText}>Tap to Explore</Text>
               </View>
               <View style={styles.playButton}>
                  <MicVocal size={14} color="#FFF" />
