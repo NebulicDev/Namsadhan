@@ -1,5 +1,6 @@
 // nebulicdev/namsadhan/Namsadhan-feature-auth/context/AuthContext.tsx
 import { authInstance } from '@/firebaseConfig';
+import { onAuthStateChanged } from '@react-native-firebase/auth'; // CHANGED: Modular import
 import { useRouter, useSegments } from 'expo-router';
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { ActivityIndicator, View } from 'react-native';
@@ -41,8 +42,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [initializing, setInitializing] = useState(true);
 
   useEffect(() => {
-    // onAuthStateChanged returns an unsubscriber
-    const unsubscribe = authInstance.onAuthStateChanged((user) => {
+    // CHANGED: Using the modular onAuthStateChanged function
+    // Pass the auth instance (from firebaseConfig) as the first argument
+    const unsubscribe = onAuthStateChanged(authInstance, (user) => {
       setUser(user);
       if (initializing) {
         setInitializing(false);
