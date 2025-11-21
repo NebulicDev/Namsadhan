@@ -1,4 +1,5 @@
 // app/(tabs)/resources.tsx
+import * as Haptics from 'expo-haptics'; // Added Haptics import
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import {
@@ -62,7 +63,10 @@ export default function ResourcesScreen() {
       <TouchableOpacity
         style={styles.heroContainer}
         activeOpacity={0.9}
-        onPress={() => router.push(LIVE_ITEM.route as any)}
+        onPress={() => {
+          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); // Added Haptic
+          router.push(LIVE_ITEM.route as any);
+        }}
       >
         <LinearGradient
           colors={['#FFFFFF', '#FFFDF9']}
@@ -107,7 +111,10 @@ export default function ResourcesScreen() {
         key={item.id}
         style={styles.gridItemContainer}
         activeOpacity={0.9}
-        onPress={() => router.push(item.route as any)}
+        onPress={() => {
+          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); // Added Haptic
+          router.push(item.route as any);
+        }}
       >
         <LinearGradient
           colors={['#FFFFFF', '#FFFCF5']}

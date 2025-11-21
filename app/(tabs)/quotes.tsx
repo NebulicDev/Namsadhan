@@ -212,8 +212,8 @@ export default function QuotesScreen() {
       >
         {/* Header */}
         <View style={styles.header}>
-          <Text style={styles.title}>Divine Thoughts</Text>
-          <Text style={styles.subtitle}>Teachings for Today’s Contemplation</Text>
+          <Text style={styles.title} numberOfLines={1} adjustsFontSizeToFit={true}>Divine Thoughts</Text>
+          <Text style={styles.subtitle} numberOfLines={1} adjustsFontSizeToFit={true}>Teachings for Today’s Contemplation</Text>
         </View>
 
         {/* Quote Cards */}
