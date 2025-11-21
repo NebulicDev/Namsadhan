@@ -1,7 +1,7 @@
 // app/(tabs)/quotes.tsx
 import * as Haptics from 'expo-haptics';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Quote, Share2, Shuffle } from 'lucide-react-native';
+import { Quote, RefreshCw, Share2, Sparkles } from 'lucide-react-native';
 import { useCallback, useEffect, useState } from 'react';
 import {
   ActivityIndicator,
@@ -32,9 +32,8 @@ const THEME = {
   cardBg: '#FFFFFF',
   primary: '#D2B48C',
   accent: '#FFB88D',
-  divider: '#F5E6D3',
-  quoteMark: '#EFE5D5',
-  goldAccent: '#D4AF37', // Premium gold for borders
+  iconBg: '#FDF5E6',
+  divider: '#fcd9c3ff',
 };
 
 // --- LOGIC HELPERS ---
@@ -53,9 +52,8 @@ const getDayOfYear = () => {
   return Math.floor(diff / oneDay);
 };
 
-// --- COMPONENT: PREMIUM QUOTE CARD ---
+// --- COMPONENT: QUOTE CARD ---
 const QuoteSection = ({ title, quote, onShuffle }: { title: string, quote: any, onShuffle: () => void }) => {
-  
   const handleShare = async () => {
     if (!quote) return;
     Haptics.selectionAsync();
@@ -70,64 +68,63 @@ const QuoteSection = ({ title, quote, onShuffle }: { title: string, quote: any, 
     }
   };
 
-  const handleNext = () => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+  const handleShuffle = () => {
+    Haptics.selectionAsync();
     onShuffle();
   };
 
   return (
-    <View style={styles.cardWrapper}>
-      {/* Top Gold Accent */}
-      <View style={styles.goldBar} />
-
+    <View style={styles.cardContainer}>
       <LinearGradient
-        colors={['#FFFFFF', '#FFF8E1']} // Warm premium gradient
+        colors={['#FFFFFF', '#FFFDF9']}
         style={styles.cardGradient}
       >
-        {/* Header: Title */}
+        {/* Decorative Watermark */}
+        <View style={styles.watermarkContainer}>
+            <Quote size={80} color={THEME.primary} opacity={0.06} />
+        </View>
+
+        {/* Header: Title & Actions */}
         <View style={styles.cardHeader}>
-             <Text style={styles.categoryTitle}>{title.toUpperCase()}</Text>
-        </View>
-
-        {/* Main Content */}
-        <View style={styles.contentContainer}>
-            {/* Decorative Quote Mark */}
-            <View style={styles.watermark}>
-                <Quote size={48} color={THEME.primary} opacity={0.15} />
+            <View style={styles.titleBadge}>
+                <Sparkles size={14} color={THEME.text} style={{ marginRight: 6 }} />
+                <Text style={styles.sectionTitle}>{title}</Text>
             </View>
-
-            {quote ? (
-                <>
-                  <Text style={styles.quoteText}>"{quote.text}"</Text>
-                  <View style={styles.divider} />
-                  <Text style={styles.authorText}>— {quote.reference}</Text>
-                </>
-            ) : (
-                <Text style={styles.emptyText}>Wisdom loading...</Text>
-            )}
+            
+            <View style={styles.actionsRow}>
+                <TouchableOpacity 
+                    onPress={handleShuffle} 
+                    style={styles.actionButton}
+                    hitSlop={10}
+                >
+                     <RefreshCw size={18} color={THEME.textLight} />
+                </TouchableOpacity>
+                <TouchableOpacity 
+                    onPress={handleShare} 
+                    style={[styles.actionButton, { marginLeft: 8 }]}
+                    hitSlop={10}
+                >
+                     <Share2 size={18} color={THEME.primary} />
+                </TouchableOpacity>
+            </View>
         </View>
 
-        {/* Bottom Action Bar */}
-        <View style={styles.actionBar}>
-            <TouchableOpacity 
-                onPress={handleShare} 
-                style={styles.actionButton}
-                activeOpacity={0.6}
-            >
-                <Share2 size={20} color={THEME.textLight} />
-                <Text style={styles.actionLabel}>Share</Text>
-            </TouchableOpacity>
-            
-            <View style={styles.verticalDivider} />
+        {/* Divider */}
+        <View style={styles.separator} />
 
-            <TouchableOpacity 
-                onPress={handleNext} 
-                style={styles.actionButton}
-                activeOpacity={0.6}
-            >
-                {/* <Text style={[styles.actionLabel, styles.nextLabel]}>Shuffle</Text> */}
-                <Shuffle size={20} color={THEME.text} />
-            </TouchableOpacity>
+        {/* Quote Content */}
+        <View style={styles.contentContainer}>
+          {quote ? (
+            <>
+              <Text style={styles.quoteText}>{quote.text}</Text>
+              <View style={styles.referenceWrapper}>
+                 <View style={styles.dash} />
+                 <Text style={styles.referenceText}>{quote.reference}</Text>
+              </View>
+            </>
+          ) : (
+            <Text style={styles.emptyText}>No quote available for this category.</Text>
+          )}
         </View>
       </LinearGradient>
     </View>
@@ -197,6 +194,7 @@ export default function QuotesScreen() {
     return (
       <View style={[styles.screenContainer, styles.centered]}>
         <ActivityIndicator size="large" color={THEME.primary} />
+        <Text style={{ color: THEME.text, marginTop: 10 }}>Loading Divine Thoughts...</Text>
       </View>
     );
   }
@@ -212,19 +210,13 @@ export default function QuotesScreen() {
         ]}
         showsVerticalScrollIndicator={false}
       >
-        {/* FIXED HEADER */}
+        {/* Header */}
         <View style={styles.header}>
-          <Text 
-            style={styles.title} 
-            numberOfLines={1} 
-            adjustsFontSizeToFit={true} 
-            minimumFontScale={0.8}
-          >
-            Today's Divine Thoughts
-          </Text>
+          <Text style={styles.title}>Divine Thoughts</Text>
+          <Text style={styles.subtitle}>Teachings for Today’s Contemplation</Text>
         </View>
 
-        {/* CARDS */}
+        {/* Quote Cards */}
         {categories.map((category) => (
           <QuoteSection
             key={category}
@@ -234,6 +226,7 @@ export default function QuotesScreen() {
           />
         ))}
 
+        {/* Bottom Spacing */}
         <View style={{ height: 40 }} />
       </ScrollView>
     </View>
@@ -252,7 +245,7 @@ const styles = StyleSheet.create({
   
   // SCROLL
   scrollContent: {
-    paddingHorizontal: 16,
+    paddingHorizontal: 20,
     paddingBottom: 20,
   },
 
@@ -260,124 +253,127 @@ const styles = StyleSheet.create({
   header: {
     marginBottom: 24,
     alignItems: 'center',
-    justifyContent: 'center',
-    height: 50,
   },
   title: {
-    fontSize: 28,
+    fontSize: 32,
     fontWeight: 'bold',
     color: THEME.text,
-    textAlign: 'center',
-    width: '100%',
+    letterSpacing: -0.5,
+  },
+  subtitle: {
+    fontSize: 16,
+    color: THEME.textLight,
+    marginTop: 4,
   },
 
-  // CARD WRAPPER
-  cardWrapper: {
-    marginBottom: 24,
-    borderRadius: 20,
-    // Premium Shadow
+  // CARD
+  cardContainer: {
+    marginBottom: 20,
+    borderRadius: 24,
+    // Shadow
     shadowColor: '#8D6E63',
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.12,
-    shadowRadius: 12,
-    elevation: 5,
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.08,
+    shadowRadius: 10,
+    elevation: 4,
     backgroundColor: THEME.cardBg,
-    overflow: 'hidden',
-  },
-  goldBar: {
-    width: '100%',
-    height: 5,
-    backgroundColor: THEME.primary, // Gold/Tan accent
   },
   cardGradient: {
-    paddingTop: 20,
-    paddingBottom: 0,
+    borderRadius: 24,
+    padding: 20,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.8)',
+    overflow: 'hidden',
   },
-
+  watermarkContainer: {
+    position: 'absolute',
+    right: -10,
+    top: -10,
+    transform: [{ rotate: '-10deg' }],
+    zIndex: 0,
+  },
+  
   // CARD HEADER
   cardHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 10,
-    paddingHorizontal: 20,
+    marginBottom: 16,
+    zIndex: 1,
   },
-  categoryTitle: {
-    fontSize: 18, // Increased size
-    fontWeight: '800', // Boldest weight
+  titleBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#FDF5E6',
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 12,
+  },
+  sectionTitle: { 
+    fontSize: 14, 
+    fontWeight: '700', 
     color: THEME.text,
-    letterSpacing: 1.5,
-    textAlign: 'center',
+    letterSpacing: 0.3,
+    textTransform: 'uppercase',
+  },
+  
+  // ACTIONS
+  actionsRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  actionButton: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: '#FFF8F0',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  
+  // DIVIDER
+  separator: { 
+    height: 1, 
+    backgroundColor: THEME.divider, 
+    marginBottom: 16,
+    width: '100%',
   },
 
   // CONTENT
   contentContainer: {
-    paddingHorizontal: 24,
-    paddingBottom: 24,
-    alignItems: 'center',
-    minHeight: 120,
-  },
-  watermark: {
-    position: 'absolute',
-    top: -10,
-    left: 0,
+    zIndex: 1,
   },
   quoteText: {
-    fontSize: 20,
+    fontSize: 19, // Good reading size
     color: THEME.text,
-    textAlign: 'center',
-    lineHeight: 32,
-    fontFamily: 'System',
-    fontWeight: '500',
+    lineHeight: 28,
+    fontFamily: 'System', // Default system font works well, or custom if available
     marginBottom: 16,
-    marginTop: 8,
-  },
-  emptyText: {
-    color: THEME.textLight,
-    fontStyle: 'italic',
-    marginTop: 10,
+    letterSpacing: 0.2,
   },
   
-  // AUTHOR
-  divider: {
-    width: 40,
-    height: 2,
-    backgroundColor: THEME.divider,
-    marginBottom: 12,
-  },
-  authorText: {
-    fontSize: 15,
-    color: THEME.textLight,
-    fontWeight: '600',
-    fontStyle: 'italic',
-  },
-
-  // ACTION BAR
-  actionBar: {
+  // REFERENCE
+  referenceWrapper: {
     flexDirection: 'row',
-    borderTopWidth: 1,
-    borderTopColor: 'rgba(0,0,0,0.05)',
-    height: 54,
-    backgroundColor: 'rgba(255,255,255,0.6)', // Slightly distinct footer
-  },
-  actionButton: {
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'center',
     alignItems: 'center',
+    alignSelf: 'flex-end',
   },
-  verticalDivider: {
-    width: 1,
-    height: '100%',
-    backgroundColor: 'rgba(0,0,0,0.05)',
+  dash: {
+    width: 20,
+    height: 1,
+    backgroundColor: THEME.primary,
+    marginRight: 8,
   },
-  actionLabel: {
+  referenceText: {
     fontSize: 14,
     fontWeight: '600',
     color: THEME.textLight,
-    marginLeft: 8,
+    fontStyle: 'italic',
   },
-  nextLabel: {
-    color: THEME.text, // Darker color for "Next" to encourage clicking
-    marginRight: 4,
-    marginLeft: 0,
+  emptyText: {
+    fontStyle: 'italic',
+    color: THEME.textLight,
+    textAlign: 'center',
+    marginTop: 10,
   },
 });
