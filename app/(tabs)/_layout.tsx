@@ -7,9 +7,9 @@ import { Platform, Pressable, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { SessionProvider } from '../../context/SessionContext';
 
-// --- Original Theme Colors ---
+// --- Theme Colors ---
 const THEME = {
-  background: '#FFF8F0',
+  background: '#FFF8F0', // Cream color matching your app screens
   primary: '#D2B48C',
   accent: '#FFB88D',
   text: '#5D4037',
@@ -34,24 +34,31 @@ const TabButton = (props: any) => {
   );
 };
 
-// Custom Icon Component with Active Indicator
+// Custom Icon Component
 const TabIcon = ({ icon: Icon, color, focused }: { icon: any, color: string, focused: boolean }) => {
   return (
     <View style={[styles.iconContainer, focused && styles.activeContainer]}>
       <Icon 
         size={26} 
         color={color} 
-        strokeWidth={2.5} // Bold stroke as requested
+        strokeWidth={2.5} 
       />
     </View>
   );
 };
 
+// This component renders the "Card" look of the tab bar
+const TabBarBackground = () => (
+  <View style={styles.tabBackgroundContainer}>
+    <View style={styles.tabBackgroundCard} />
+  </View>
+);
+
 export default function TabsLayout() {
   const insets = useSafeAreaInsets();
   
-  // Taller height for premium feel (80 + bottom inset)
-  const TAB_HEIGHT = 80 + insets.bottom; 
+  // Taller height for premium feel
+  const TAB_BAR_HEIGHT = Platform.OS === 'ios' ? 98 : 84;
 
   return (
     <SessionProvider>
@@ -59,39 +66,30 @@ export default function TabsLayout() {
         screenOptions={{
           headerShown: false,
           tabBarShowLabel: true,
-          // Premium "Sheet" Styling with Rounded Top
+          
+          // 1. The Container: Fills the gap with Cream color to hide the grey
           tabBarStyle: {
-            backgroundColor: THEME.white,
+            backgroundColor: THEME.background, // <--- This fixes the grey corners
+            height: TAB_BAR_HEIGHT,
             borderTopWidth: 0,
-            height: TAB_HEIGHT,
-            // Rounded Top Corners
-            borderTopLeftRadius: 30,
-            borderTopRightRadius: 30,
-            // Positioning
-            position: 'absolute',
-            bottom: 0,
-            left: 0,
-            right: 0,
-            // Padding
+            elevation: 0, // Remove default Android shadow
+            shadowOpacity: 0, // Remove default iOS shadow
             paddingTop: 12,
-            paddingBottom: insets.bottom + 10, 
-            // Soft Upward Shadow
-            shadowColor: '#5D4037',
-            shadowOffset: { width: 0, height: -5 },
-            shadowOpacity: 0.08,
-            shadowRadius: 10,
-            elevation: 20,
+            paddingBottom: Platform.OS === 'ios' ? insets.bottom : 12,
           },
-          // Original Active/Inactive Colors
+          
+          // 2. The Background: Renders the White Rounded Card with Shadow
+          tabBarBackground: () => <TabBarBackground />,
+          
+          // Colors & Typo
           tabBarActiveTintColor: THEME.accent, 
           tabBarInactiveTintColor: THEME.text,
-          // Typography
           tabBarLabelStyle: {
             fontSize: 12,
             fontWeight: '600',
             marginTop: 6,
           },
-          // Apply Haptic Button
+          // Haptic Button
           tabBarButton: (props) => <TabButton {...props} />,
         }}
       >
@@ -155,7 +153,26 @@ const styles = StyleSheet.create({
     marginBottom: 2,
   },
   activeContainer: {
-    // Uses the subtle cream background from your theme, matching the app aesthetic perfectly
     backgroundColor: THEME.background, 
+  },
+  // Wrapper for the background to ensure it fills space
+  tabBackgroundContainer: {
+    flex: 1,
+    backgroundColor: THEME.background, // Ensures corners are cream, not grey
+  },
+  // The actual white card with shadow
+  tabBackgroundCard: {
+    flex: 1,
+    backgroundColor: THEME.white,
+    borderTopLeftRadius: 30,
+    borderTopRightRadius: 30,
+    // Premium Shadow
+    shadowColor: '#5D4037',
+    shadowOffset: { width: 0, height: -6 },
+    shadowOpacity: 0.08,
+    shadowRadius: 10,
+    elevation: 20,
+    // Ensure border/background doesn't clip shadow
+    overflow: 'visible', 
   },
 });
