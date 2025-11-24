@@ -97,7 +97,7 @@ const QuoteSection = ({ title, quote, onShuffle }: { title: string, quote: any, 
                     style={styles.actionButton}
                     hitSlop={10}
                 >
-                     <RefreshCw size={18} color={THEME.textLight} />
+                     <RefreshCw size={18} color="#FFB88D" />
                 </TouchableOpacity>
                 <TouchableOpacity 
                     onPress={handleShare} 

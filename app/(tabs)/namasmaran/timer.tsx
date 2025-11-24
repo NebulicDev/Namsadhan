@@ -1,4 +1,4 @@
-// app/tabs/namasmaran/timer.tsx
+// app/(tabs)/namasmaran/timer.tsx
 import CustomAlert, { AlertType } from '@/components/CustomAlert';
 import { useSessions } from '@/context/SessionContext';
 import * as Haptics from 'expo-haptics';
@@ -170,29 +170,41 @@ export default function TimerScreen() {
         </View>
 
         <View style={styles.timerContainer}>
-          <CircularProgress
-            size={circularProgressSize}
-            width={12}
-            fill={(time % 60) * (100 / 60)}
-            tintColor={THEME.accent}
-            backgroundColor="rgba(93, 64, 55, 0.1)"
-            rotation={0}
-            lineCap="round"
+          {/* Added wrapper View for Shadow/Glow effect */}
+          <View
+            style={[
+              styles.timerShadowWrapper,
+              {
+                width: circularProgressSize,
+                height: circularProgressSize,
+                borderRadius: circularProgressSize / 2,
+              },
+            ]}
           >
-            {() => (
-              <View style={styles.timerContent}>
-                <Text
-                  style={styles.timerText}
-                  numberOfLines={1}
-                  ellipsizeMode="clip"
-                  adjustsFontSizeToFit
-                  minimumFontScale={0.6}
-                >
-                  {formatTime(time)}
-                </Text>
-              </View>
-            )}
-          </CircularProgress>
+            <CircularProgress
+              size={circularProgressSize}
+              width={12}
+              fill={(time % 60) * (100 / 60)}
+              tintColor={THEME.accent}
+              backgroundColor="rgba(93, 64, 55, 0.1)"
+              rotation={0}
+              lineCap="round"
+            >
+              {() => (
+                <View style={styles.timerContent}>
+                  <Text
+                    style={styles.timerText}
+                    numberOfLines={1}
+                    ellipsizeMode="clip"
+                    adjustsFontSizeToFit
+                    minimumFontScale={0.6}
+                  >
+                    {formatTime(time)}
+                  </Text>
+                </View>
+              )}
+            </CircularProgress>
+          </View>
         </View>
 
         <View style={styles.bottomContainer}>
@@ -265,6 +277,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 10,
   },
+  timerShadowWrapper: {
+    // New style for the backing glow/shadow
+    backgroundColor: THEME.background, // Matches bg so it looks like a floating lift
+    justifyContent: 'center',
+    alignItems: 'center',
+    // iOS Shadow - Soft and spread out
+    shadowColor: '#5D4037', // Using theme text color for a natural shadow
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.15,
+    shadowRadius: 20,
+    // Android Elevation
+    elevation: 15,
+  },
   timerContent: {
     justifyContent: 'center',
     alignItems: 'center',
@@ -297,11 +322,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: THEME.accent,
     marginHorizontal: 20,
-    elevation: 8,
-    shadowColor: 'rgba(93, 64, 55, 0.4)',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
+    // Modern Shadow Enhancement
+    elevation: 12,
+    shadowColor: THEME.accent, // Colored shadow for glow effect
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.4,
+    shadowRadius: 16,
   },
   controlButton: {
     width: 70,
@@ -310,15 +336,17 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: THEME.white,
-    elevation: 6,
-    shadowColor: THEME.shadow,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 5,
+    // Modern Shadow Enhancement
+    elevation: 8,
+    shadowColor: 'black',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.1,
+    shadowRadius: 12,
   },
   disabledButton: {
     backgroundColor: THEME.disabled,
     elevation: 0,
+    shadowOpacity: 0,
   },
   divider: {
     height: 1,
