@@ -157,13 +157,13 @@ export default function HomeScreen() {
           <View style={styles.prayerContent}>
             
             {/* Top Decoration */}
-            <View style={[styles.prayerDecoration, { marginBottom: 6 }]}>
+            <View style={[styles.prayerDecoration, { marginBottom: 8 }]}>
               <View style={styles.decorationDot} />
               <View style={styles.decorationLine} />
               <View style={styles.decorationDot} />
             </View>
 
-            <Text style={styles.prayerText} numberOfLines={2} adjustsFontSizeToFit={true}>
+            <Text style={styles.prayerText} numberOfLines={1} adjustsFontSizeToFit={true}>
               {typedText}
             </Text>
 
@@ -325,7 +325,7 @@ const styles = StyleSheet.create({
     opacity: 0.5,
   },
   decorationLine: {
-    width: 60,
+    width: 200,
     height: 1,
     backgroundColor: THEME.primary,
     marginHorizontal: 8,

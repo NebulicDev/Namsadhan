@@ -213,7 +213,7 @@ export default function ProfileScreen() {
         </LinearGradient>
 
         {/* 3. PROGRESS SECTION */}
-        <Text style={styles.sectionTitle}>Daily Progress</Text>
+        <Text style={styles.sectionTitle}>Your Progress</Text>
         
         <View style={styles.calendarContainer}>
             {loading ? (

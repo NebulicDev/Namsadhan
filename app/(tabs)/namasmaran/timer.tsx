@@ -234,7 +234,7 @@ export default function TimerScreen() {
 
           <View style={styles.dailyTotalContainer}>
             <View style={styles.divider} />
-            <Text style={styles.dailyTotalText}>Today's meditation on the Divine Name</Text>
+            <Text style={styles.dailyTotalText}>Today's Meditation on the Divine Name</Text>
             <View style={styles.divider} />
             <Text style={styles.dailyTotalTime}>{formatDescriptiveTime(todayTotal)}</Text>
           </View>
