@@ -27,6 +27,8 @@ const THEME = {
   card: '#FFFFFF',
   primary: '#D2B48C',
   white: '#FFFFFF',
+  accent: 'rgba(210, 180, 140, 0.25)',
+  shadow: '#5D4037', // Warm shadow color
 };
 
 const spiritualGuides = [
@@ -62,7 +64,7 @@ export default function HomeScreen() {
   const [selectedGuide, setSelectedGuide] = useState<Guide | null>(null);
   const animation = useSharedValue(0);
 
-  // CHANGE 1: The animation now includes a 'scale' effect for a nice pop-up feel.
+  // Animation for the modal pop-up
   const animatedModalStyle = useAnimatedStyle(() => {
     const opacity = interpolate(animation.value, [0, 1], [0, 1]);
     const scale = interpolate(animation.value, [0, 1], [0.9, 1]);
@@ -113,36 +115,70 @@ export default function HomeScreen() {
     <SafeAreaView style={styles.screenContainer}>
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <View style={styles.header}>
-          <Text style={styles.title} numberOfLines={1} adjustsFontSizeToFit={true} >Nimbargi Sampradaya</Text>
+          <Text style={styles.title} numberOfLines={1} adjustsFontSizeToFit={true}>Nimbargi Sampradaya</Text>
           <Text style={styles.subtitle} numberOfLines={1} adjustsFontSizeToFit={true}>Shri Gurudev Ranade Samadhi Trust</Text>
         </View>
 
-        <TouchableOpacity style={styles.topCard} onPress={() => setSelectedGuide(spiritualGuides[0])}>
-          <Image source={spiritualGuides[0].photo} style={styles.topCardImage} resizeMode="cover" />
-          <View style={styles.cardOverlay}>
-            <Text style={styles.cardTitle}>{spiritualGuides[0].name}</Text>
+        {/* Top Card with Shadow Wrapper */}
+        <TouchableOpacity 
+          style={styles.topCardContainer} 
+          activeOpacity={0.9}
+          onPress={() => setSelectedGuide(spiritualGuides[0])}
+        >
+          <View style={styles.cardContent}>
+            <Image source={spiritualGuides[0].photo} style={styles.cardImage} resizeMode="cover" />
+            <View style={styles.cardOverlay}>
+              <Text style={styles.cardTitle}>{spiritualGuides[0].name}</Text>
+            </View>
           </View>
         </TouchableOpacity>
 
+        {/* Bottom Row */}
         <View style={styles.bottomRow}>
           {spiritualGuides.slice(1).map((guide) => (
-            <TouchableOpacity key={guide.id} style={styles.bottomCard} onPress={() => setSelectedGuide(guide)}>
-              <Image source={guide.photo} style={styles.bottomCardImage} resizeMode="cover" />
-              <View style={styles.cardOverlay}>
-                <Text style={styles.cardTitleSmall}>{guide.name}</Text>
+            <TouchableOpacity 
+              key={guide.id} 
+              style={styles.bottomCardContainer} 
+              activeOpacity={0.9}
+              onPress={() => setSelectedGuide(guide)}
+            >
+              <View style={styles.cardContent}>
+                <Image source={guide.photo} style={styles.cardImage} resizeMode="cover" />
+                <View style={styles.cardOverlay}>
+                  <Text style={styles.cardTitleSmall}>{guide.name}</Text>
+                </View>
               </View>
             </TouchableOpacity>
           ))}
         </View>
 
+        {/* Prayer Section */}
         <View style={styles.prayerContainer}>
-          <Text style={styles.scrollLine} numberOfLines={1} adjustsFontSizeToFit={true}>{"─".repeat(40)}</Text>
-          <Text style={styles.prayerText} numberOfLines={1} adjustsFontSizeToFit={true}>{typedText}</Text>
-          <Text style={styles.scrollLine} numberOfLines={1} adjustsFontSizeToFit={true}>{"─".repeat(40)}</Text>
+          <View style={styles.prayerContent}>
+            
+            {/* Top Decoration */}
+            <View style={[styles.prayerDecoration, { marginBottom: 6 }]}>
+              <View style={styles.decorationDot} />
+              <View style={styles.decorationLine} />
+              <View style={styles.decorationDot} />
+            </View>
+
+            <Text style={styles.prayerText} numberOfLines={2} adjustsFontSizeToFit={true}>
+              {typedText}
+            </Text>
+
+            {/* Bottom Decoration */}
+            <View style={[styles.prayerDecoration, { marginTop: 6 }]}>
+              <View style={styles.decorationDot} />
+              <View style={styles.decorationLine} />
+              <View style={styles.decorationDot} />
+            </View>
+
+          </View>
         </View>
       </ScrollView>
 
-      {/* CHANGE 2: The Modal is now transparent with a fade animation */}
+      {/* Modal */}
       <Modal
         visible={selectedGuide !== null}
         transparent={true}
@@ -174,7 +210,6 @@ const styles = StyleSheet.create({
     backgroundColor: THEME.background,
   },
   scrollContent: {
-    // Increased padding to clear the Floating Tab Bar
     paddingBottom: 120,
   },
   header: {
@@ -195,41 +230,44 @@ const styles = StyleSheet.create({
     marginTop: 4,
     textAlign: 'center',
   },
-  topCard: {
+  
+  // --- UPDATED CARD STYLES ---
+  topCardContainer: {
     height: 250,
     marginHorizontal: 20,
-    borderRadius: 20,
-    overflow: 'hidden',
     backgroundColor: THEME.card,
-    elevation: 6,
-    shadowColor: 'rgba(93, 64, 55, 0.4)',
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.18,
-    shadowRadius: 8.3,
-  },
-  topCardImage: {
-    width: '100%',
-    height: '100%',
+    borderRadius: 20,
+    // Modern Soft Glow / Shadow
+    elevation: 10,
+    shadowColor: THEME.shadow, 
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.25,
+    shadowRadius: 12,
   },
   bottomRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginHorizontal: 20,
-    marginTop: 20,
+    marginTop: 25,
   },
-  bottomCard: {
+  bottomCardContainer: {
     width: '31%',
     height: 180,
-    borderRadius: 20,
-    overflow: 'hidden',
     backgroundColor: THEME.card,
-    elevation: 6,
-    shadowColor: 'rgba(93, 64, 55, 0.4)',
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.18,
-    shadowRadius: 8.3,
+    borderRadius: 20,
+    // Modern Soft Glow / Shadow
+    elevation: 10,
+    shadowColor: THEME.shadow,
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.25,
+    shadowRadius: 10,
   },
-  bottomCardImage: {
+  cardContent: {
+    flex: 1,
+    borderRadius: 20,
+    overflow: 'hidden', // Clips the image to the border radius
+  },
+  cardImage: {
     width: '100%',
     height: '100%',
   },
@@ -257,28 +295,47 @@ const styles = StyleSheet.create({
     textShadowRadius: 10,
     textAlign: 'center',
   },
+  // --- END CARD STYLES ---
+
   prayerContainer: {
     marginHorizontal: 20,
-    marginTop: 30,
-    height: 100,
+    marginTop: 35,
+    marginBottom: 20,
     justifyContent: 'center',
+    alignItems: 'center',
+  },
+  prayerContent: {
+    width: '100%',
+    alignItems: 'center',
+    paddingVertical: 10,
   },
   prayerText: {
     fontSize: 24,
     color: THEME.text,
     textAlign: 'center',
     fontFamily: 'serif',
-    lineHeight: 32,
-    textShadowColor: THEME.primary,
-    textShadowOffset: { width: 0, height: 0 },
-    textShadowRadius: 10,
+    lineHeight: 38,
+    fontWeight: '500',
+    letterSpacing: 0.6,
   },
-  scrollLine: {
-    fontSize: 10,
-    color: THEME.primary,
-    textAlign: 'center',
+  prayerDecoration: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    opacity: 0.5,
   },
-  // CHANGE 3: New and updated styles for the pop-up modal
+  decorationLine: {
+    width: 60,
+    height: 1,
+    backgroundColor: THEME.primary,
+    marginHorizontal: 8,
+  },
+  decorationDot: {
+    width: 4,
+    height: 4,
+    borderRadius: 2,
+    backgroundColor: THEME.primary,
+  },
   modalOverlay: {
     flex: 1,
     backgroundColor: 'rgba(0, 0, 0, 0.6)',
@@ -308,9 +365,9 @@ const styles = StyleSheet.create({
   },
   modalImage: {
     width: '100%',
-    height: 250, // Adjusted height for card view
-    borderRadius: 15, // <-- Add this line to round the image corners
-    marginBottom: 20, // Keep existing margin for spacing
+    height: 250,
+    borderRadius: 15,
+    marginBottom: 20,
   },
   modalContent: {
     padding: 20,
