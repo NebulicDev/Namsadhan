@@ -174,7 +174,8 @@ const styles = StyleSheet.create({
     backgroundColor: THEME.background,
   },
   scrollContent: {
-    paddingBottom: 40,
+    // Increased padding to clear the Floating Tab Bar
+    paddingBottom: 120,
   },
   header: {
     paddingTop: 60,

@@ -9,7 +9,7 @@ import { SessionProvider } from '../../context/SessionContext';
 
 // --- Theme Colors ---
 const THEME = {
-  background: '#FFF8F0', // Cream color matching your app screens
+  background: '#FFF8F0',
   primary: '#D2B48C',
   accent: '#FFB88D',
   text: '#5D4037',
@@ -47,18 +47,16 @@ const TabIcon = ({ icon: Icon, color, focused }: { icon: any, color: string, foc
   );
 };
 
-// This component renders the "Card" look of the tab bar
+// Background Component: The Visual White Card
 const TabBarBackground = () => (
-  <View style={styles.tabBackgroundContainer}>
-    <View style={styles.tabBackgroundCard} />
-  </View>
+  <View style={styles.tabBackgroundCard} />
 );
 
 export default function TabsLayout() {
   const insets = useSafeAreaInsets();
   
-  // Taller height for premium feel
-  const TAB_BAR_HEIGHT = Platform.OS === 'ios' ? 98 : 84;
+  // Height calculation for premium look
+  const TAB_BAR_HEIGHT = Platform.OS === 'ios' ? 96 : 80;
 
   return (
     <SessionProvider>
@@ -67,21 +65,25 @@ export default function TabsLayout() {
           headerShown: false,
           tabBarShowLabel: true,
           
-          // 1. The Container: Fills the gap with Cream color to hide the grey
+          // --- TAB BAR CONFIGURATION ---
           tabBarStyle: {
-            backgroundColor: THEME.background, // <--- This fixes the grey corners
+            position: 'absolute', // Required for transparency behind corners
+            bottom: 0,
+            left: 0,
+            right: 0,
             height: TAB_BAR_HEIGHT,
+            backgroundColor: 'transparent', // Ensures the area around the rounded corners is see-through
             borderTopWidth: 0,
-            elevation: 0, // Remove default Android shadow
-            shadowOpacity: 0, // Remove default iOS shadow
+            elevation: 0, // Removes default Android flat shadow
             paddingTop: 12,
             paddingBottom: Platform.OS === 'ios' ? insets.bottom : 12,
           },
           
-          // 2. The Background: Renders the White Rounded Card with Shadow
+          // --- CUSTOM BACKGROUND SHAPE ---
+          // This renders the White Rounded Card *inside* the transparent container
           tabBarBackground: () => <TabBarBackground />,
           
-          // Colors & Typo
+          // Colors & Typography
           tabBarActiveTintColor: THEME.accent, 
           tabBarInactiveTintColor: THEME.text,
           tabBarLabelStyle: {
@@ -89,7 +91,8 @@ export default function TabsLayout() {
             fontWeight: '600',
             marginTop: 6,
           },
-          // Haptic Button
+          
+          // Buttons
           tabBarButton: (props) => <TabButton {...props} />,
         }}
       >
@@ -155,24 +158,18 @@ const styles = StyleSheet.create({
   activeContainer: {
     backgroundColor: THEME.background, 
   },
-  // Wrapper for the background to ensure it fills space
-  tabBackgroundContainer: {
-    flex: 1,
-    backgroundColor: THEME.background, // Ensures corners are cream, not grey
-  },
-  // The actual white card with shadow
+  // The actual visual white card
   tabBackgroundCard: {
-    flex: 1,
+    position: 'absolute', 
+    top: 0, left: 0, right: 0, bottom: 0,
     backgroundColor: THEME.white,
-    borderTopLeftRadius: 30,
+    borderTopLeftRadius: 30, // The Rounded Corners
     borderTopRightRadius: 30,
     // Premium Shadow
     shadowColor: '#5D4037',
-    shadowOffset: { width: 0, height: -6 },
-    shadowOpacity: 0.08,
+    shadowOffset: { width: 0, height: -5 },
+    shadowOpacity: 0.1,
     shadowRadius: 10,
-    elevation: 20,
-    // Ensure border/background doesn't clip shadow
-    overflow: 'visible', 
+    elevation: 10,
   },
 });

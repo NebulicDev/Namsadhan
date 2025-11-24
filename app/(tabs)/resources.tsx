@@ -150,7 +150,6 @@ export default function ResourcesScreen() {
           {GRID_ITEMS.map(renderGridItem)}
         </View>
 
-        <View style={{ height: 40 }} /> 
       </ScrollView>
     </View>
   );
@@ -163,6 +162,8 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     paddingHorizontal: 16,
+    // INCREASED PADDING to clear the Floating Tab Bar
+    paddingBottom: 120,
   },
 
   // --- HERO STYLES ---

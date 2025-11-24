@@ -281,7 +281,7 @@ const styles = StyleSheet.create({
   },
   bottomContainer: {
     paddingHorizontal: 20,
-    paddingBottom: 30,
+    paddingBottom: 120,
   },
   controlsContainer: {
     flexDirection: 'row',
