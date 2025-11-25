@@ -1,37 +1,44 @@
 // app/(auth)/login.tsx
-import { GoogleAuthProvider, signInWithCredential } from '@react-native-firebase/auth'; // CHANGED: Modular imports
+import { Ionicons } from '@expo/vector-icons';
+import { GoogleAuthProvider, signInWithCredential } from '@react-native-firebase/auth';
 import { GoogleSignin, statusCodes } from '@react-native-google-signin/google-signin';
+import * as Haptics from 'expo-haptics';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
+  Dimensions,
   Image,
-  KeyboardAvoidingView,
   Platform,
+  StatusBar,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from 'react-native';
+import Animated, { FadeInDown, FadeInUp } from 'react-native-reanimated';
 import { authInstance } from '../../firebaseConfig';
-import logger from '../../utils/logger'; // Import the new logger
 
+const { width, height } = Dimensions.get('window');
 const WEB_CLIENT_ID = '124322613000-7ifkvsv3nkhl1mb2vcbdhkouk77nm20m.apps.googleusercontent.com';
 
+// Refined Earthy Palette
 const THEME = {
-  background: '#FFF8F0',
-  text: '#5D4037',
-  lightText: '#A1887F',
-  primary: '#D2B48C',
-  white: '#FFFFFF',
-  error: '#D32F2F',
-  containerBackground: '#EAE3DA',
+  gradientTop: '#FDFBF7',      // Very light cream
+  gradientBottom: '#E6DCC3',   // Muted beige
+  cardBg: '#FFFFFF',           // Pure white for the card
+  textPrimary: '#4A3B32',      // Deep brown
+  textSecondary: '#8C7B70',    // Soft brown
+  accent: '#E09F7D',           // Warm peach/terracotta
+  accentHighlight: '#FFDAB9',  // Lighter peach for gradients/highlights
+  toggleBg: '#F5F0EB',         // Very light grey/beige for toggle track
 };
 
 export default function LoginScreen() {
   const [loading, setLoading] = useState(false);
-  const [authMode, setAuthMode] = useState('login'); // 'login' or 'signup'
+  const [authMode, setAuthMode] = useState<'login' | 'signup'>('login');
   const router = useRouter();
 
   useEffect(() => {
@@ -41,35 +48,25 @@ export default function LoginScreen() {
   }, []);
 
   const handleGoogleSignIn = async () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     setLoading(true);
     try {
       await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
       const userInfo = await GoogleSignin.signIn();
-
       const idToken = userInfo.data?.idToken;
 
-      if (!idToken) {
-        logger.log('Google Sign-In Response was missing ID token:', JSON.stringify(userInfo, null, 2));
-        throw new Error('Something went wrong obtaining the ID token.');
-      }
+      if (!idToken) throw new Error('No ID token found');
 
-      // CHANGED: Modular SDK usage
       const googleCredential = GoogleAuthProvider.credential(idToken);
-      
-      // CHANGED: Pass authInstance as the first argument
       await signInWithCredential(authInstance, googleCredential);
       
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
       router.replace({ pathname: '/' } as any);
 
     } catch (error: any) {
-      logger.log('--- DETAILED GOOGLE SIGN-IN ERROR ---');
-      logger.log(JSON.stringify(error, null, 2));
-      logger.log('--- END OF ERROR ---');
-
-      if (error.code === statusCodes.SIGN_IN_CANCELLED) {
-        logger.log('User cancelled Google Sign-In.');
-      } else {
-        Alert.alert('Google Sign-In Error', error.message || 'An unknown error occurred. Please check the console logs.');
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+      if (error.code !== statusCodes.SIGN_IN_CANCELLED) {
+        Alert.alert('Sign In Error', error.message);
       }
     } finally {
       setLoading(false);
@@ -77,99 +74,267 @@ export default function LoginScreen() {
   };
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      style={styles.container}
-    >
-      <View style={styles.inner}>
-        <Image source={require('../../assets/images/app-icon.png')} style={styles.appIcon} />
+    <View style={styles.container}>
+      <StatusBar barStyle="dark-content" />
+      
+      {/* 1. TOP HALF: Atmospheric Background & Brand */}
+      <LinearGradient
+        colors={[THEME.gradientTop, THEME.gradientBottom]}
+        style={styles.topSection}
+      >
+        <Animated.View 
+          entering={FadeInUp.delay(200).duration(1000).springify()}
+          style={styles.brandContainer}
+        >
+          <View style={styles.iconRing}>
+            <Image 
+              source={require('../../assets/images/app-icon.png')} 
+              style={styles.appIcon}
+              resizeMode="cover"
+            />
+          </View>
+          <Text style={styles.appName} adjustsFontSizeToFit={true}>Namsadhan</Text>
+          <Text style={styles.tagline} adjustsFontSizeToFit={true}>Shri Gurudev Ranade Samadhi Trust</Text>
+        </Animated.View>
+      </LinearGradient>
 
-        <Text style={styles.title}>Namsadhan</Text>
-        <Text style={styles.subtitle}>Sign in or create an account to continue</Text>
-
-        <View style={styles.sliderContainer}>
-          <TouchableOpacity
-            style={[styles.sliderButton, authMode === 'login' && styles.activeSliderButton]}
-            onPress={() => setAuthMode('login')}
-          >
-            <Text style={[styles.sliderButtonText, authMode === 'login' && styles.activeSliderButtonText]}>
-              Login
+      {/* 2. BOTTOM HALF: The "Card" Sheet */}
+      <Animated.View 
+        entering={FadeInDown.delay(100).duration(800).springify()}
+        style={styles.bottomSheet}
+      >
+        <View style={styles.sheetContent}>
+          
+          {/* Header Text */}
+          <View style={styles.headerBlock}>
+            <Text style={styles.welcomeTitle}>
+              {authMode === 'login' ? 'Welcome Back' : 'Join Us'}
             </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.sliderButton, authMode === 'signup' && styles.activeSliderButton]}
-            onPress={() => setAuthMode('signup')}
-          >
-            <Text style={[styles.sliderButtonText, authMode === 'signup' && styles.activeSliderButtonText]}>Sign Up</Text>
-          </TouchableOpacity>
-        </View>
+            <Text style={styles.welcomeSubtitle}>
+              {authMode === 'login' 
+                ? 'Sign in to your account' 
+                : 'Create a new account'}
+            </Text>
+          </View>
 
-        <TouchableOpacity
-            style={styles.button}
+          {/* Custom Toggle Switch */}
+          <View style={styles.toggleContainer}>
+            <TouchableOpacity 
+              style={[styles.toggleBtn, authMode === 'login' && styles.toggleBtnActive]}
+              onPress={() => {
+                Haptics.selectionAsync();
+                setAuthMode('login');
+              }}
+              activeOpacity={0.9}
+            >
+              <Text style={[styles.toggleText, authMode === 'login' && styles.toggleTextActive]}>Log In</Text>
+            </TouchableOpacity>
+            <TouchableOpacity 
+              style={[styles.toggleBtn, authMode === 'signup' && styles.toggleBtnActive]}
+              onPress={() => {
+                Haptics.selectionAsync();
+                setAuthMode('signup');
+              }}
+              activeOpacity={0.9}
+            >
+              <Text style={[styles.toggleText, authMode === 'signup' && styles.toggleTextActive]}>Sign Up</Text>
+            </TouchableOpacity>
+          </View>
+
+          {/* Google Button */}
+          <TouchableOpacity
+            style={styles.mainButton}
             onPress={handleGoogleSignIn}
             disabled={loading}
-        >
+            activeOpacity={0.8}
+          >
             {loading ? (
-              <ActivityIndicator color={THEME.white} />
+              <ActivityIndicator color="#FFF" />
             ) : (
-              <Text style={styles.buttonText}>
-                {authMode === 'login' ? 'Sign in with Google' : 'Sign up with Google'}
-              </Text>
+              <>
+                <View style={styles.btnIconContainer}>
+                  <Ionicons name="logo-google" size={20} color={THEME.accent} />
+                </View>
+                <Text style={styles.mainButtonText}>
+                  {authMode === 'login' ? 'Continue with Google' : 'Sign up with Google'}
+                </Text>
+                <Ionicons name="arrow-forward" size={20} color="#FFF" style={{ opacity: 0.8 }} />
+              </>
             )}
-        </TouchableOpacity>
-      </View>
-    </KeyboardAvoidingView>
+          </TouchableOpacity>
+
+          {/* Footer Note */}
+          <Text style={styles.footerText} adjustsFontSizeToFit={true}>
+            By continuing, you agree to our Terms & Privacy Policy.
+          </Text>
+
+        </View>
+      </Animated.View>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: THEME.background },
-  inner: { flex: 1, justifyContent: 'center', alignItems: 'center', paddingHorizontal: 30 },
-  appIcon: {
-    width: 200,
-    height: 150,
-    borderRadius: 60,
-    marginBottom: 10,
-  },
-  title: { fontSize: 34, fontWeight: 'bold', color: THEME.text, marginBottom: 10 },
-  subtitle: { fontSize: 16, color: THEME.lightText, marginBottom: 30, textAlign: 'center' },
-  sliderContainer: {
-    flexDirection: 'row',
-    backgroundColor: THEME.containerBackground,
-    borderRadius: 30,
-    padding: 4,
-    marginBottom: 30,
-    width: '100%',
-  },
-  sliderButton: {
+  container: {
     flex: 1,
-    paddingVertical: 12,
-    borderRadius: 26,
+    backgroundColor: THEME.gradientBottom, // Safety fallback color
+  },
+  /* TOP SECTION */
+  topSection: {
+    height: height * 0.55, // Takes up 55% of the screen
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingBottom: 60, // Push content up slightly so it clears the card overlap
+  },
+  brandContainer: {
     alignItems: 'center',
   },
-  activeSliderButton: {
-    backgroundColor: THEME.white,
-    shadowColor: 'rgba(93, 64, 55, 0.4)',
-    shadowOffset: { width: 0, height: 1 },
+  iconRing: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    backgroundColor: '#FFF',
+    padding: 3,
+    shadowColor: THEME.accent,
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.2,
+    shadowRadius: 16,
+    elevation: 10,
+    marginBottom: 20,
+  },
+  appIcon: {
+    width: '100%',
+    height: '100%',
+    borderRadius: 50,
+  },
+  appName: {
+    fontSize: 36,
+    fontWeight: '800',
+    color: THEME.textPrimary,
+    fontFamily: Platform.OS === 'ios' ? 'Georgia' : 'serif',
+    letterSpacing: 0.5,
+  },
+  tagline: {
+    fontSize: 16,
+    color: THEME.textSecondary,
+    marginTop: 8,
+    letterSpacing: 1,
+    textTransform: 'uppercase',
+    fontSize: 12,
+    fontWeight: '600',
+  },
+
+  /* BOTTOM SHEET CARD */
+  bottomSheet: {
+    position: 'absolute',
+    bottom: 0,
+    width: '100%',
+    height: height * 0.45, // 45% of screen
+    backgroundColor: THEME.cardBg,
+    borderTopLeftRadius: 40,
+    borderTopRightRadius: 40,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: -5 },
     shadowOpacity: 0.1,
-    shadowRadius: 2,
+    shadowRadius: 20,
+    elevation: 20,
+    paddingHorizontal: 32,
+    paddingTop: 40,
+  },
+  sheetContent: {
+    flex: 1,
+    alignItems: 'center',
+  },
+  headerBlock: {
+    width: '100%',
+    marginBottom: 30,
+    alignItems: 'center', // Left align text for modern look
+  },
+  welcomeTitle: {
+    fontSize: 28,
+    fontWeight: '700',
+    color: THEME.textPrimary,
+    marginBottom: 8,
+  },
+  welcomeSubtitle: {
+    fontSize: 15,
+    color: THEME.textSecondary,
+    lineHeight: 22,
+  },
+  
+  /* TOGGLE SWITCH */
+  toggleContainer: {
+    width: '100%',
+    height: 55,
+    backgroundColor: THEME.toggleBg,
+    borderRadius: 30,
+    flexDirection: 'row',
+    padding: 4,
+    marginBottom: 25,
+  },
+  toggleBtn: {
+    flex: 1,
+    borderRadius: 25,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  toggleBtnActive: {
+    backgroundColor: '#FFF',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
     elevation: 3,
   },
-  sliderButtonText: {
-    fontSize: 16,
+  toggleText: {
+    fontSize: 15,
     fontWeight: '600',
-    color: THEME.lightText,
+    color: THEME.textSecondary,
   },
-  activeSliderButtonText: {
-    color: THEME.text,
+  toggleTextActive: {
+    color: THEME.textPrimary,
+    fontWeight: '700',
   },
-  button: {
-    backgroundColor: '#faac8dff',
-    borderRadius: 12,
-    paddingVertical: 15,
-    alignItems: 'center',
+
+  /* ACTION BUTTON */
+  mainButton: {
     width: '100%',
-    marginTop: 10
+    height: 60,
+    backgroundColor: THEME.accent,
+    borderRadius: 20,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between', // Spreads content: Icon - Text - Arrow
+    paddingHorizontal: 20,
+    shadowColor: THEME.accent,
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.3,
+    shadowRadius: 15,
+    elevation: 8,
+    marginBottom: 20,
   },
-  buttonText: { color: THEME.white, fontSize: 16, fontWeight: '600' },
+  btnIconContainer: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: '#FFF',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  mainButtonText: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#FFF',
+  },
+  
+  /* FOOTER */
+  footerText: {
+    fontSize: 12,
+    color: THEME.textSecondary,
+    textAlign: 'center',
+    marginTop: 'auto', // Pushes to bottom of available space
+    marginBottom: 40,
+    opacity: 0.7,
+  }
 });

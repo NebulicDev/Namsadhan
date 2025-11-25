@@ -1,4 +1,5 @@
 // app/(tabs)/index.tsx
+import * as Haptics from 'expo-haptics'; // Import Haptics
 import { X } from 'lucide-react-native';
 import { useEffect, useState } from 'react';
 import {
@@ -11,12 +12,11 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-// Import animation hooks from reanimated
 import Animated, {
-  interpolate,
-  useAnimatedStyle,
-  useSharedValue,
-  withTiming,
+  FadeIn,
+  FadeInDown,
+  FadeInUp,
+  FadeOut,
 } from 'react-native-reanimated';
 import { bios } from '../../assets/text/bios';
 
@@ -27,6 +27,8 @@ const THEME = {
   card: '#FFFFFF',
   primary: '#D2B48C',
   white: '#FFFFFF',
+  accent: 'rgba(210, 180, 140, 0.25)',
+  shadow: '#5D4037',
 };
 
 const spiritualGuides = [
@@ -60,25 +62,16 @@ type Guide = typeof spiritualGuides[0];
 
 export default function HomeScreen() {
   const [selectedGuide, setSelectedGuide] = useState<Guide | null>(null);
-  const animation = useSharedValue(0);
 
-  // CHANGE 1: The animation now includes a 'scale' effect for a nice pop-up feel.
-  const animatedModalStyle = useAnimatedStyle(() => {
-    const opacity = interpolate(animation.value, [0, 1], [0, 1]);
-    const scale = interpolate(animation.value, [0, 1], [0.9, 1]);
-    return {
-      opacity,
-      transform: [{ scale }],
-    };
-  });
+  const handleGuidePress = (guide: Guide) => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    setSelectedGuide(guide);
+  };
 
-  useEffect(() => {
-    if (selectedGuide) {
-      animation.value = withTiming(1, { duration: 300 });
-    } else {
-      animation.value = withTiming(0, { duration: 200 });
-    }
-  }, [selectedGuide, animation]);
+  const handleCloseModal = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    setSelectedGuide(null);
+  };
 
   const prayerLines = [
     'ॐ',
@@ -111,48 +104,106 @@ export default function HomeScreen() {
 
   return (
     <SafeAreaView style={styles.screenContainer}>
-      <ScrollView contentContainerStyle={styles.scrollContent}>
-        <View style={styles.header}>
-          <Text style={styles.title} numberOfLines={1} adjustsFontSizeToFit={true} >Nimbargi Sampradaya</Text>
+      <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
+        
+        {/* Animated Header: Gentle Fade Down */}
+        <Animated.View 
+          style={styles.header}
+          entering={FadeInDown.duration(1000)}
+        >
+          <Text style={styles.title} numberOfLines={1} adjustsFontSizeToFit={true}>Nimbargi Sampradaya</Text>
           <Text style={styles.subtitle} numberOfLines={1} adjustsFontSizeToFit={true}>Shri Gurudev Ranade Samadhi Trust</Text>
-        </View>
+        </Animated.View>
 
-        <TouchableOpacity style={styles.topCard} onPress={() => setSelectedGuide(spiritualGuides[0])}>
-          <Image source={spiritualGuides[0].photo} style={styles.topCardImage} resizeMode="cover" />
-          <View style={styles.cardOverlay}>
-            <Text style={styles.cardTitle}>{spiritualGuides[0].name}</Text>
-          </View>
-        </TouchableOpacity>
-
-        <View style={styles.bottomRow}>
-          {spiritualGuides.slice(1).map((guide) => (
-            <TouchableOpacity key={guide.id} style={styles.bottomCard} onPress={() => setSelectedGuide(guide)}>
-              <Image source={guide.photo} style={styles.bottomCardImage} resizeMode="cover" />
+        {/* Top Card: Gentle Float Up */}
+        <Animated.View 
+          entering={FadeInUp.delay(200).duration(800)}
+        >
+          <TouchableOpacity 
+            style={styles.topCardContainer} 
+            activeOpacity={0.9}
+            onPress={() => handleGuidePress(spiritualGuides[0])}
+          >
+            <View style={styles.cardContent}>
+              <Image source={spiritualGuides[0].photo} style={styles.cardImage} resizeMode="cover" />
               <View style={styles.cardOverlay}>
-                <Text style={styles.cardTitleSmall}>{guide.name}</Text>
+                <Text style={styles.cardTitle}>{spiritualGuides[0].name}</Text>
               </View>
-            </TouchableOpacity>
+            </View>
+          </TouchableOpacity>
+        </Animated.View>
+
+        {/* Bottom Row: Staggered Float Up */}
+        <View style={styles.bottomRow}>
+          {spiritualGuides.slice(1).map((guide, index) => (
+            <Animated.View 
+              key={guide.id}
+              style={{ width: '31%' }}
+              entering={FadeInUp.delay(400 + (index * 200)).duration(800)}
+            >
+              <TouchableOpacity 
+                style={styles.bottomCardContainer} 
+                activeOpacity={0.9}
+                onPress={() => handleGuidePress(guide)}
+              >
+                <View style={styles.cardContent}>
+                  <Image source={guide.photo} style={styles.cardImage} resizeMode="cover" />
+                  <View style={styles.cardOverlay}>
+                    <Text style={styles.cardTitleSmall}>{guide.name}</Text>
+                  </View>
+                </View>
+              </TouchableOpacity>
+            </Animated.View>
           ))}
         </View>
 
-        <View style={styles.prayerContainer}>
-          <Text style={styles.scrollLine} numberOfLines={1} adjustsFontSizeToFit={true}>{"─".repeat(40)}</Text>
-          <Text style={styles.prayerText} numberOfLines={1} adjustsFontSizeToFit={true}>{typedText}</Text>
-          <Text style={styles.scrollLine} numberOfLines={1} adjustsFontSizeToFit={true}>{"─".repeat(40)}</Text>
-        </View>
+        {/* Prayer Section: Slow Fade In */}
+        <Animated.View 
+          style={styles.prayerContainer}
+          entering={FadeIn.delay(1200).duration(1500)}
+        >
+          <View style={styles.prayerContent}>
+            <View style={[styles.prayerDecoration, { marginBottom: 8 }]}>
+              <View style={styles.decorationDot} />
+              <View style={styles.decorationLine} />
+              <View style={styles.decorationDot} />
+            </View>
+
+            <Text style={styles.prayerText} numberOfLines={1} adjustsFontSizeToFit={true}>
+              {typedText}
+            </Text>
+
+            <View style={[styles.prayerDecoration, { marginTop: 6 }]}>
+              <View style={styles.decorationDot} />
+              <View style={styles.decorationLine} />
+              <View style={styles.decorationDot} />
+            </View>
+          </View>
+        </Animated.View>
       </ScrollView>
 
-      {/* CHANGE 2: The Modal is now transparent with a fade animation */}
+      {/* Full Screen Modal */}
       <Modal
         visible={selectedGuide !== null}
         transparent={true}
-        animationType="fade"
-        onRequestClose={() => setSelectedGuide(null)}
+        statusBarTranslucent={true}
+        animationType="none"
+        onRequestClose={handleCloseModal}
       >
-        <View style={styles.modalOverlay}>
-          {selectedGuide && (
-            <Animated.View style={[styles.modalCard, animatedModalStyle]}>
-              <TouchableOpacity style={styles.closeButton} onPress={() => setSelectedGuide(null)}>
+        {selectedGuide && (
+          // Backdrop: Very Slow Fade for "Atmosphere"
+          <Animated.View 
+            style={styles.modalOverlay}
+            entering={FadeIn.duration(500)}
+            exiting={FadeOut.duration(400)}
+          >
+            {/* Modal Card: Gentle Glide Up (Calm, not Poppy) */}
+            <Animated.View 
+              style={styles.modalCard}
+              entering={FadeInDown.duration(600).damping(20)}
+              exiting={FadeOut.duration(300)}
+            >
+              <TouchableOpacity style={styles.closeButton} onPress={handleCloseModal}>
                 <X size={24} color={THEME.lightText} />
               </TouchableOpacity>
               <ScrollView contentContainerStyle={styles.modalContent}>
@@ -161,8 +212,8 @@ export default function HomeScreen() {
                 <Text style={styles.modalBio}>{selectedGuide.bio}</Text>
               </ScrollView>
             </Animated.View>
-          )}
-        </View>
+          </Animated.View>
+        )}
       </Modal>
     </SafeAreaView>
   );
@@ -174,7 +225,7 @@ const styles = StyleSheet.create({
     backgroundColor: THEME.background,
   },
   scrollContent: {
-    paddingBottom: 40,
+    paddingBottom: 120,
   },
   header: {
     paddingTop: 60,
@@ -194,93 +245,109 @@ const styles = StyleSheet.create({
     marginTop: 4,
     textAlign: 'center',
   },
-  topCard: {
+  topCardContainer: {
     height: 250,
     marginHorizontal: 20,
-    borderRadius: 20,
-    overflow: 'hidden',
     backgroundColor: THEME.card,
-    elevation: 6,
-    shadowColor: 'rgba(93, 64, 55, 0.4)',
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.18,
-    shadowRadius: 8.3,
-  },
-  topCardImage: {
-    width: '100%',
-    height: '100%',
+    borderRadius: 20,
+    elevation: 10,
+    shadowColor: THEME.shadow, 
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.25,
+    shadowRadius: 12,
   },
   bottomRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginHorizontal: 20,
-    marginTop: 20,
+    marginTop: 25,
   },
-  bottomCard: {
-    width: '31%',
+  bottomCardContainer: {
+    width: '100%', 
     height: 180,
+    backgroundColor: THEME.card,
+    borderRadius: 20,
+    elevation: 10,
+    shadowColor: THEME.shadow,
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.25,
+    shadowRadius: 10,
+  },
+  cardContent: {
+    flex: 1,
     borderRadius: 20,
     overflow: 'hidden',
-    backgroundColor: THEME.card,
-    elevation: 6,
-    shadowColor: 'rgba(93, 64, 55, 0.4)',
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.18,
-    shadowRadius: 8.3,
   },
-  bottomCardImage: {
+  cardImage: {
     width: '100%',
     height: '100%',
   },
   cardOverlay: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0, 0, 0, 0.06)',
+    // backgroundColor: 'rgba(0, 0, 0, 0.06)',
     justifyContent: 'flex-end',
     padding: 15,
   },
   cardTitle: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    color: THEME.white,
-    textShadowColor: 'rgba(0, 0, 0, 0.75)',
-    textShadowOffset: { width: -1, height: 1 },
-    textShadowRadius: 10,
-    textAlign: 'center',
-  },
-  cardTitleSmall: {
-    fontSize: 14,
-    fontWeight: 'bold',
-    color: THEME.white,
-    textShadowColor: 'rgba(0, 0, 0, 0.75)',
-    textShadowOffset: { width: -1, height: 1 },
-    textShadowRadius: 10,
-    textAlign: 'center',
-  },
+  fontSize: 22,
+  fontWeight: 'bold',
+  color: THEME.white,
+  textShadowColor: 'rgba(0, 0, 0, 0.35)',  
+  textShadowOffset: { width: 0, height: 2 }, 
+  textShadowRadius: 6,                      
+  textAlign: 'center',
+},
+cardTitleSmall: {
+  fontSize: 14,
+  fontWeight: 'bold',
+  color: THEME.white,
+  textShadowColor: 'rgba(0, 0, 0, 0.35)',  
+  textShadowOffset: { width: 0, height: 2 },
+  textShadowRadius: 5,
+  textAlign: 'center',
+},
   prayerContainer: {
     marginHorizontal: 20,
-    marginTop: 30,
-    height: 100,
+    marginTop: 35,
+    marginBottom: 20,
     justifyContent: 'center',
+    alignItems: 'center',
+  },
+  prayerContent: {
+    width: '100%',
+    alignItems: 'center',
+    paddingVertical: 10,
   },
   prayerText: {
     fontSize: 24,
     color: THEME.text,
     textAlign: 'center',
     fontFamily: 'serif',
-    lineHeight: 32,
-    textShadowColor: THEME.primary,
-    textShadowOffset: { width: 0, height: 0 },
-    textShadowRadius: 10,
+    lineHeight: 38,
+    fontWeight: '500',
+    letterSpacing: 0.6,
   },
-  scrollLine: {
-    fontSize: 10,
-    color: THEME.primary,
-    textAlign: 'center',
+  prayerDecoration: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    opacity: 0.5,
   },
-  // CHANGE 3: New and updated styles for the pop-up modal
+  decorationLine: {
+    width: 200,
+    height: 1,
+    backgroundColor: THEME.primary,
+    marginHorizontal: 8,
+  },
+  decorationDot: {
+    width: 4,
+    height: 4,
+    borderRadius: 2,
+    backgroundColor: THEME.primary,
+  },
   modalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -290,11 +357,11 @@ const styles = StyleSheet.create({
     backgroundColor: THEME.background,
     borderRadius: 20,
     overflow: 'hidden',
-    elevation: 10,
-    shadowColor: 'rgba(93, 64, 55, 0.4)',
-    shadowOffset: { width: 0, height: 5 },
-    shadowOpacity: 0.3,
-    shadowRadius: 15,
+    elevation: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.4,
+    shadowRadius: 20,
   },
   closeButton: {
     position: 'absolute',
@@ -307,9 +374,9 @@ const styles = StyleSheet.create({
   },
   modalImage: {
     width: '100%',
-    height: 250, // Adjusted height for card view
-    borderRadius: 15, // <-- Add this line to round the image corners
-    marginBottom: 20, // Keep existing margin for spacing
+    height: 250,
+    borderRadius: 15,
+    marginBottom: 20,
   },
   modalContent: {
     padding: 20,
