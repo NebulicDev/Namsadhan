@@ -1,5 +1,17 @@
-import { Link } from 'expo-router'; // Import the Link component
-import { Bell, ChevronRight, HandHeart, Info, Mail, MapPin, Phone, Shield, X } from 'lucide-react-native';
+import * as Haptics from 'expo-haptics';
+import { Stack, useRouter } from 'expo-router';
+import {
+  Bell,
+  ChevronLeft,
+  ChevronRight,
+  HandHeart,
+  Info,
+  Mail,
+  MapPin,
+  Phone,
+  Shield,
+  X,
+} from 'lucide-react-native';
 import React, { useEffect, useState } from 'react';
 import {
   Alert,
@@ -8,57 +20,58 @@ import {
   Platform,
   SafeAreaView,
   ScrollView,
+  StatusBar,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from 'react-native';
-
-import * as Notifications from 'expo-notifications';
+import Animated, { FadeInUp } from 'react-native-reanimated';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { registerForPushNotificationsAsync } from '../../../services/NotificationService';
 
-// Notification Handler
-Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldPlaySound: true,
-    shouldSetBadge: false,
-    shouldShowBanner: true,
-    shouldShowList: true,
-  }),
-});
-
+// --- THEME CONFIGURATION ---
 const THEME = {
   background: '#FFF8F0',
-  text: '#5D4037',
-  lightText: '#A1887F',
-  card: '#FFFFFF',
+  text: '#4A3B32',
+  subtext: '#8D7B68',
+  cardBg: '#FFFFFF',
   primary: '#D2B48C',
-  white: '#FFFFFF',
+  accent: '#E09F7D',
+  border: '#F0EAE4',
+  iconBg: '#FFF5E1',
 };
 
-// This component remains the same, but we make it more robust for linking
-const SettingsItem = ({ icon, text, onPress, href }) => {
-  const content = (
-    <View style={styles.settingsItem}>
-      <View style={styles.iconContainer}>{icon}</View>
-      <Text style={styles.itemText}>{text}</Text>
-      <ChevronRight size={24} color={THEME.lightText} />
-    </View>
+// --- COMPONENT: SETTINGS ITEM ---
+const SettingsItem = ({ icon: Icon, label, onPress, delay = 0 }: any) => {
+  return (
+    <Animated.View entering={FadeInUp.delay(delay).duration(600)}>
+      <TouchableOpacity 
+        style={styles.itemContainer} 
+        onPress={() => {
+          Haptics.selectionAsync();
+          onPress();
+        }}
+        activeOpacity={0.7}
+      >
+        <View style={styles.itemLeft}>
+          <View style={styles.iconCircle}>
+            <Icon size={20} color={THEME.text} />
+          </View>
+          <Text style={styles.itemLabel}>{label}</Text>
+        </View>
+        <ChevronRight size={20} color={THEME.subtext} />
+      </TouchableOpacity>
+      {/* Divider Line */}
+      <View style={styles.divider} />
+    </Animated.View>
   );
-
-  if (href) {
-    return (
-      <Link href={href} asChild>
-        <TouchableOpacity>{content}</TouchableOpacity>
-      </Link>
-    );
-  }
-
-  return <TouchableOpacity onPress={onPress}>{content}</TouchableOpacity>;
 };
-
 
 export default function SettingsPage() {
+  const router = useRouter();
+  const insets = useSafeAreaInsets();
+  
   const [contactModalVisible, setContactModalVisible] = useState(false);
   const [donationModalVisible, setDonationModalVisible] = useState(false);
   const [aboutModalVisible, setAboutModalVisible] = useState(false);
@@ -68,17 +81,21 @@ export default function SettingsPage() {
     registerForPushNotificationsAsync();
   }, []);
 
+  // --- HANDLERS ---
   const handleContact = () => setContactModalVisible(true);
   const handleDonation = () => setDonationModalVisible(true);
   const handleAbout = () => setAboutModalVisible(true);
   const handlePrivacyPolicy = () => setPrivacyModalVisible(true);
+  
+  const handleNotifications = () => {
+    router.push('/settings/notifications' as any);
+  };
 
-  const handleEmail = (email) => Linking.openURL(`mailto:${email}`);
-  const handlePhone = (number) => Linking.openURL(`tel:${number}`);
+  const handleEmail = (email: string) => Linking.openURL(`mailto:${email}`);
+  const handlePhone = (number: string) => Linking.openURL(`tel:${number}`);
 
   const handleMap = () => {
-    const address =
-      'Shri Gurudev Ranade Samadhi Trust, Nimbal (R.S.), Tal. Indi, Dist. Biajapur, State. Karnatak, India. 586211';
+    const address = 'Shri Gurudev Ranade Samadhi Trust, Nimbal (R.S.), Tal. Indi, Dist. Biajapur, State. Karnatak, India. 586211';
     const url = Platform.select({
       ios: `maps:?q=${address}`,
       android: `geo:0,0?q=${address}`,
@@ -93,131 +110,160 @@ export default function SettingsPage() {
 
   return (
     <SafeAreaView style={styles.screenContainer}>
-      <ScrollView contentContainerStyle={styles.container}>
-        <View style={styles.card}>
-          <SettingsItem icon={<Mail size={24} color={THEME.text} />} text="Contact Ashram" onPress={handleContact} />
-          <View style={styles.separator} />
-          <SettingsItem icon={<HandHeart size={24} color={THEME.text} />} text="Donate" onPress={handleDonation} />
-          <View style={styles.separator} />
-          <SettingsItem icon={<MapPin size={24} color={THEME.text} />} text="Nimbal Ashram" onPress={handleMap} />
+      {/* Hide default header to avoid duplication */}
+      <Stack.Screen options={{ headerShown: false }} />
+      <StatusBar barStyle="dark-content" />
+      
+      {/* --- HEADER --- */}
+      <View style={[styles.header, { marginTop: Platform.OS === 'android' ? insets.top + 10 : 0 }]}>
+        <TouchableOpacity 
+          onPress={() => router.back()} 
+          style={styles.backButton}
+          hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+        >
+          <ChevronLeft size={30} color={THEME.text} />
+        </TouchableOpacity>
+        <Text style={styles.headerTitle}>Settings</Text>
+        <View style={{ width: 30 }} /> 
+      </View>
+
+      <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
+        
+        {/* SECTION 1: CONNECT */}
+        <Text style={styles.sectionHeader}>CONNECT</Text>
+        <View style={styles.cardContainer}>
+          <SettingsItem 
+            icon={Mail} 
+            label="Contact Ashram" 
+            onPress={handleContact} 
+            delay={100} 
+          />
+          <SettingsItem 
+            icon={HandHeart} 
+            label="Donate" 
+            onPress={handleDonation} 
+            delay={150} 
+          />
+          <SettingsItem 
+            icon={MapPin} 
+            label="Nimbal Ashram" 
+            onPress={handleMap} 
+            delay={200} 
+          />
         </View>
 
-        <View style={styles.card}>
-          {/* --- MODIFIED NOTIFICATION ITEM --- */}
-          <SettingsItem
-            icon={<Bell size={24} color={THEME.text} />}
-            text="Notifications"
-            href="/(tabs)/settings/notifications" // This links to our new page
+        {/* SECTION 2: PREFERENCES */}
+        <Text style={styles.sectionHeader}>APP PREFERENCES</Text>
+        <View style={styles.cardContainer}>
+          <SettingsItem 
+            icon={Bell} 
+            label="Notifications" 
+            onPress={handleNotifications} 
+            delay={250} 
           />
-          {/* ------------------------------------ */}
-          <View style={styles.separator} />
-          <SettingsItem
-            icon={<Shield size={24} color={THEME.text} />}
-            text="Privacy Policy"
-            onPress={handlePrivacyPolicy}
+          <SettingsItem 
+            icon={Shield} 
+            label="Privacy Policy" 
+            onPress={handlePrivacyPolicy} 
+            delay={300} 
           />
-          <View style={styles.separator} />
-          <SettingsItem
-            icon={<Info size={24} color={THEME.text} />}
-            text="About Namsadhan"
-            onPress={handleAbout}
+          <SettingsItem 
+            icon={Info} 
+            label="About Namsadhan" 
+            onPress={handleAbout} 
+            delay={350} 
           />
         </View>
+
+        <Text style={styles.versionText}>Version 1.0.2</Text>
+        <View style={{ height: 40 }} />
+
       </ScrollView>
 
-      {/* --- ALL YOUR MODALS REMAIN UNCHANGED --- */}
-      <Modal animationType="slide" visible={contactModalVisible} onRequestClose={() => setContactModalVisible(false)}>
-        <SafeAreaView style={{ flex: 1, backgroundColor: THEME.background }}>
+      {/* --- MODALS --- */}
+      
+      {/* 1. CONTACT MODAL */}
+      <Modal animationType="slide" visible={contactModalVisible} onRequestClose={() => setContactModalVisible(false)} presentationStyle="pageSheet">
+        <View style={styles.modalContainer}>
           <View style={styles.modalHeader}>
             <Text style={styles.modalTitle}>Contact Ashram</Text>
-            <TouchableOpacity style={styles.modalCloseButton} onPress={() => setContactModalVisible(false)}>
-              <X size={28} color={THEME.text} />
+            <TouchableOpacity onPress={() => setContactModalVisible(false)} style={styles.closeButton}>
+              <X size={24} color={THEME.text} />
             </TouchableOpacity>
           </View>
-          <ScrollView contentContainerStyle={styles.pageContainer}>
-            <View style={styles.infoCard}>
-              <Text style={styles.sectionTitle}>Address</Text>
-              <Text style={styles.addressText}>
+          <ScrollView contentContainerStyle={styles.modalContent}>
+            <View style={styles.infoBox}>
+              <Text style={styles.infoTitle}>Address</Text>
+              <Text style={[styles.infoText, { textAlign: 'left' }]}>
                 Shri Gurudev Ranade Samadhi Trust, Nimbal (R.S.){'\n'}
-                Tal. Indi, Dist. Biajapur,{'\n'}
-                State. Karnatak, India. 586211
+                Tal. Indi, Dist. Vijayapura,{'\n'}
+                State. Karnataka, India. 586211
               </Text>
-              <TouchableOpacity style={styles.actionButton} onPress={handleMap}>
-                <MapPin size={24} color={THEME.primary} />
-                <Text style={styles.actionText}>View on Map</Text>
+              <TouchableOpacity style={styles.actionBtn} onPress={handleMap}>
+                <MapPin size={18} color={THEME.primary} />
+                <Text style={styles.actionBtnText}>View on Map</Text>
               </TouchableOpacity>
             </View>
-            <View style={styles.infoCard}>
-              <Text style={styles.sectionTitle}>Get in Touch</Text>
-              <TouchableOpacity style={styles.actionButton} onPress={() => handleEmail('info@nimbargisampradaya.org')}>
-                <Mail size={24} color={THEME.primary} />
-                <Text style={styles.actionText}>info@nimbargisampradaya.org</Text>
+
+            <View style={styles.infoBox}>
+              <Text style={styles.infoTitle}>Get in Touch</Text>
+              <TouchableOpacity style={styles.contactRow} onPress={() => handleEmail('info@nimbargisampradaya.org')}>
+                <View style={styles.miniIcon}><Mail size={16} color={THEME.primary} /></View>
+                <Text style={styles.contactText}>info@nimbargisampradaya.org</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.actionButton} onPress={() => handlePhone('+919482206716')}>
-                <Phone size={24} color={THEME.primary} />
-                <Text style={styles.actionText}>+91-94822 06716 (BSNL)</Text>
+              
+              <TouchableOpacity style={styles.contactRow} onPress={() => handlePhone('+919482206716')}>
+                <View style={styles.miniIcon}><Phone size={16} color={THEME.primary} /></View>
+                <Text style={styles.contactText}>+91-94822 06716 (BSNL)</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.actionButton} onPress={() => handlePhone('+916363383415')}>
-                <Phone size={24} color={THEME.primary} />
-                <Text style={styles.actionText}>+91-63633 83415 (JIO)</Text>
+              
+              <TouchableOpacity style={styles.contactRow} onPress={() => handlePhone('+916363383415')}>
+                <View style={styles.miniIcon}><Phone size={16} color={THEME.primary} /></View>
+                <Text style={styles.contactText}>+91-63633 83415 (JIO)</Text>
               </TouchableOpacity>
             </View>
           </ScrollView>
-        </SafeAreaView>
+        </View>
       </Modal>
 
-      <Modal animationType="slide" visible={donationModalVisible} onRequestClose={() => setDonationModalVisible(false)}>
-        <SafeAreaView style={{ flex: 1, backgroundColor: THEME.background }}>
+      {/* 2. DONATION MODAL */}
+      <Modal animationType="slide" visible={donationModalVisible} onRequestClose={() => setDonationModalVisible(false)} presentationStyle="pageSheet">
+        <View style={styles.modalContainer}>
           <View style={styles.modalHeader}>
             <Text style={styles.modalTitle}>Donate</Text>
-            <TouchableOpacity style={styles.modalCloseButton} onPress={() => setDonationModalVisible(false)}>
-              <X size={28} color={THEME.text} />
+            <TouchableOpacity onPress={() => setDonationModalVisible(false)} style={styles.closeButton}>
+              <X size={24} color={THEME.text} />
             </TouchableOpacity>
           </View>
-          <ScrollView contentContainerStyle={styles.pageContainer}>
-            <View style={styles.infoCard}>
-              <Text style={styles.sectionTitle}>Online Bank Transfer</Text>
-              {/* <Text style={styles.infoText}><Text style={{ fontWeight: 'bold' }}>Name:</Text> Shri Gurudev Ranade Samadhi Trust</Text>
-              <Text style={styles.infoText}><Text style={{ fontWeight: 'bold' }}>Bank:</Text> IDBI</Text>
-              <Text style={styles.infoText}><Text style={{ fontWeight: 'bold' }}>Branch:</Text> Vijayapur, Pin - 586103</Text>
-              <Text style={styles.infoText}><Text style={{ fontWeight: 'bold' }}>Account No.:</Text> 0744104000210218</Text>
-              <Text style={styles.infoText}><Text style={{ fontWeight: 'bold' }}>I.F.S.C.:</Text> IBKL0000744</Text>
-              <Text style={styles.infoText}><Text style={{ fontWeight: 'bold' }}>Address:</Text> 41E, Plot No 9 So, Near BLDE Main Entrance, Karnataka 586103</Text>
-              <TouchableOpacity style={styles.actionButton} onPress={() => handleEmail('gurudevranadenimbal@gmail.com')}>
-                <Mail size={24} color={THEME.primary} />
-                <Text style={styles.actionText}>gurudevranadenimbal@gmail.com</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.actionButton} onPress={() => handlePhone('+919482206716')}>
-                <Phone size={24} color={THEME.primary} />
-                <Text style={styles.actionText}>+91-94822 06716 (BSNL)</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.actionButton} onPress={() => handlePhone('+916363383415')}>
-                <Phone size={24} color={THEME.primary} />
-                <Text style={styles.actionText}>+91-63633 83415 (JIO)</Text>
-              </TouchableOpacity> */}
+          <ScrollView contentContainerStyle={styles.modalContent}>
+            <View style={styles.infoBox}>
+              <Text style={styles.infoTitle}>Online Bank Transfer</Text>
+              <Text style={styles.infoText}>
+                
+              </Text>
             </View>
-
-            <View style={styles.infoCard}>
-              <Text style={styles.sectionTitle}>Cheque Information</Text>
-              {/* <Text style={styles.infoText}>
-                Cheques should be made payable to:{'\n'}
-                <Text style={{ fontWeight: 'bold' }}>Shri Gurudev Ranade Samadhi Trust</Text>
-              </Text> */}
+            <View style={styles.infoBox}>
+              <Text style={styles.infoTitle}>Cheque Information</Text>
+              <Text style={styles.infoText}>
+                {/* Cheques should be made payable to:{'\n'} */}
+                <Text style={{ fontWeight: '700' }}></Text>
+              </Text>
             </View>
           </ScrollView>
-        </SafeAreaView>
+        </View>
       </Modal>
 
-      <Modal animationType="slide" visible={aboutModalVisible} onRequestClose={() => setAboutModalVisible(false)}>
-        <SafeAreaView style={{ flex: 1, backgroundColor: THEME.background }}>
+      {/* 3. ABOUT MODAL */}
+      <Modal animationType="slide" visible={aboutModalVisible} onRequestClose={() => setAboutModalVisible(false)} presentationStyle="pageSheet">
+        <View style={styles.modalContainer}>
           <View style={styles.modalHeader}>
             <Text style={styles.modalTitle}>About Namsadhan</Text>
-            <TouchableOpacity style={styles.modalCloseButton} onPress={() => setAboutModalVisible(false)}>
-              <X size={28} color={THEME.text} />
+            <TouchableOpacity onPress={() => setAboutModalVisible(false)} style={styles.closeButton}>
+              <X size={24} color={THEME.text} />
             </TouchableOpacity>
           </View>
-          <ScrollView contentContainerStyle={styles.pageContainer}>
-            <View style={styles.infoCard}>
+          <ScrollView contentContainerStyle={styles.modalContent}>
+            <View style={styles.infoBox}>
               <Text style={styles.paragraph}>
                 This application is a humble offering dedicated to the teachings and lineage of the Nimbargi Sampradaya.
               </Text>
@@ -225,175 +271,254 @@ export default function SettingsPage() {
                 Our mission is to provide a comprehensive digital platform for all the devotees and sadhaks to access spiritual resources, engage with the timeless teachings of the Sampradaya, and foster a deeper connection with the path layed down by our revered Gurus.
               </Text>
               <Text style={styles.paragraph}>
-                Through this app, users can access excrepts from Shri Gurudev Ranade's teachings, writings, etc. , listen to bhajans and pravachans. Have a digital copy of the sacred Nityanemavali. Track Sadhana and be mindful of their daily progress. We aim to support the spiritual journey of all sadhaks, making the profound teachings of our Sampradaya accessible in this digital age.
-              </Text>
-              <Text style={styles.paragraph}>
-                We are continuously working to improve and expand the app's features and content. Your support and feedback are invaluable to us on this journey.
+                Through this app, users can access excerpts from Shri Gurudev Ranade's teachings, writings, listen to bhajans and pravachans, track Sadhana and be mindful of their daily progress.
               </Text>
             </View>
           </ScrollView>
-        </SafeAreaView>
+        </View>
       </Modal>
 
-      <Modal animationType="slide" visible={privacyModalVisible} onRequestClose={() => setPrivacyModalVisible(false)}>
-        <SafeAreaView style={{ flex: 1, backgroundColor: THEME.background }}>
+      {/* 4. PRIVACY MODAL */}
+      <Modal animationType="slide" visible={privacyModalVisible} onRequestClose={() => setPrivacyModalVisible(false)} presentationStyle="pageSheet">
+        <View style={styles.modalContainer}>
           <View style={styles.modalHeader}>
             <Text style={styles.modalTitle}>Privacy Policy</Text>
-            <TouchableOpacity style={styles.modalCloseButton} onPress={() => setPrivacyModalVisible(false)}>
-              <X size={28} color={THEME.text} />
+            <TouchableOpacity onPress={() => setPrivacyModalVisible(false)} style={styles.closeButton}>
+              <X size={24} color={THEME.text} />
             </TouchableOpacity>
           </View>
-          <ScrollView contentContainerStyle={styles.pageContainer}>
-            <View style={styles.infoCard}>
+          <ScrollView contentContainerStyle={styles.modalContent}>
+            <View style={styles.infoBox}>
               <Text style={styles.lastUpdated}>Last updated: November 4, 2025</Text>
+              
+              <Text style={styles.subHeader}>Information We Collect</Text>
               <Text style={styles.paragraph}>
-                Namsadhan  is committed to protecting your privacy. This Privacy Policy explains how your personal information is collected, used, and disclosed by our application.
+                We may collect information you provide directly to us, such as when you create an account, as well as automatically collected usage data (e.g., meditation timer stats).
               </Text>
-              <Text style={styles.sectionTitle}>Information We Collect</Text>
+              
+              <Text style={styles.subHeader}>How We Use Information</Text>
               <Text style={styles.paragraph}>
-                We may collect information you provide directly to us, such as when you create an account, as well as information that is automatically collected, such as your usage data for features like the Namasmaran timer.
+                To operate and maintain the app, personalize your experience, and analyze usage trends to improve functionality.
               </Text>
-              <Text style={styles.sectionTitle}>How We Use Your Information</Text>
+              
+              <Text style={styles.subHeader}>Data Security</Text>
               <Text style={styles.paragraph}>
-                We use the information we collect to operate, maintain, and provide you with the features and functionality of the app, to personalize your experience, and to analyze usage to improve the app.
+                We use industry-standard security measures. However, no method of electronic storage is 100% secure.
               </Text>
-              <Text style={styles.sectionTitle}>Data Security</Text>
+
+              <Text style={styles.subHeader}>Third-Party Services</Text>
               <Text style={styles.paragraph}>
-                We use industry-standard security measures to protect the information submitted to us, both during transmission and once we receive it. However, no method of transmission over the Internet or method of electronic storage is 100% secure.
+                Our app does not share personal information with third-party services for marketing purposes.
               </Text>
-              <Text style={styles.sectionTitle}>Third-Party Services</Text>
-              <Text style={styles.paragraph}>
-                Our app does not share personal information with third-party services.
-              </Text>
-              <Text style={styles.sectionTitle}>Changes to This Policy</Text>
-              <Text style={styles.paragraph}>
-                We may update our Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page.
-              </Text>
-              {/* <Text style={styles.disclaimer}>
-                Disclaimer: This is a temporary placeholder text. Please consult with a legal professional to create a comprehensive privacy policy tailored to your specific data practices.
-              </Text> */}
             </View>
           </ScrollView>
-        </SafeAreaView>
+        </View>
       </Modal>
+
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  screenContainer: { flex: 1, backgroundColor: THEME.background },
-  container: {
-    paddingVertical: 20,
-    paddingHorizontal: 16,
+  screenContainer: {
+    flex: 1,
+    backgroundColor: THEME.background,
   },
-  card: {
-    backgroundColor: THEME.card,
-    borderRadius: 15,
-    marginBottom: 20,
-    elevation: 3,
-    shadowColor: 'rgba(93, 64, 55, 0.4)',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 5,
-    overflow: 'hidden',
-  },
-  settingsItem: {
+  
+  /* HEADER */
+  header: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 18,
-    paddingHorizontal: 20,
-    backgroundColor: THEME.card,
+    paddingHorizontal: 16,
+    paddingBottom: 15,
+    backgroundColor: THEME.background,
+    zIndex: 10,
   },
-  iconContainer: {
-    width: 30,
+  headerTitle: {
+    fontSize: 24,
+    fontWeight: '700',
+    color: THEME.text,
+    marginLeft: 8,
+  },
+  backButton: {
+    padding: 4,
+  },
+  scrollContent: {
+    paddingHorizontal: 20,
+    paddingTop: 10,
+    paddingBottom: 40,
+  },
+
+  /* SECTIONS */
+  sectionHeader: {
+    fontSize: 13,
+    color: THEME.subtext,
+    fontWeight: '700',
+    letterSpacing: 1.2,
+    marginBottom: 12,
+    marginLeft: 10,
+    marginTop: 15,
+  },
+  cardContainer: {
+    backgroundColor: THEME.cardBg,
+    borderRadius: 20,
+    overflow: 'hidden',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 8,
+    elevation: 3,
+    marginBottom: 10,
+  },
+
+  /* ITEM */
+  itemContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: 16,
+    paddingHorizontal: 20,
+    backgroundColor: THEME.cardBg,
+  },
+  itemLeft: {
+    flexDirection: 'row',
     alignItems: 'center',
   },
-  itemText: {
-    flex: 1,
-    fontSize: 17,
-    marginLeft: 20,
+  iconCircle: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: THEME.iconBg,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 15,
+  },
+  itemLabel: {
+    fontSize: 16,
+    fontWeight: '600',
     color: THEME.text,
   },
-  separator: {
+  divider: {
     height: 1,
-    backgroundColor: '#F0EAE4',
-    marginHorizontal: 20,
+    backgroundColor: THEME.border,
+    marginLeft: 70, 
+  },
+
+  versionText: {
+    textAlign: 'center',
+    color: THEME.subtext,
+    fontSize: 12,
+    marginTop: 30,
+    opacity: 0.6,
+  },
+
+  /* MODALS */
+  modalContainer: {
+    flex: 1,
+    backgroundColor: THEME.background,
   },
   modalHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 15,
+    paddingHorizontal: 20,
+    paddingVertical: 16,
     borderBottomWidth: 1,
-    borderBottomColor: '#F0EAE4',
+    borderBottomColor: THEME.border,
+    backgroundColor: THEME.cardBg,
   },
   modalTitle: {
-    fontSize: 22,
-    fontWeight: 'bold',
+    fontSize: 20,
+    fontWeight: '700',
     color: THEME.text,
   },
-  modalCloseButton: {
-    padding: 5,
-  },
-  pageContainer: {
-    padding: 16,
-  },
-  infoCard: {
-    backgroundColor: THEME.card,
+  closeButton: {
+    padding: 4,
+    backgroundColor: '#F5F5F5',
     borderRadius: 15,
+  },
+  modalContent: {
+    padding: 20,
+  },
+  infoBox: {
+    backgroundColor: THEME.cardBg,
+    borderRadius: 16,
     padding: 20,
     marginBottom: 20,
-    elevation: 3,
-    shadowColor: 'rgba(93, 64, 55, 0.4)',
-    shadowOffset: { width: 0, height: 1 },
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.05,
     shadowRadius: 5,
+    elevation: 2,
   },
-  sectionTitle: {
+  infoTitle: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: '700',
     color: THEME.text,
-    marginBottom: 15,
+    marginBottom: 12,
   },
-  addressText: {
+  subHeader: {
     fontSize: 16,
+    fontWeight: '700',
     color: THEME.text,
-    lineHeight: 24,
-    marginBottom: 15,
+    marginTop: 15,
+    marginBottom: 6,
   },
   infoText: {
-    fontSize: 16,
+    fontSize: 15,
     color: THEME.text,
     lineHeight: 24,
-    marginBottom: 5,
-  },
-  actionButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 10,
-  },
-  actionText: {
-    fontSize: 16,
-    color: THEME.text,
-    marginLeft: 15,
+    textAlign: 'justify', // Justified text
   },
   paragraph: {
-    fontSize: 16,
+    fontSize: 15,
     color: THEME.text,
     lineHeight: 24,
     marginBottom: 15,
+    textAlign: 'justify', // Justified text for better reading
   },
   lastUpdated: {
     fontSize: 12,
-    color: '#A1887F',
-    textAlign: 'center',
+    color: THEME.subtext,
     marginBottom: 20,
-  },
-  disclaimer: {
-    fontSize: 14,
-    fontStyle: 'italic',
-    color: '#A1887F',
-    marginTop: 20,
     textAlign: 'center',
+  },
+  
+  /* ACTION BUTTONS */
+  actionBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 15,
+    backgroundColor: '#FFF8F0',
+    padding: 12,
+    borderRadius: 12,
+    alignSelf: 'flex-start',
+  },
+  actionBtnText: {
+    fontSize: 14,
+    color: THEME.primary,
+    fontWeight: '600',
+    marginLeft: 8,
+  },
+  contactRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: '#FAF7F5',
+  },
+  miniIcon: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: '#FFF8F0',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 12,
+  },
+  contactText: {
+    fontSize: 15,
+    color: THEME.text,
+    flex: 1,
   },
 });
