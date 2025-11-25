@@ -26,7 +26,6 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import Animated, { FadeInUp } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { registerForPushNotificationsAsync } from '../../../services/NotificationService';
 
@@ -43,9 +42,9 @@ const THEME = {
 };
 
 // --- COMPONENT: SETTINGS ITEM ---
-const SettingsItem = ({ icon: Icon, label, onPress, delay = 0 }: any) => {
+const SettingsItem = ({ icon: Icon, label, onPress }: any) => {
   return (
-    <Animated.View entering={FadeInUp.delay(delay).duration(600)}>
+    <View>
       <TouchableOpacity 
         style={styles.itemContainer} 
         onPress={() => {
@@ -62,9 +61,10 @@ const SettingsItem = ({ icon: Icon, label, onPress, delay = 0 }: any) => {
         </View>
         <ChevronRight size={20} color={THEME.subtext} />
       </TouchableOpacity>
-      {/* Divider Line */}
+
+      {/* Centered Divider Line */}
       <View style={styles.divider} />
-    </Animated.View>
+    </View>
   );
 };
 
@@ -110,7 +110,6 @@ export default function SettingsPage() {
 
   return (
     <SafeAreaView style={styles.screenContainer}>
-      {/* Hide default header to avoid duplication */}
       <Stack.Screen options={{ headerShown: false }} />
       <StatusBar barStyle="dark-content" />
       
@@ -132,47 +131,17 @@ export default function SettingsPage() {
         {/* SECTION 1: CONNECT */}
         <Text style={styles.sectionHeader}>CONNECT</Text>
         <View style={styles.cardContainer}>
-          <SettingsItem 
-            icon={Mail} 
-            label="Contact Ashram" 
-            onPress={handleContact} 
-            delay={100} 
-          />
-          <SettingsItem 
-            icon={HandHeart} 
-            label="Donate" 
-            onPress={handleDonation} 
-            delay={150} 
-          />
-          <SettingsItem 
-            icon={MapPin} 
-            label="Nimbal Ashram" 
-            onPress={handleMap} 
-            delay={200} 
-          />
+          <SettingsItem icon={Mail} label="Contact Ashram" onPress={handleContact} />
+          <SettingsItem icon={HandHeart} label="Donate" onPress={handleDonation} />
+          <SettingsItem icon={MapPin} label="Nimbal Ashram" onPress={handleMap} />
         </View>
 
         {/* SECTION 2: PREFERENCES */}
         <Text style={styles.sectionHeader}>APP PREFERENCES</Text>
         <View style={styles.cardContainer}>
-          <SettingsItem 
-            icon={Bell} 
-            label="Notifications" 
-            onPress={handleNotifications} 
-            delay={250} 
-          />
-          <SettingsItem 
-            icon={Shield} 
-            label="Privacy Policy" 
-            onPress={handlePrivacyPolicy} 
-            delay={300} 
-          />
-          <SettingsItem 
-            icon={Info} 
-            label="About Namsadhan" 
-            onPress={handleAbout} 
-            delay={350} 
-          />
+          <SettingsItem icon={Bell} label="Notifications" onPress={handleNotifications} />
+          <SettingsItem icon={Shield} label="Privacy Policy" onPress={handlePrivacyPolicy} />
+          <SettingsItem icon={Info} label="About Namsadhan" onPress={handleAbout} />
         </View>
 
         <Text style={styles.versionText}>Version 1.0.2</Text>
@@ -180,9 +149,9 @@ export default function SettingsPage() {
 
       </ScrollView>
 
-      {/* --- MODALS --- */}
-      
-      {/* 1. CONTACT MODAL */}
+      {/* --- MODALS (unchanged) --- */}
+
+      {/* CONTACT MODAL */}
       <Modal animationType="slide" visible={contactModalVisible} onRequestClose={() => setContactModalVisible(false)} presentationStyle="pageSheet">
         <View style={styles.modalContainer}>
           <View style={styles.modalHeader}>
@@ -226,7 +195,7 @@ export default function SettingsPage() {
         </View>
       </Modal>
 
-      {/* 2. DONATION MODAL */}
+      {/* DONATION MODAL */}
       <Modal animationType="slide" visible={donationModalVisible} onRequestClose={() => setDonationModalVisible(false)} presentationStyle="pageSheet">
         <View style={styles.modalContainer}>
           <View style={styles.modalHeader}>
@@ -238,14 +207,11 @@ export default function SettingsPage() {
           <ScrollView contentContainerStyle={styles.modalContent}>
             <View style={styles.infoBox}>
               <Text style={styles.infoTitle}>Online Bank Transfer</Text>
-              <Text style={styles.infoText}>
-                
-              </Text>
+              <Text style={styles.infoText}></Text>
             </View>
             <View style={styles.infoBox}>
               <Text style={styles.infoTitle}>Cheque Information</Text>
               <Text style={styles.infoText}>
-                {/* Cheques should be made payable to:{'\n'} */}
                 <Text style={{ fontWeight: '700' }}></Text>
               </Text>
             </View>
@@ -253,7 +219,7 @@ export default function SettingsPage() {
         </View>
       </Modal>
 
-      {/* 3. ABOUT MODAL */}
+      {/* ABOUT MODAL */}
       <Modal animationType="slide" visible={aboutModalVisible} onRequestClose={() => setAboutModalVisible(false)} presentationStyle="pageSheet">
         <View style={styles.modalContainer}>
           <View style={styles.modalHeader}>
@@ -278,7 +244,7 @@ export default function SettingsPage() {
         </View>
       </Modal>
 
-      {/* 4. PRIVACY MODAL */}
+      {/* PRIVACY MODAL */}
       <Modal animationType="slide" visible={privacyModalVisible} onRequestClose={() => setPrivacyModalVisible(false)} presentationStyle="pageSheet">
         <View style={styles.modalContainer}>
           <View style={styles.modalHeader}>
@@ -364,10 +330,10 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     overflow: 'hidden',
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 8,
-    elevation: 3,
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.03, // lower shadow
+    shadowRadius: 3,
+    elevation: 1, // lower elevation
     marginBottom: 10,
   },
 
@@ -398,10 +364,12 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: THEME.text,
   },
+
+  /* CENTERED DIVIDER */
   divider: {
     height: 1,
     backgroundColor: THEME.border,
-    marginLeft: 70, 
+    width: '100%',
   },
 
   versionText: {
@@ -446,10 +414,10 @@ const styles = StyleSheet.create({
     padding: 20,
     marginBottom: 20,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 5,
-    elevation: 2,
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.03, // lowered shadow
+    shadowRadius: 3,
+    elevation: 1, // lowered elevation
   },
   infoTitle: {
     fontSize: 18,
@@ -468,14 +436,14 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: THEME.text,
     lineHeight: 24,
-    textAlign: 'justify', // Justified text
+    textAlign: 'justify',
   },
   paragraph: {
     fontSize: 15,
     color: THEME.text,
     lineHeight: 24,
     marginBottom: 15,
-    textAlign: 'justify', // Justified text for better reading
+    textAlign: 'justify',
   },
   lastUpdated: {
     fontSize: 12,
@@ -483,7 +451,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     textAlign: 'center',
   },
-  
+
   /* ACTION BUTTONS */
   actionBtn: {
     flexDirection: 'row',
