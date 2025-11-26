@@ -50,6 +50,7 @@ const GRID_ITEMS = [
   { id: 'parmarth', title: 'Parmarth Mandir', icon: Book, route: '/parmarthMandir' },
   { id: 'shlok', title: 'Manache Shlok', icon: Scroll, route: '/manacheShlok' },
   { id: 'glossary', title: 'Glossary', icon: BookA, route: '/glossary' },
+  { id: 'sopan', title: 'Parmarth Sopan', icon: BookOpen, route: '/parmarthSopan' },
 ];
 
 export default function ResourcesScreen() {

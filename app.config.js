@@ -2,7 +2,7 @@ export default {
   "expo": {
     "name": "Namsadhan",
     "slug": "Namsadhan",
-    "version": "1.0.2",
+    "version": "1.0.3",
     "orientation": "portrait",
     "icon": "./assets/images/splash-icon.png",
     "scheme": "namsadhan",
@@ -22,8 +22,8 @@ export default {
       },
       "edgeToEdgeEnabled": true,
       "package": "com.namsadhan.app",
-      "googleServicesFile": process.env.GOOGLE_SERVICES_JSON,
-      // "googleServicesFile": "./google-services.json",
+      // "googleServicesFile": process.env.GOOGLE_SERVICES_JSON,
+      "googleServicesFile": "./google-services.json",
       // ADDED: Re-adding for background downloads
       "permissions": ["android.permission.FOREGROUND_SERVICE", "android.permission.WAKE_LOCK"]
     },
