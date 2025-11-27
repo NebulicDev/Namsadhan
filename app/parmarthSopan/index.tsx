@@ -1,6 +1,6 @@
 // app/parmarthSopan/index.tsx
 import { useRouter } from 'expo-router';
-import { BookOpen, ChevronLeft, ChevronRight, FileText, Library, ListFilter, User } from 'lucide-react-native';
+import { ChevronLeft, ChevronRight, FileText, Scroll, ScrollText, TableOfContents, User } from 'lucide-react-native';
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { PARMARTH_SOPAN_STATIC_SECTIONS } from '../../assets/text/parmarthSopanData';
@@ -29,16 +29,16 @@ export default function ParmarthSopanScreen() {
     {
       id: 'part1',
       title: 'Part I: Padas',
-      subtitle: 'Songs of Devotion',
-      icon: BookOpen,
+      subtitle: '100',
+      icon: ScrollText,
       route: '/parmarthSopan/chapters',
       params: { part: 1, title: 'Part I: Padas' }
     },
     {
       id: 'part2',
       title: 'Part II: Dohas',
-      subtitle: 'Couplets of Wisdom',
-      icon: Library,
+      subtitle: '100',
+      icon: Scroll,
       route: '/parmarthSopan/chapters',
       params: { part: 2, title: 'Part II: Dohas' }
     },
@@ -55,7 +55,7 @@ export default function ParmarthSopanScreen() {
     {
       id: 'alpha',
       title: 'Alphabetical Index',
-      icon: ListFilter,
+      icon: TableOfContents,
       route: '/parmarthSopan/items',
       params: { mode: 'alphabetical', title: 'Alphabetical Index' }
     },
@@ -145,7 +145,8 @@ export default function ParmarthSopanScreen() {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: THEME.background },
   header: { 
-    flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
+    flexDirection: 'row', alignItems: 'center',
+    //  justifyContent: 'space-between',
     paddingHorizontal: 20, paddingBottom: 15,
     borderBottomWidth: 1, borderBottomColor: 'rgba(0,0,0,0.03)',
     backgroundColor: THEME.background

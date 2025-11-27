@@ -13,10 +13,10 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import {
-  getAlphabeticalItemsByPart,
   getAuthorsByPart,
   getItemsByAuthorAndPart,
   getItemsByChapter,
+  PARMARTH_SOPAN_DATA, // Import raw data directly for optimization
   SopanItem
 } from '../../assets/text/parmarthSopanData';
 
@@ -24,13 +24,13 @@ const THEME = {
   background: '#FFF8F0',
   text: '#3E2723',
   subText: '#8D6E63',
-  accent: '#FFB88D',
+  accent: '#E65100',
   card: '#FFFFFF',
   cardBorder: '#EFEBE9',
   iconBg: '#FFF3E0',
 };
 
-// --- GRID CONSTANTS (Matching Section 8) ---
+// --- GRID CONSTANTS ---
 const numColumns = 4;
 const screenWidth = Dimensions.get('window').width;
 const paddingHorizontal = 15;
@@ -42,19 +42,16 @@ export default function ItemsListScreen() {
   const params = useLocalSearchParams();
   const insets = useSafeAreaInsets();
   
-  // Modes: 
-  // - Selection: 'alphabetical' | 'authors'
-  // - Grids/Lists: 'alphabetical_grid' | 'alphabetical_list' | 'authors_list' | 'chapter' | 'byAuthor'
   const mode = params.mode; 
   const title = params.title as string;
   const part = Number(params.part); 
-  const selectedLetter = params.letter as string; // NEW: For filtering by letter
+  const selectedLetter = params.letter as string; 
 
   // --- 1. DETERMINE VIEW TYPE ---
   const isSelectionMode = mode === 'alphabetical' || mode === 'authors';
   const isGridMode = mode === 'alphabetical_grid';
 
-  // --- 2. DATA LOGIC ---
+  // --- 2. DATA LOGIC (OPTIMIZED) ---
   const { listData, gridData } = useMemo(() => {
     if (isSelectionMode) return { listData: [], gridData: [] };
 
@@ -63,28 +60,36 @@ export default function ItemsListScreen() {
       return { listData: getItemsByChapter(part as 1 | 2, Number(params.chapter)), gridData: [] };
     } 
     
-    // B. Alphabetical Grid (The Letters)
+    // B. Alphabetical Grid (The Letters) - OPTIMIZED
     else if (mode === 'alphabetical_grid') {
-      const allItems = getAlphabeticalItemsByPart(part as 1 | 2);
-      // Extract unique first letters
-      const letters = Array.from(new Set(allItems.map(item => item.title.trim().charAt(0))));
-      // Sort items: Vowels/Consonants usually sort okay with localeCompare, but we can standard sort
+      // 1. Get raw items for this part (Don't sort yet, sorting is expensive!)
+      const rawItems = PARMARTH_SOPAN_DATA.filter(item => item.part === part);
+      
+      // 2. Extract unique first letters
+      const letters = Array.from(new Set(rawItems.map(item => item.title.trim().charAt(0))));
+      
+      // 3. Sort ONLY the letters (Sorting 30 items is instant vs 100 items)
       letters.sort((a, b) => a.localeCompare(b, 'hi'));
       
       const letterObjects = letters.map(l => ({ id: l, title: l }));
       return { listData: [], gridData: letterObjects };
     }
 
-    // C. Alphabetical List (Filtered by Letter)
+    // C. Alphabetical List (Filtered by Letter) - OPTIMIZED
     else if (mode === 'alphabetical_list') {
-      let data = getAlphabeticalItemsByPart(part as 1 | 2);
+      // 1. Filter FIRST (Reduce list from 100 -> ~5 items)
+      let data = PARMARTH_SOPAN_DATA.filter(item => item.part === part);
       if (selectedLetter) {
         data = data.filter(item => item.title.trim().startsWith(selectedLetter));
       }
+      
+      // 2. Sort ONLY the small subset (Instant)
+      data.sort((a, b) => a.title.localeCompare(b.title, 'hi'));
+      
       return { listData: data, gridData: [] };
     }
     
-    // D. Authors List (Filtered by Part)
+    // D. Authors List
     else if (mode === 'authors_list') {
       const data = getAuthorsByPart(part as 1 | 2).map(name => ({ name, part }));
       return { listData: data, gridData: [] };
@@ -101,12 +106,10 @@ export default function ItemsListScreen() {
 
   // --- HANDLERS ---
 
-  // 1. Selection Screen (Part I vs Part II)
   const handleSelectionPress = (selectedPart: 1 | 2) => {
     Haptics.selectionAsync();
     
     if (mode === 'alphabetical') {
-      // Go to GRID View
       router.push({
         pathname: '/parmarthSopan/items',
         params: { 
@@ -116,7 +119,6 @@ export default function ItemsListScreen() {
         }
       });
     } else {
-      // Go to AUTHORS List (Usually short enough to list directly)
       router.push({
         pathname: '/parmarthSopan/items',
         params: { 
@@ -128,7 +130,6 @@ export default function ItemsListScreen() {
     }
   };
 
-  // 2. Grid Item Press (Letter Click)
   const handleGridPress = (letter: string) => {
     Haptics.selectionAsync();
     router.push({
@@ -142,7 +143,6 @@ export default function ItemsListScreen() {
     });
   };
 
-  // 3. List Item Press (Final Destination)
   const handleItemPress = (item: any) => {
     Haptics.selectionAsync();
 

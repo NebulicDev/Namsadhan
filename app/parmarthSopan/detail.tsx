@@ -1,9 +1,11 @@
 // app/parmarthSopan/detail.tsx
 import Slider from '@react-native-community/slider';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { ArrowLeft, ChevronLeft, Music, PauseCircle, PlayCircle, User } from 'lucide-react-native';
+import { ArrowLeft, ChevronLeft, Music, Pause, Play, User } from 'lucide-react-native';
 import React, { useEffect, useState } from 'react';
 import {
+  ActivityIndicator,
   ScrollView,
   StyleSheet,
   Text,
@@ -15,17 +17,18 @@ import { getItemById, getStaticSectionById, SopanItem, StaticSection } from '../
 import { useAudio } from '../../context/AudioContext';
 
 const THEME = {
-  background: '#FFF8F0', // Cream/Book background
-  text: '#3E2723',       // Dark Brown text
-  subText: '#8D6E63',    // Light Brown
-  primary: '#D2B48C',    // Tan
+  background: '#FFF8F0',
+  text: '#3E2723',
+  subText: '#8D6E63',
+  primary: '#D2B48C',
   accent: '#FFB88D',
   card: '#FFFFFF',
+  cardBg: '#FFFFFF',
   cardBorder: '#EFEBE9',
-  meaningBox: '#FFF3E0', // Very light orange for meaning
-  sliderThumb: '#E65100',
+  meaningBox: '#FFF3E0',
+  sliderThumb: '#5D4037',
   sliderTrack: '#D7CCC8',
-  sliderActive: '#E65100',
+  sliderActive: '#8D6E63',
 };
 
 export default function SopanDetailScreen() {
@@ -36,13 +39,13 @@ export default function SopanDetailScreen() {
   
   const [isDragging, setIsDragging] = useState(false);
   const [slideValue, setSlideValue] = useState(0);
+  const [isBuffering, setIsBuffering] = useState(false);
 
   // Retrieve Item Data
   const item = isStatic === 'true' 
     ? getStaticSectionById(itemId as string) 
     : getItemById(itemId as string);
 
-  // Type Guards
   const isSopanItem = isStatic !== 'true';
   const sopanItem = isSopanItem ? (item as SopanItem) : null;
   const staticItem = !isSopanItem ? (item as StaticSection) : null;
@@ -61,16 +64,25 @@ export default function SopanDetailScreen() {
   const handlePlayPause = async () => {
     if (!sopanItem?.audioDriveId) return;
 
-    if (isCurrentTrack) {
-      if (isPlaying) {
-        await pauseSound();
+    try {
+      if (isCurrentTrack) {
+        if (isPlaying) {
+          await pauseSound();
+        } else {
+          setIsBuffering(true);
+          const uri = `https://docs.google.com/uc?export=download&id=${sopanItem.audioDriveId}`;
+          await playSound(uri, sopanItem.id);
+          setIsBuffering(false);
+        }
       } else {
+        setIsBuffering(true);
         const uri = `https://docs.google.com/uc?export=download&id=${sopanItem.audioDriveId}`;
         await playSound(uri, sopanItem.id);
+        setIsBuffering(false);
       }
-    } else {
-      const uri = `https://docs.google.com/uc?export=download&id=${sopanItem.audioDriveId}`;
-      await playSound(uri, sopanItem.id);
+    } catch (e) {
+      setIsBuffering(false);
+      console.error(e);
     }
   };
 
@@ -112,8 +124,7 @@ export default function SopanDetailScreen() {
 
       <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
         
-        {/* --- MAIN TITLE SECTION (Optional: You can keep or remove since it's now in header) --- */}
-        {/* We keep it for full context, as header truncates long titles */}
+        {/* --- MAIN TITLE SECTION --- */}
         <View style={styles.titleSection}>
           <Text style={styles.mainTitle}>{item.title}</Text>
           {sopanItem && (
@@ -123,53 +134,6 @@ export default function SopanDetailScreen() {
             </View>
           )}
         </View>
-
-        {/* --- AUDIO PLAYER CARD --- */}
-        {hasAudio && sopanItem && (
-          <View style={styles.audioCard}>
-            <View style={styles.audioHeader}>
-              <View style={styles.singerInfo}>
-                 <Music size={16} color={THEME.accent} style={{marginRight: 6}} />
-                 <Text style={styles.singerName}>
-                    {sopanItem.singer ? `Singer: ${sopanItem.singer}` : 'Audio Playback'}
-                 </Text>
-              </View>
-            </View>
-
-            <View style={styles.playerRow}>
-              <TouchableOpacity onPress={handlePlayPause} disabled={false}>
-                 {isTrackPlaying ? (
-                   <PauseCircle size={48} color={THEME.accent} fill="#FFF3E0" />
-                 ) : (
-                   <PlayCircle size={48} color={THEME.accent} fill="#FFF3E0" />
-                 )}
-              </TouchableOpacity>
-
-              <View style={styles.sliderContainer}>
-                <Slider
-                  style={styles.slider}
-                  minimumValue={0}
-                  maximumValue={isCurrentTrack ? playbackStatus.duration : 100}
-                  value={isCurrentTrack ? slideValue : 0}
-                  onSlidingStart={() => setIsDragging(true)}
-                  onSlidingComplete={handleSeek}
-                  minimumTrackTintColor={THEME.sliderActive}
-                  maximumTrackTintColor={THEME.sliderTrack}
-                  thumbTintColor={THEME.sliderThumb}
-                  disabled={!isCurrentTrack && !hasAudio}
-                />
-                <View style={styles.timeRow}>
-                  <Text style={styles.timeText}>
-                    {isCurrentTrack ? formatTime(slideValue) : '0:00'}
-                  </Text>
-                  <Text style={styles.timeText}>
-                    {isCurrentTrack ? formatTime(playbackStatus.duration) : '0:00'}
-                  </Text>
-                </View>
-              </View>
-            </View>
-          </View>
-        )}
 
         {/* --- CONTENT / VERSE CARD --- */}
         <View style={isSopanItem ? styles.contentCard : styles.staticContainer}>
@@ -185,6 +149,72 @@ export default function SopanDetailScreen() {
             <Text style={styles.meaningText}>{sopanItem.meaning}</Text>
           </View>
         ) : null}
+
+        {/* --- AUDIO PLAYER CARD (MOVED TO BOTTOM & COMPACT) --- */}
+        {hasAudio && sopanItem && (
+          <View style={styles.cardWrapper}>
+            <LinearGradient
+                colors={isCurrentTrack ? ['#FFFFFF', '#FFF8E1'] : ['#FFFFFF', '#FFFDF9']}
+                style={[styles.audioCard, isCurrentTrack && styles.cardActive]}
+            >
+                <View style={styles.trackRow}>
+                    {/* Left Icon (Smaller) */}
+                    <View style={[styles.iconContainer, isCurrentTrack && styles.iconActive]}>
+                        {isCurrentTrack && isPlaying ? (
+                            <Pause size={20} color={isCurrentTrack ? '#FFF' : THEME.primary} fill={isCurrentTrack ? '#FFF' : 'transparent'} />
+                        ) : (
+                            <Music size={20} color={isCurrentTrack ? '#FFF' : THEME.primary} />
+                        )}
+                    </View>
+
+                    {/* Info */}
+                    <View style={styles.trackInfo}>
+                        <Text style={[styles.trackTitle, isCurrentTrack && styles.textActive]}>
+                          {sopanItem.singer ? `Sung by: ${sopanItem.singer}` : 'Audio Playback'}
+                        </Text>
+                    </View>
+
+                    {/* Actions */}
+                    <View style={styles.actions}>
+                        <TouchableOpacity
+                            style={[styles.actionButton, styles.mainAction]}
+                            onPress={handlePlayPause}
+                            disabled={isBuffering}
+                        >
+                            {isBuffering ? (
+                                <ActivityIndicator size="small" color={THEME.accent} />
+                            ) : isTrackPlaying ? (
+                                <Pause size={20} color={THEME.accent} fill={THEME.accent} />
+                            ) : (
+                                <Play size={20} color={THEME.accent} fill={THEME.accent} style={{ marginLeft: 2 }} />
+                            )}
+                        </TouchableOpacity>
+                    </View>
+                </View>
+
+                {/* Slider (Visible when active) */}
+                {isCurrentTrack && (
+                    <View style={styles.sliderView}>
+                        <Slider
+                            style={styles.slider}
+                            minimumValue={0}
+                            maximumValue={playbackStatus.duration || 100}
+                            value={slideValue}
+                            onSlidingStart={() => setIsDragging(true)}
+                            onSlidingComplete={handleSeek}
+                            minimumTrackTintColor={THEME.sliderActive}
+                            maximumTrackTintColor={THEME.sliderTrack}
+                            thumbTintColor={THEME.sliderThumb}
+                        />
+                        <View style={styles.timeRow}>
+                            <Text style={styles.timeText}>{formatTime(slideValue)}</Text>
+                            <Text style={styles.timeText}>{formatTime(playbackStatus.duration)}</Text>
+                        </View>
+                    </View>
+                )}
+            </LinearGradient>
+          </View>
+        )}
         
         <View style={{ height: 40 }} />
 
@@ -208,7 +238,7 @@ const styles = StyleSheet.create({
   backBtn: { padding: 4, marginRight: 15 },
   headerTitle: { 
     fontSize: 18, fontWeight: '700', color: THEME.text, 
-    flex: 1, textAlign: 'left' // Left Align
+    flex: 1, textAlign: 'left'
   },
 
   scrollContent: { padding: 20 },
@@ -221,22 +251,6 @@ const styles = StyleSheet.create({
   },
   metaRow: { flexDirection: 'row', alignItems: 'center', opacity: 0.8 },
   authorText: { fontSize: 15, color: THEME.subText, marginLeft: 6, fontWeight: '500' },
-
-  // Audio Card
-  audioCard: {
-    backgroundColor: THEME.card, borderRadius: 16, padding: 16, marginBottom: 25,
-    elevation: 3, shadowColor: '#5D4037', shadowOpacity: 0.1, shadowRadius: 8, shadowOffset: {width:0, height:4},
-    borderWidth: 1, borderColor: THEME.cardBorder
-  },
-  audioHeader: { flexDirection: 'row', marginBottom: 15, justifyContent: 'space-between' },
-  singerInfo: { flexDirection: 'row', alignItems: 'center' },
-  singerName: { fontSize: 13, fontWeight: '600', color: THEME.accent, textTransform: 'uppercase', letterSpacing: 0.5 },
-  
-  playerRow: { flexDirection: 'row', alignItems: 'center' },
-  sliderContainer: { flex: 1, marginLeft: 15 },
-  slider: { width: '100%', height: 40 },
-  timeRow: { flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 2, marginTop: -5 },
-  timeText: { fontSize: 11, color: THEME.subText, fontVariant: ['tabular-nums'] },
 
   // Content Card
   contentCard: {
@@ -255,7 +269,7 @@ const styles = StyleSheet.create({
   // Meaning Card
   meaningCard: {
     backgroundColor: THEME.meaningBox, borderRadius: 12, padding: 20,
-    borderLeftWidth: 4, borderLeftColor: THEME.accent
+    borderLeftWidth: 4, borderLeftColor: THEME.accent, marginBottom: 25 // Added margin bottom for spacing before audio
   },
   meaningLabel: { 
     fontSize: 12, fontWeight: 'bold', color: THEME.subText, 
@@ -264,5 +278,93 @@ const styles = StyleSheet.create({
   meaningText: { 
     fontSize: 16, lineHeight: 28, color: THEME.text, 
     fontStyle: 'italic' 
+  },
+
+  // --- COMPACT AUDIO CARD ---
+  cardWrapper: {
+    marginBottom: 10,
+    borderRadius: 16, // Slightly smaller radius
+    shadowColor: '#8D6E63',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 4,
+    elevation: 3,
+    backgroundColor: THEME.cardBg,
+  },
+  audioCard: {
+    borderRadius: 16,
+    padding: 12, // Reduced padding
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.6)',
+  },
+  cardActive: {
+    borderColor: THEME.primary,
+    borderWidth: 1,
+  },
+  trackRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  iconContainer: {
+    width: 40, // Reduced size
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: '#F5E6D3',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 12, // Reduced margin
+  },
+  iconActive: {
+    backgroundColor: THEME.text,
+  },
+  trackInfo: { flex: 1 },
+  trackTitle: { 
+    fontSize: 15, // Reduced font size
+    fontWeight: '600', 
+    color: THEME.text,
+  },
+  textActive: {
+    fontWeight: 'bold',
+  },
+  actions: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  actionButton: {
+    width: 36, // Reduced button size
+    height: 36,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginLeft: 4,
+  },
+  mainAction: {
+    backgroundColor: '#FFF',
+    borderRadius: 18,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 2,
+    elevation: 2,
+  },
+  sliderView: {
+    marginTop: 10, // Reduced margin
+    paddingTop: 6,
+    borderTopWidth: 1,
+    borderTopColor: 'rgba(0,0,0,0.03)',
+  },
+  slider: {
+    width: '100%',
+    height: 30, // Compact slider height
+  },
+  timeRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: 2,
+    marginTop: -5,
+  },
+  timeText: {
+    color: THEME.subText,
+    fontSize: 10, // Smaller time font
+    fontVariant: ['tabular-nums'],
   },
 });
