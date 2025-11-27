@@ -34,7 +34,7 @@ const THEME = {
   textLight: '#8D6E63',
   cardBg: '#FFFFFF',
   primary: '#D2B48C',
-  accent: '#FFB74D',
+  accent: '#FFB88D',
   sliderThumb: '#5D4037',
   sliderTrack: '#D7CCC8',
   sliderActive: '#8D6E63',

@@ -1,5 +1,5 @@
 // app/(tabs)/index.tsx
-import * as Haptics from 'expo-haptics'; // Import Haptics
+import * as Haptics from 'expo-haptics';
 import { X } from 'lucide-react-native';
 import { useEffect, useState } from 'react';
 import {
@@ -15,8 +15,7 @@ import {
 import Animated, {
   FadeIn,
   FadeInDown,
-  FadeInUp,
-  FadeOut,
+  FadeOut
 } from 'react-native-reanimated';
 import { bios } from '../../assets/text/bios';
 
@@ -106,7 +105,7 @@ export default function HomeScreen() {
     <SafeAreaView style={styles.screenContainer}>
       <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
         
-        {/* Animated Header: Gentle Fade Down */}
+        {/* Header Animation KEPT */}
         <Animated.View 
           style={styles.header}
           entering={FadeInDown.duration(1000)}
@@ -115,10 +114,8 @@ export default function HomeScreen() {
           <Text style={styles.subtitle} numberOfLines={1} adjustsFontSizeToFit={true}>Shri Gurudev Ranade Samadhi Trust</Text>
         </Animated.View>
 
-        {/* Top Card: Gentle Float Up */}
-        <Animated.View 
-          entering={FadeInUp.delay(200).duration(800)}
-        >
+        {/* ★ Card Animation REMOVED */}
+        <View>
           <TouchableOpacity 
             style={styles.topCardContainer} 
             activeOpacity={0.9}
@@ -131,15 +128,14 @@ export default function HomeScreen() {
               </View>
             </View>
           </TouchableOpacity>
-        </Animated.View>
+        </View>
 
-        {/* Bottom Row: Staggered Float Up */}
+        {/* ★ Bottom Cards — Animation REMOVED */}
         <View style={styles.bottomRow}>
-          {spiritualGuides.slice(1).map((guide, index) => (
-            <Animated.View 
+          {spiritualGuides.slice(1).map((guide) => (
+            <View 
               key={guide.id}
               style={{ width: '31%' }}
-              entering={FadeInUp.delay(400 + (index * 200)).duration(800)}
             >
               <TouchableOpacity 
                 style={styles.bottomCardContainer} 
@@ -153,11 +149,11 @@ export default function HomeScreen() {
                   </View>
                 </View>
               </TouchableOpacity>
-            </Animated.View>
+            </View>
           ))}
         </View>
 
-        {/* Prayer Section: Slow Fade In */}
+        {/* Prayer Animation KEPT */}
         <Animated.View 
           style={styles.prayerContainer}
           entering={FadeIn.delay(1200).duration(1500)}
@@ -182,7 +178,7 @@ export default function HomeScreen() {
         </Animated.View>
       </ScrollView>
 
-      {/* Full Screen Modal */}
+      {/* Modal Animation KEPT */}
       <Modal
         visible={selectedGuide !== null}
         transparent={true}
@@ -191,13 +187,11 @@ export default function HomeScreen() {
         onRequestClose={handleCloseModal}
       >
         {selectedGuide && (
-          // Backdrop: Very Slow Fade for "Atmosphere"
           <Animated.View 
             style={styles.modalOverlay}
             entering={FadeIn.duration(500)}
             exiting={FadeOut.duration(400)}
           >
-            {/* Modal Card: Gentle Glide Up (Calm, not Poppy) */}
             <Animated.View 
               style={styles.modalCard}
               entering={FadeInDown.duration(600).damping(20)}
@@ -206,6 +200,7 @@ export default function HomeScreen() {
               <TouchableOpacity style={styles.closeButton} onPress={handleCloseModal}>
                 <X size={24} color={THEME.lightText} />
               </TouchableOpacity>
+
               <ScrollView contentContainerStyle={styles.modalContent}>
                 <Image source={selectedGuide.photo} style={styles.modalImage} resizeMode="cover" />
                 <Text style={styles.modalTitle} numberOfLines={1} adjustsFontSizeToFit={true}>{selectedGuide.name}</Text>
@@ -284,28 +279,27 @@ const styles = StyleSheet.create({
   },
   cardOverlay: {
     ...StyleSheet.absoluteFillObject,
-    // backgroundColor: 'rgba(0, 0, 0, 0.06)',
     justifyContent: 'flex-end',
     padding: 15,
   },
   cardTitle: {
-  fontSize: 22,
-  fontWeight: 'bold',
-  color: THEME.white,
-  textShadowColor: 'rgba(0, 0, 0, 0.35)',  
-  textShadowOffset: { width: 0, height: 2 }, 
-  textShadowRadius: 6,                      
-  textAlign: 'center',
-},
-cardTitleSmall: {
-  fontSize: 14,
-  fontWeight: 'bold',
-  color: THEME.white,
-  textShadowColor: 'rgba(0, 0, 0, 0.35)',  
-  textShadowOffset: { width: 0, height: 2 },
-  textShadowRadius: 5,
-  textAlign: 'center',
-},
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: THEME.white,
+    textShadowColor: 'rgba(0, 0, 0, 0.35)',
+    textShadowOffset: { width: 0, height: 2 },
+    textShadowRadius: 6,
+    textAlign: 'center',
+  },
+  cardTitleSmall: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: THEME.white,
+    textShadowColor: 'rgba(0, 0, 0, 0.35)',
+    textShadowOffset: { width: 0, height: 2 },
+    textShadowRadius: 5,
+    textAlign: 'center',
+  },
   prayerContainer: {
     marginHorizontal: 20,
     marginTop: 35,
