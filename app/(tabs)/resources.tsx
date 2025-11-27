@@ -45,12 +45,12 @@ const GRID_ITEMS = [
   { id: 'bhajans', title: 'Bhajans', icon: BellRing, route: '/bhajans' },
   { id: 'pravachans', title: 'Pravachans', icon: Mic2, route: '/pravachans' },
   { id: 'dasbodh', title: 'Dasbodh', icon: BookText, route: '/dasbodh' },
+  { id: 'shlok', title: 'Manache Shlok', icon: Scroll, route: '/manacheShlok' },
   { id: 'nitya', title: 'Nityanemavali', icon: BookOpen, route: '/nityaNemavali' },
   { id: 'vivaran', title: 'Nemavali Vivaran', icon: BookOpenText, route: '/nemavaliVivaran' },
+  { id: 'sopan', title: 'Parmarth Sopan', icon: Book, route: '/parmarthSopan' },
   { id: 'parmarth', title: 'Parmarth Mandir', icon: Book, route: '/parmarthMandir' },
-  { id: 'shlok', title: 'Manache Shlok', icon: Scroll, route: '/manacheShlok' },
   { id: 'glossary', title: 'Glossary', icon: BookA, route: '/glossary' },
-  { id: 'sopan', title: 'Parmarth Sopan', icon: BookOpen, route: '/parmarthSopan' },
 ];
 
 export default function ResourcesScreen() {
