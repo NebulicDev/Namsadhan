@@ -126,7 +126,7 @@ export default function SopanDetailScreen() {
         
         {/* --- MAIN TITLE SECTION --- */}
         <View style={styles.titleSection}>
-          <Text style={styles.mainTitle}>{item.title}</Text>
+          {/* <Text style={styles.mainTitle}>{item.title}</Text> */}
           {sopanItem && (
             <View style={styles.metaRow}>
               <User size={14} color={THEME.subText} />
@@ -145,7 +145,7 @@ export default function SopanDetailScreen() {
         {/* --- MEANING CARD --- */}
         {sopanItem?.meaning ? (
           <View style={styles.meaningCard}>
-            <Text style={styles.meaningLabel}>ANUVAD / MEANING</Text>
+            <Text style={styles.meaningLabel}>MEANING / अनुवाद</Text>
             <Text style={styles.meaningText}>{sopanItem.meaning}</Text>
           </View>
         ) : null}

@@ -24,7 +24,7 @@ const THEME = {
   background: '#FFF8F0',
   text: '#3E2723',
   subText: '#8D6E63',
-  accent: '#E65100',
+  accent: '#FFB88D',
   card: '#FFFFFF',
   cardBorder: '#EFEBE9',
   iconBg: '#FFF3E0',

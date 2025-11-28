@@ -1987,7 +1987,7 @@ export const dailyInspiration = [
   },
   {
     id: '333',
-    text: 'One of the evident effects of God-devotion would be the absolute purification of Dur mind. No bad idea dare enter our soul if it is once filled with God. Ours is a jealous God and He would not allow any pretender to the throne.',
+    text: 'One of the evident effects of God-devotion would be the absolute purification of our mind. No bad idea dare enter our soul if it is once filled with God. Ours is a jealous God and He would not allow any pretender to the throne.',
     reference: 'B.G.P.G.R. page no.213/189.',
     category: 'Daily Inspiration',
   },
