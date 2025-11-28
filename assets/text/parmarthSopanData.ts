@@ -447,73 +447,410 @@ export const PARMARTH_SOPAN_DATA: SopanItem[] = [
 `, audioDriveId: '', singer: '' },
 
   // --- Chapter 4 ---
-  { id: '2-4-1', part: 2, chapter: 4, chapterSequence: 1, title: 'छीररूप सतनाम है', author: 'कबीर', hindiText: `छीररूप सतनाम है...`, meaning: ``, audioDriveId: '', singer: '' },
-  { id: '2-4-2', part: 2, chapter: 4, chapterSequence: 2, title: 'गुरु तो वही सराहिए', author: 'कबीर', hindiText: `गुरु तो वही सराहिए...`, meaning: ``, audioDriveId: '', singer: '' },
-  { id: '2-4-3', part: 2, chapter: 4, chapterSequence: 3, title: 'गुरू कुम्हार सिख कुम्भ है', author: 'कबीर', hindiText: `गुरू कुम्हार सिख कुम्भ है...`, meaning: ``, audioDriveId: '', singer: '' },
-  { id: '2-4-4', part: 2, chapter: 4, chapterSequence: 4, title: 'कनफूंका गुरु हद्द का', author: 'कबीर', hindiText: `कनफूंका गुरु हद्द का...`, meaning: ``, audioDriveId: '', singer: '' },
-  { id: '2-4-5', part: 2, chapter: 4, chapterSequence: 5, title: 'गुरु गोविन्द दोऊ खड़े', author: 'कबीर', hindiText: `गुरु गोविन्द दोऊ खड़े...`, meaning: ``, audioDriveId: '', singer: '' },
-  { id: '2-4-6', part: 2, chapter: 4, chapterSequence: 6, title: 'एक लख चन्दा आन धरि', author: 'कबीर', hindiText: `एक लख चन्दा आन धरि...`, meaning: ``, audioDriveId: '', singer: '' },
-  { id: '2-4-7', part: 2, chapter: 4, chapterSequence: 7, title: 'अगुन सगुन दुइ ब्रह्मसरूपा', author: 'तुलसीदास', hindiText: `अगुन सगुन दुइ ब्रह्मसरूपा...`, meaning: ``, audioDriveId: '', singer: '' },
-  { id: '2-4-8', part: 2, chapter: 4, chapterSequence: 8, title: 'हम लखि लखहिं हमार', author: 'तुलसीदास', hindiText: `हम लखि लखहिं हमार...`, meaning: ``, audioDriveId: '', singer: '' },
-  { id: '2-4-9', part: 2, chapter: 4, chapterSequence: 9, title: 'एक छत्र एक मुकुटमनि', author: 'तुलसीदास', hindiText: `एक छत्र एक मुकुटमनि...`, meaning: ``, audioDriveId: '', singer: '' },
-  { id: '2-4-10', part: 2, chapter: 4, chapterSequence: 10, title: 'रामनाम सब कोइ कहे', author: 'अज्ञात', hindiText: `रामनाम सब कोइ कहे...`, meaning: ``, audioDriveId: '', singer: '' },
-  { id: '2-4-11', part: 2, chapter: 4, chapterSequence: 11, title: 'रामनाम मणि दीप धरु', author: 'तुलसीदास', hindiText: `रामनाम मणि दीप धरु...`, meaning: ``, audioDriveId: '', singer: '' },
-  { id: '2-4-12', part: 2, chapter: 4, chapterSequence: 12, title: 'नाम रामको कल्पतरु', author: 'तुलसीदास', hindiText: `नाम रामको कल्पतरु...`, meaning: ``, audioDriveId: '', singer: '' },
-  { id: '2-4-13', part: 2, chapter: 4, chapterSequence: 13, title: 'शुन्य मरै अजपा मरै', author: 'कबीर', hindiText: `शुन्य मरै अजपा मरै...`, meaning: ``, audioDriveId: '', singer: '' },
-  { id: '2-4-14', part: 2, chapter: 4, chapterSequence: 14, title: 'काल करो सो आज कर', author: 'अज्ञात', hindiText: `काल करो सो आज कर...`, meaning: ``, audioDriveId: '', singer: '' },
-  { id: '2-4-15', part: 2, chapter: 4, chapterSequence: 15, title: 'श्वास श्वास पर हर भजो', author: 'अज्ञात', hindiText: `श्वास श्वास पर हर भजो...`, meaning: ``, audioDriveId: '', singer: '' },
-  { id: '2-4-16', part: 2, chapter: 4, chapterSequence: 16, title: 'काँकर पाथर जोडकर', author: 'कबीर', hindiText: `काँकर पाथर जोडकर...`, meaning: ``, audioDriveId: '', singer: '' },
-  { id: '2-4-17', part: 2, chapter: 4, chapterSequence: 17, title: 'माला तो करमें फिरै', author: 'अज्ञात', hindiText: `माला तो करमें फिरै...`, meaning: ``, audioDriveId: '', singer: '' },
-  { id: '2-4-18', part: 2, chapter: 4, chapterSequence: 18, title: 'तू रहीम मन आपनो', author: 'रहीम', hindiText: `तू रहीम मन आपनो...`, meaning: ``, audioDriveId: '', singer: '' },
-  { id: '2-4-19', part: 2, chapter: 4, chapterSequence: 19, title: 'प्रीतम छबी नैनन बसी', author: 'रहीम', hindiText: `प्रीतम छबी नैनन बसी...`, meaning: ``, audioDriveId: '', singer: '' },
-  { id: '2-4-20', part: 2, chapter: 4, chapterSequence: 20, title: 'जिन खोजा तिन पाइया', author: 'कबीर', hindiText: `जिन खोजा तिन पाइया...`, meaning: ``, audioDriveId: '', singer: '' },
-  { id: '2-4-21', part: 2, chapter: 4, chapterSequence: 21, title: 'रक़ीबोने लिखाई है रपटे', author: 'अकबर', hindiText: `रक़ीबोने लिखाई है रपटे...`, meaning: ``, audioDriveId: '', singer: '' },
-  { id: '2-4-22', part: 2, chapter: 4, chapterSequence: 22, title: 'तुलसी ऐसे नामको', author: 'तुलसीदास', hindiText: `तुलसी ऐसे नामको...`, meaning: ``, audioDriveId: '', singer: '' },
-  { id: '2-4-23', part: 2, chapter: 4, chapterSequence: 23, title: 'भाव कुभाव अनख आलस', author: 'तुलसीदास', hindiText: `भाव कुभाव अनख आलस...`, meaning: ``, audioDriveId: '', singer: '' },
-  { id: '2-4-24', part: 2, chapter: 4, chapterSequence: 24, title: 'रहिमन गली है साँकरी', author: 'रहीम', hindiText: `रहिमन गली है साँकरी...`, meaning: ``, audioDriveId: '', singer: '' },
-  { id: '2-4-25', part: 2, chapter: 4, chapterSequence: 25, title: 'सर्गुणकी सेवा करो', author: 'कबीर', hindiText: `सर्गुणकी सेवा करो...`, meaning: ``, audioDriveId: '', singer: '' },
-  { id: '2-4-26', part: 2, chapter: 4, chapterSequence: 26, title: 'कबिरा धारा अगमकीं', author: 'कबीर', hindiText: `कबिरा धारा अगमकीं...`, meaning: ``, audioDriveId: '', singer: '' },
-  { id: '2-4-27', part: 2, chapter: 4, chapterSequence: 27, title: 'लाख कोस जो गुरु बसै', author: 'कबीर', hindiText: `लाख कोस जो गुरु बसै...`, meaning: ``, audioDriveId: '', singer: '' },
-  { id: '2-4-28', part: 2, chapter: 4, chapterSequence: 28, title: 'सर सूखै पन्छी उड़', author: 'रहीम', hindiText: `सर सूखै पन्छी उड़...`, meaning: ``, audioDriveId: '', singer: '' },
-  { id: '2-4-29', part: 2, chapter: 4, chapterSequence: 29, title: 'बार बराबर बारि है', author: 'अज्ञात', hindiText: `बार बराबर बारि है...`, meaning: ``, audioDriveId: '', singer: '' },
-  { id: '2-4-30', part: 2, chapter: 4, chapterSequence: 30, title: 'एक भरोसो एक बल', author: 'तुलसीदास', hindiText: `एक भरोसो एक बल...`, meaning: ``, audioDriveId: '', singer: '' },
+  { id: '2-4-1', part: 2, chapter: 4, chapterSequence: 1, title: 'क्षीर रूप सतनाम है', author: 'कबीर', hindiText: ` THE SAINT-SWAN SEPARATES THE MILK OF NAME FROM THE WATER OF EXISTENCE.
+
+क्षीर रूप सत नाम है, नीर रूप बेबहार ।
+हंस रूप कोइ साथ है, तत् का छाननहार ।।
+`, meaning: `सत नाम क्षीर रूप है, व्यवहार नीररूप है। कोई (विरला) साधु हंस रूप है, जो दोनों को छान सकता है।
+`, audioDriveId: '', singer: '' },
+  { id: '2-4-2', part: 2, chapter: 4, chapterSequence: 2, title: 'गुरु तो वही सराहिए', author: 'कबीर', hindiText: `THE CATHARTIC INFLUENCE OF THE GURU'S TEACHING.
+
+गुरु तो वही सराहिए जो सिकलीगर होय ।
+जनम जनम का मोरचा, छन में डाले धोय ।।
+`, meaning: `उसी गुरु की श्लाघा करो, जो सिकलीगर हो, (और) जो जन्म जन्म का मोरचा क्षण में धो डाले ।
+`, audioDriveId: '', singer: '' },
+  { id: '2-4-3', part: 2, chapter: 4, chapterSequence: 3, title: 'गुरू कुम्हार सिख कुम्भ है', author: 'कबीर', hindiText: `SUFFERINGS UNDER THE PROTECTION OF GURU IS BUT A BLESSING IN DISGUISE.
+
+गुरु कुम्हार सिख कुभ्भ है, गढ़ गढ़ काढ़े खोट ।
+अन्तर हाथ सहार दै, बाहर बाहै चोट ।।
+`, meaning: `गुरु कुम्भकार है और शिष्य कुम्भ है। गुरु ठोक-ठोक कर शिष्य की खोट निकालता है। बाहर चोट लगाता है; पर भीतर हाथ से सहारा देता है ।`, audioDriveId: '', singer: '' },
+  { id: '2-4-4', part: 2, chapter: 4, chapterSequence: 4, title: 'कनफूंका गुरु हद्द का', author: 'कबीर', hindiText: `THE REAL GURU IS HE, WHO TEACHES THE WAY TO THE UNLIMITED.
+
+कनफूँका गुरु हद्द का, बेहद का गुरु और ।
+बेहद का गुरु जब मिलै, लहै ठिकाना ठौर ।।
+`, meaning: `कनफूँका गुरु हद्द का होता है। बेहद का गुरु और ही होता है। जब बेहद का गुरु मिल जाता है, तभी स्थायी स्थान प्राप्त होता है ।
+`, audioDriveId: '', singer: '' },
+  { id: '2-4-5', part: 2, chapter: 4, chapterSequence: 5, title: 'गुरु गोविन्द दोऊ खड़े', author: 'कबीर', hindiText: `GURU GREATER THAN GOD.
+
+गुरु गोविंद दोऊ खड़े, का के लागू पाय ।
+बलिहारि गुरु आप की, गोविन्द दिया दिखाय ॥
+`, meaning: `गुरु और गोविन्द दोनों खड़े हैं। किसके पाँय लगू ? हे गुरु ! मैं आपकी बलिहारी हूँ, (क्योंकि आपने मुझे ) गोविन्द दिखा दिया ।
+`, audioDriveId: '', singer: '' },
+  { id: '2-4-6', part: 2, chapter: 4, chapterSequence: 6, title: 'एक लख चन्दा आन धरि', author: 'कबीर', hindiText: `THE WORD OF THE GURU ALONE AS CAPABLE OF DISPELLING DARKNESS.
+
+इक लख चन्दा आनि घर, सूरज कोटि मिलाय ।
+बिना सबद गुरुदेव के, कबहूँ तिभिर न जाय ।।
+`, meaning: `चाहे एक लाख चाँद लाकर रक्खो । करोड़ सूर्य मिला कर रक्खो । परन्तु गुरुदेव के " शब्द " के बिना तिमिर कभी भी नहीं जाएगा ।`, audioDriveId: '', singer: '' },
+  { id: '2-4-7', part: 2, chapter: 4, chapterSequence: 7, title: 'अगुन सगुन दुइ ब्रह्मसरूपा', author: 'तुलसीदास', hindiText: `BOTH PERSONAL AND IMPERSONAL GOD AS SUBORDINATE TO THE NAME.
+
+अगुन सगुन दुइ ब्रह्म सरूपा ।
+अकथ, अगाध, अनादि अनूपा ।।
+मोरे मत बड़ नाम दुहूँ ते ।
+किय जेहि युग निज बस निज बूते ।।
+निर्गुन तें एहि भाँति बड़, नाम प्रभाव अपार ।
+कहेऊँ नाम बड़ राम तें, निज विचार अनुसार ॥
+`, meaning: `अगुण और सगुण दोनों ब्रह्म के स्वरूप हैं। दोनों अकथनीय अगाध, अनादि और अनुपम हैं। मेरे मत से जिस नाम ने अपने प्रभाव से दोनों को अपने वश में किया है, वह दोनों से भी बड़ा है। इस प्रकार निर्गुण से नाम का प्रभाव बड़ा और अपार है ही, पर अपने विचार के अनुसार मैं ऐसा कहता हूँ कि नाम राम से भी बड़ा है।`, audioDriveId: '', singer: '' },
+  { id: '2-4-8', part: 2, chapter: 4, chapterSequence: 8, title: 'हम लखि लखहिं हमार', author: 'तुलसीदास', hindiText: `HOW CAN YOU PERCEIVE THE UNPERCEIVABLE? MEDITATE ON THE NAME OF GOD, O FOOL!
+
+हम लखि लखिहि हमार, लखि हम हमार के बीच।
+तुलसी अलग्खे का लखै, राम नाम जपु नीच ॥
+`, meaning: `आत्मा को देख; दृश्य को देख और जो आत्मा और दृश्य के बीच है, उसको देख । तुलसीदास कहते हैं कि हे पामर ! अलक्ष्य को कैसे देखेगा ? राम नाम का जप कर ।`, audioDriveId: '', singer: '' },
+  { id: '2-4-9', part: 2, chapter: 4, chapterSequence: 9, title: 'एक छत्र एक मुकुटमनि', author: 'तुलसीदास', hindiText: `TULSIDAS ON THE SOVEREIGN STATUS OF THE NAME OF RAMA.
+    
+एक छत्र एक मुकुट मनि, सब बरनन पर जोउ ।
+तुलसी रघुवर नाम के, बरन बिराजत दोउ ।।
+`, meaning: `तुलसीदास कहते हैं कि "राम" नाम के दो वर्ण हैं, रेफ और अनुस्वार। वे दोनों छत्र और मुकुटमणि के समान सब अक्षरों पर विराजते हैं।
+`, audioDriveId: '', singer: '' },
+  { id: '2-4-10', part: 2, chapter: 4, chapterSequence: 10, title: 'रामनाम सब कोइ कहे', author: 'अज्ञात', hindiText: `A NAME THAT SPROUTS AND A NAME THAT DOES NOT SPROUT INTO FORM
+
+राम नाम सब कोइ कहै, ठग ठाकुर अरु चोर ।
+जिस से ध्रुव प्रहलाद तरे, वह नाम कुछ और ।।
+`, meaning: `'राम' नाम ठग ठाकुर और चोर सभी कहते हैं । पर जिस नाम से ध्रुव और प्रल्हाद तर गए, वह नाम कुछ और ही है।
+`, audioDriveId: '', singer: '' },
+  { id: '2-4-11', part: 2, chapter: 4, chapterSequence: 11, title: 'रामनाम मणि दीप धरु', author: 'तुलसीदास', hindiText: `NAME ON TONGUE LIGHTS UP BOTH INSIDE AND OUTSIDE.
+
+राम नाम मणि दीप धरु, जीह देहरी द्वार ।
+तुलसी भीतर बाहिर हुँ, जो चाहसि उजियार ।।
+`, meaning: `तुलसीदास कहते हैं कि यदि भीतर और बाहर दोनों ओर उजाला चाहते हो तो मुखद्वार की जीभ देहली पर राम नाम मणि दीप रक्खो ।`, audioDriveId: '', singer: '' },
+  { id: '2-4-12', part: 2, chapter: 4, chapterSequence: 12, title: 'नाम रामको कल्पतरु', author: 'तुलसीदास', hindiText: `THE NAME CAN TRANSMUTE A SINNER INTO A SAINT.
+
+नाम राम को कल्पतरु, कलि कल्यान निवास ।
+जो सुमिरत भयो भाँग ते, तुलसी तुलसीदास ।।
+`, meaning: `राम का नाम कल्पतरु है। वह कलि में कल्याण का निवास है। तुलसीदास जी कहते हैं कि उसका स्मरण करते करते मैं भाँग से तुलसी हो गया ।`, audioDriveId: '', singer: '' },
+  { id: '2-4-13', part: 2, chapter: 4, chapterSequence: 13, title: 'शुन्य मरै अजपा मरै', author: 'कबीर', hindiText: `THE NAME ALONE AS CAPABLE OF CONFERRING IMMORTALITY.
+
+शून्य मरै अजपा मरै, अनहत हूँ मरि जाय ।
+दास कबीरा ना मरै, राम नाम रट लाय ।।
+`, meaning: `शून्य मर जाता है; अजपा मर जाता है; अनाहत भी मर जाता है। पर दास कबीर नहीं मरता, जिसने राम नाम की रट लगाई है।
+`, audioDriveId: '', singer: '' },
+  { id: '2-4-14', part: 2, chapter: 4, chapterSequence: 14, title: 'काल करो सो आज कर', author: 'अज्ञात', hindiText: `EXTREME VALUE OF THE PRESENT MOMENT.
+
+काल करो सो आज कर, आज करो सो अच्च ।
+पल में परलै होयगी, बहुरि करोगे कव्व ।।
+`, meaning: `जो कल करना है, वह आज करो । जो आज करना हो सो अभी कर लो । पल में प्रलय हो जायगी। फिर तुम कब करोगे ?`, audioDriveId: '', singer: '' },
+  { id: '2-4-15', part: 2, chapter: 4, chapterSequence: 15, title: 'श्वास श्वास पर हर भजो', author: 'अज्ञात', hindiText: `TAKE CARE OF EVERY ONE OF YOUR BREATHS.
+
+श्वास श्वास पर हर भजो, वृथा श्वास मत खोय ।
+श्रास विराना पाहुना, आना होय न होय ।।
+कबिरा माला काठ की, बहुत जतन का फेर ।
+माला साँस उसाँस की, जामें गाँठ न मेर ।।
+स्वाँसा की कर सुमिरनी, अजपा को कर जाप ।
+परम तत्व को ध्यान घर, सोऽहं आपै आप ।।
+`, meaning: `श्वास श्वास पर हर को भजो। श्वास को व्यर्थ मत खोओ । श्वास पराया पाहुना है। इसका फिर आना हो या न हो । कवीर कहते हैं कि काठ की माला को फेरना बहुत यत्न का काम है। श्रास उच्छवास की माला ऐसी है कि उसमें न गाँठ ह न मेरु । श्वासों की सुमिरनी बना अजपा का जप कर। पर मतत्व का ध्यानं धर । फिर आप ही आप "सोऽहं " है।
+`, audioDriveId: '', singer: '' },
+  { id: '2-4-16', part: 2, chapter: 4, chapterSequence: 16, title: 'काँकर पाथर जोडकर', author: 'कबीर', hindiText: `MEDITATE IN SILENCE; FOR GOD IS NOT DEAF.
+
+काँकर पाथर जोड़कर, मस्ज़िद लई चुनाय ।
+ता चढ़ि मुल्ला बाँग दे, क्या बहिरा हुआ खुदाय ।
+अजान से ही वेडर कुल, एंजिन की सीटी है।
+जिसको सुनकर सेख ने, छाती अपनी पीटी है ।
+बाह्मन से गदहा भला, भला देव से कूता ।
+मुल्ला से मुरगा भला, लोक जगावे सोता ।।
+`, meaning: `कँकड़ पत्थर जोड़कर मस्ज़िद उठवां ली। उस पर चढ़कर मुल्ला बाँग देता है। क्या खुदा बहरा होगया है ? एंजिन की सीटी अजान से भी विलकुल वेडर है, जिसको सुनकर शेख अपनी छाती पीटने लगा है। ब्राह्मण से गदहा भला है, देव से कुत्ता भला है, मुल्ला से मुरगा भला है, जो सोते हुए लोगों को जगाता है।
+`, audioDriveId: '', singer: '' },
+  { id: '2-4-17', part: 2, chapter: 4, chapterSequence: 17, title: 'माला तो करमें फिरै', author: 'अज्ञात', hindiText: `CONTROL OF THE WANDERINGS OF THE MIND.
+
+माला तो कर में फिरै, जीह फिरै मुख माहिं ।
+मनुवा तो दस दिसि फिरै, यह तो सुमिरन नाहिं ॥
+`, meaning: `माला तो कर में फिरती है, जीभ मुख में फिरती है, और मन दसों दिशाओं में फिर रहा है। यह स्मरण नहीं कहलाता ।
+`, audioDriveId: '', singer: '' },
+  { id: '2-4-18', part: 2, chapter: 4, chapterSequence: 18, title: 'तू रहीम मन आपनो', author: 'रहीम', hindiText: `INTENSE CONCENTRATION OF THE MIND UPON GOD.
+
+तू रहीम मन आपनो, कीन्हो चारु चकोर ।
+निसि बासर लाग्यो रहै, कृष्ण चन्द्र की ओर ॥
+`, meaning: `रहीम, तू अपने मन को चारु चकोर बना जिससे वह निशि-वासर श्रीकृष्णचन्द्र की ओर लगा रहे ।
+`, audioDriveId: '', singer: '' },
+  { id: '2-4-19', part: 2, chapter: 4, chapterSequence: 19, title: 'प्रीतम छबी नैनन बसी', author: 'रहीम', hindiText: `NO OUTSIDER CAN ENTER A CROWDED SARAI.
+
+प्रीतम छवि नैनन बसी, पर छवि कहाँ समाय ।
+भरी सराय रहीम लखि, पथिक आय फिर जाय ।।
+`, meaning: `प्रियतम की प्रभा नयनों में बसी है। दूसरी प्रभा कहां समावे ? रहीम कहते हैं कि सराय को भरी हुई देखकर मुसाफिर आता है लौट जाता है।
+`, audioDriveId: '', singer: '' },
+  { id: '2-4-20', part: 2, chapter: 4, chapterSequence: 20, title: 'जिन खोजा तिन पाइया', author: 'कबीर', hindiText: `NECESSITY OF ACTIVE EFFORT.
+
+जिन खोजा तिन पाइया, गहरे पानी पैठ ।
+हौं बौरी चूड़न डरी, रही किनारे बैठ ।।
+`, meaning: `जिन्होंने गहरे पानी में प्रवेश कर खोजा, उन्होंने पाया । मैं पगली डूबने से डर गई, और किनारे पर ही बैठी रही ।
+`, audioDriveId: '', singer: '' },
+  { id: '2-4-21', part: 2, chapter: 4, chapterSequence: 21, title: 'रक़ीबोने लिखाई है रपटे', author: 'अकबर', hindiText: `CARE NOT FOR THE DERISION OF THE WORLD.
+
+रक़ीबों ने लिखाई हैं रपटें, जा जा के थाने में ।
+कि अकबर नाम लेता है, खुदा का इस ज़माने में ।।
+`, meaning: `रकीचों ने थाने में जा जा कर रपटें लिखाई हैं कि अकबर इस ज़माने में भी खुदा का नाम लेता है।
+`, audioDriveId: '', singer: '' },
+  { id: '2-4-22', part: 2, chapter: 4, chapterSequence: 22, title: 'तुलसी ऐसे नामको', author: 'तुलसीदास', hindiText: `MEDITATE ON GOD'S NAME WITH PLEASURE OR DISPLEASURE.
+
+तुलसी ऐसे नाम को, रीझि भजो या खीझि ।
+खेत पड़े बीया जमे, उलटि पड़े या सीधि ।।
+`, meaning: `तुलसीदास कहते हैं, ऐसे नाम को रीझ कर या खीजकर किसी भी प्रकार भजो । खेत में पड़ा हुआ बीज जब जमता है, तब उल्टा पड़ा हो या सीधा-यह विचार निरर्थक है।
+`, audioDriveId: '', singer: '' },
+  { id: '2-4-23', part: 2, chapter: 4, chapterSequence: 23, title: 'भाव कुभाव अनख आलस', author: 'तुलसीदास', hindiText: `UTTER THE NAME OF GOD WITH FAITH, WITHOUT FAITH, IN IDLENESS OR EVEN WITH HATRED.
+
+भाव कुभाव अनख आलस हूँ ।
+नाम जपत मंगल दिसि दस हूँ ।।
+भाव सहित शंकर जप्यौ, जपि कुभाव मुनि बालि ।
+कुम्भकरन सालस जप्यौ, अनख सहित दसमाथ ।।
+`, meaning: `भाव, कुभाव, असूया, और आलस्य से भी नाम जपने से दसों दिशाओं में मंगल होता है। जैसे शंकर ने भावसहित नाम को जपा । वाल्मीकि ने और बालि ने कुभाव से या अभाव से जपा। कुम्भकर्ण ने आलस्य से और दशमुख ने असूया से जपा ।
+`, audioDriveId: '', singer: '' },
+  { id: '2-4-24', part: 2, chapter: 4, chapterSequence: 24, title: 'रहिमन गली है साँकरी', author: 'रहीम', hindiText: `LEAVE AWAY ALL EGOISM AND FALSE SENSE OF HONOUR.
+
+रहिमन गली है साँकरी, दूजो ना ठहराहि ।
+आपु अहे तो हरि नहीं, हरि तो आपुन नाहिं ।।
+पीया चाहै प्रेम-रस, राखा चाहै मान ।
+एक म्यान में दो खड़ग, देखा सुना न कान ॥
+`, meaning: `रहीम कहते हैं कि गली तंग है (इसमें) दूसरा नहीं ठहरता । आप हैं तो हरि नहीं; हरि हैं तो आप नहीं । प्रेम-रस पीना चाहते हो; फिर मान भी रखना चाहते हो । एक म्यान में दो खङ्ग रहते न (आखों से) देखा, न कानों से सुना ।
+`, audioDriveId: '', singer: '' },
+  { id: '2-4-25', part: 2, chapter: 4, chapterSequence: 25, title: 'सर्गुणकी सेवा करो', author: 'कबीर', hindiText: `MEDITATE ON THAT WHICH IS BEYOND BOTH SAGUNA AND NIRGUNA.
+
+सर्गुण की सेवा करो, निर्गुण का करु ज्ञान ।
+निर्गुन सर्गुन के परे, तहें हमारा ध्यान ।।
+`, meaning: `सगुण की सेवा करो । निर्गुण का ज्ञान लो । जो निर्गुण और सगुण के परे है, उस पर ही हमारा ध्यान है।
+`, audioDriveId: '', singer: '' },
+  { id: '2-4-26', part: 2, chapter: 4, chapterSequence: 26, title: 'कबिरा धारा अगमकीं', author: 'कबीर', hindiText: `REAL MEDITATION IS MEDITATION IN GOD'S PRESENCE.
+
+कविरा धारा अगम की, सद्गुरु दई लखाय ।
+उलटि ताहि सुमिरन करौ, स्वामी संग मिलाय ।।
+`, meaning: `कबीर कहते हैं कि सद्गुरु ने अगम की धारा दिखला दी । उसको उलट कर स्वामी का साथ मिलाकर स्मरण करो ।
+`, audioDriveId: '', singer: '' },
+  { id: '2-4-27', part: 2, chapter: 4, chapterSequence: 27, title: 'लाख कोस जो गुरु बसै', author: 'कबीर', hindiText: `REMEMBRANCE OF GOD'S NAME WITH THE HELP OF THE ANAHAT SOUND.
+
+लाख कोस जो गुरु बसै, दीजै सुरत पठाय ।
+सबद तुरय असवार है, पल पल आवे जाय ।।
+`, meaning: `लाख कोस गुरु के दूर रहने पर भी सुरत को उसके पास भेज दीजिए । तुर्या में प्रतीत होने वाले शब्द पर या शब्द तुरंगम पर सवार होकर वह क्षण क्षण आवागमन करेगी ।
+`, audioDriveId: '', singer: '' },
+  { id: '2-4-28', part: 2, chapter: 4, chapterSequence: 28, title: 'सर सूखै पन्छी उड़', author: 'रहीम', hindiText: `THOU ART THE SOLE RESORT FOR ME, O GOD! AS THE LAKE FOR A FISH.
+
+सर मूखै पञ्छी उड़ै, औरन सरन समाहिं ।
+दीन मीन बिन पच्छ के, कहु रहीम कहँ जाहि ॥
+`, meaning: `सरोवर सूख जाने पर पक्षी उड़ जाते हैं और अन्यत्र आश्रय लेते हैं। रहीम कहते हैं, पंखहीन बेचारा मत्स्य, कहो, कहाँ जाए ?
+`, audioDriveId: '', singer: '' },
+  { id: '2-4-29', part: 2, chapter: 4, chapterSequence: 29, title: 'बार बराबर बारि है', author: 'अज्ञात', hindiText: `SUPPLICATION TO GOD TO SAVE FROM IMMINENT DANGER.
+
+बार बराबर बारि है, ता पर बहै बयार ।
+रघुबर पार उतारहू, हमरी ओर निहार ।।
+`, meaning: `नैया के किनारे बराबर पानी आगया है। उस पर भी हवा बहुत तेज चल रही है। हे रघुवर ! हम पर कृपा दृष्टि रखो और हमें (नदी के) पार उतारो ।
+`, audioDriveId: '', singer: '' },
+  { id: '2-4-30', part: 2, chapter: 4, chapterSequence: 30, title: 'एक भरोसो एक बल', author: 'तुलसीदास', hindiText: `A ONE-POINTED DEVOTION DEFIES THE STROKE OF THE GREATEST CALAMITY.
+
+एक भरोसो, एक बल, एक आस विस्वास ।
+एक राम घनश्याम हित, चातक तुलसीदास ॥
+बरसि परुप पाहन पयद, पंख करौ टुक ट्रक ।
+तुलसी परी न चाहिए, चतुर चातकहिं चूक ।।
+उपल बरसि गरजत तरजि, डारत कुलिस कठोर ।
+चितव कि चातक मेघ तजि, कबहुँ दूसरी ओर ॥
+बध्यौ बधिक पौ पुन्यजल, उलटि उठाई चोंच ।
+तुलसी चातक-प्रेम-पट, मरतहूँ लगी न खोंच ।।
+`, meaning: `एक भरोसा, एक बल, एक आशा और एक विश्वास है। एक घनश्याम राम के लिए तुलसीदास चातक (हो गया है) । तुलसीदास कहते हैं कि चाहे पयद परुष पत्थर बरसा कर पंखों को खंड खंड कर दे, परन्तु चतुर चातक को भूल नहीं पड़नी चाहिए । चाहे मेघ बरसा दे, गर्जना कर के डरा दे और कठोर वज्र डाल दे, तब भी क्या चातक मेघ को छोड़ कर कभी दूसरी और देखेगा ? बधिक ने मारा, चातक पुण्यजल में गिर पड़ा। इतने पर भी उसने अपनी चोंच उलट कर उठा दी । तुलसीदास कहते हैं कि मरते समय भी चातक के प्रेमरूपी पट में खोंच नहीं लगी ।
+`, audioDriveId: '', singer: '' },
 
   // --- Chapter 5 ---
-  { id: '2-5-1', part: 2, chapter: 5, chapterSequence: 1, title: 'लिखा पढीकी बात नहीं', author: 'अज्ञात', hindiText: `लिखा पढीकी बात नहीं...`, meaning: ``, audioDriveId: '', singer: '' },
-  { id: '2-5-2', part: 2, chapter: 5, chapterSequence: 2, title: 'तुलसी या संसार को', author: 'तुलसीदास', hindiText: `तुलसी या संसार को...`, meaning: ``, audioDriveId: '', singer: '' },
-  { id: '2-5-3', part: 2, chapter: 5, chapterSequence: 3, title: 'हाथ छुड़ाये जात हो', author: 'सूरदास', hindiText: `हाथ छुड़ाये जात हो...`, meaning: ``, audioDriveId: '', singer: '' },
-  { id: '2-5-4', part: 2, chapter: 5, chapterSequence: 4, title: 'जो देखे सो कहै नहीं', author: 'कबीर', hindiText: `जो देखे सो कहै नहीं...`, meaning: ``, audioDriveId: '', singer: '' },
-  { id: '2-5-5', part: 2, chapter: 5, chapterSequence: 5, title: 'जो गूंगे के सैन को', author: 'कबीर', hindiText: `जो गूंगे के सैन को...`, meaning: ``, audioDriveId: '', singer: '' },
-  { id: '2-5-6', part: 2, chapter: 5, chapterSequence: 6, title: 'हीरा तहाँ न खोलिये', author: 'कबीर', hindiText: `हीरा तहाँ न खोलिये...`, meaning: ``, audioDriveId: '', singer: '' },
-  { id: '2-5-7', part: 2, chapter: 5, chapterSequence: 7, title: 'गुण इन्द्री सहजै गये', author: 'कबीर', hindiText: `गुण इन्द्री सहजै गये...`, meaning: ``, audioDriveId: '', singer: '' },
-  { id: '2-5-8', part: 2, chapter: 5, chapterSequence: 8, title: 'हाड़ सूखि पिञ्जर भए', author: 'अज्ञात', hindiText: `हाड़ सूखि पिञ्जर भए...`, meaning: ``, audioDriveId: '', singer: '' },
-  { id: '2-5-9', part: 2, chapter: 5, chapterSequence: 9, title: 'सब बाजे हिरदे बजे', author: 'कबीर', hindiText: `सब बाजे हिरदे बजे...`, meaning: ``, audioDriveId: '', singer: '' },
-  { id: '2-5-10', part: 2, chapter: 5, chapterSequence: 10, title: 'अलख पुरुष निर्वाण है', author: 'कबीर', hindiText: `अलख पुरुष निर्वाण है...`, meaning: ``, audioDriveId: '', singer: '' },
-  { id: '2-5-11', part: 2, chapter: 5, chapterSequence: 11, title: 'सबद सबद का अन्तरा', author: 'कबीर', hindiText: `सबद सबद का अन्तरा...`, meaning: ``, audioDriveId: '', singer: '' },
-  { id: '2-5-12', part: 2, chapter: 5, chapterSequence: 12, title: 'मकडी चढती तारसे', author: 'अज्ञात', hindiText: `मकडी चढती तारसे...`, meaning: ``, audioDriveId: '', singer: '' },
-  { id: '2-5-13', part: 2, chapter: 5, chapterSequence: 13, title: 'बूंद समानी बूंद में', author: 'अज्ञात', hindiText: `बूंद समानी बूंद में...`, meaning: ``, audioDriveId: '', singer: '' },
-  { id: '2-5-14', part: 2, chapter: 5, chapterSequence: 14, title: 'हरि दरिया सूभर भरा', author: 'कबीर', hindiText: `हरि दरिया सूभर भरा...`, meaning: ``, audioDriveId: '', singer: '' },
-  { id: '2-5-15', part: 2, chapter: 5, chapterSequence: 15, title: 'सुन्न मंडलमें घर', author: 'कबीर', hindiText: `सुन्न मंडलमें घर...`, meaning: ``, audioDriveId: '', singer: '' },
-  { id: '2-5-16', part: 2, chapter: 5, chapterSequence: 16, title: 'गगन गरजि बरसै अमी', author: 'कबीर', hindiText: `गगन गरजि बरसै अमी...`, meaning: ``, audioDriveId: '', singer: '' },
-  { id: '2-5-17', part: 2, chapter: 5, chapterSequence: 17, title: 'धरनी पलक परै नहीं', author: 'धरनीदास', hindiText: `धरनी पलक परै नहीं...`, meaning: ``, audioDriveId: '', singer: '' },
-  { id: '2-5-18', part: 2, chapter: 5, chapterSequence: 18, title: 'पिञ्जर प्रेम प्रकासिया', author: 'कबीर', hindiText: `पिञ्जर प्रेम प्रकासिया...`, meaning: ``, audioDriveId: '', singer: '' },
-  { id: '2-5-19', part: 2, chapter: 5, chapterSequence: 19, title: 'सुन्न सहज मन सुमिरते', author: 'अज्ञात', hindiText: `सुन्न सहज मन सुमिरते...`, meaning: ``, audioDriveId: '', singer: '' },
-  { id: '2-5-20', part: 2, chapter: 5, chapterSequence: 20, title: 'लागी लागी सब कहै', author: 'अज्ञात', hindiText: `लागी लागी सब कहै...`, meaning: ``, audioDriveId: '', singer: '' },
-  { id: '2-5-21', part: 2, chapter: 5, chapterSequence: 21, title: 'हृदया भीतर आरसी', author: 'कबीर', hindiText: `हृदया भीतर आरसी...`, meaning: ``, audioDriveId: '', singer: '' },
-  { id: '2-5-22', part: 2, chapter: 5, chapterSequence: 22, title: 'पियको हेरन मैं गयी', author: 'अज्ञात', hindiText: `पियको हेरन मैं गयी...`, meaning: ``, audioDriveId: '', singer: '' },
-  { id: '2-5-23', part: 2, chapter: 5, chapterSequence: 23, title: 'मनुवा मेरो मरि गयो', author: 'कबीर', hindiText: `मनुवा मेरो मरि गयो...`, meaning: ``, audioDriveId: '', singer: '' },
-  { id: '2-5-24', part: 2, chapter: 5, chapterSequence: 24, title: 'कबिरा देखा एक अङ्ग', author: 'कबीर', hindiText: `कबिरा देखा एक अङ्ग...`, meaning: ``, audioDriveId: '', singer: '' },
-  { id: '2-5-25', part: 2, chapter: 5, chapterSequence: 25, title: 'सुरत उड़ानी गगनको', author: 'कबीर', hindiText: `सुरत उड़ानी गगनको...`, meaning: ``, audioDriveId: '', singer: '' },
-  { id: '2-5-26', part: 2, chapter: 5, chapterSequence: 26, title: 'बड़ा लुफ्त है यार इश्कमें', author: 'मन्सूर', hindiText: `बड़ा लुफ्त है यार इश्कमें...`, meaning: ``, audioDriveId: '', singer: '' },
-  { id: '2-5-27', part: 2, chapter: 5, chapterSequence: 27, title: 'दी गई मन्सूर को सूली', author: 'मन्सूर', hindiText: `दी गई मन्सूर को सूली...`, meaning: ``, audioDriveId: '', singer: '' },
-  { id: '2-5-28', part: 2, chapter: 5, chapterSequence: 28, title: 'रहिमन बात अगम्य की', author: 'रहीम', hindiText: `रहिमन बात अगम्य की...`, meaning: ``, audioDriveId: '', singer: '' },
-  { id: '2-5-29', part: 2, chapter: 5, chapterSequence: 29, title: 'बड़े बड़ाई ना करें', author: 'अज्ञात', hindiText: `बड़े बड़ाई ना करें...`, meaning: ``, audioDriveId: '', singer: '' },
-  { id: '2-5-30', part: 2, chapter: 5, chapterSequence: 30, title: 'कबिरा खड़ा बजार में दोनों', author: 'कबीर', hindiText: `कबिरा खड़ा बजार में दोनों...`, meaning: ``, audioDriveId: '', singer: '' },
-  { id: '2-5-31', part: 2, chapter: 5, chapterSequence: 31, title: 'मेरा मुझ में कुछ नहीं', author: 'कबीर', hindiText: `मेरा मुझ में कुछ नहीं...`, meaning: ``, audioDriveId: '', singer: '' },
-  { id: '2-5-32', part: 2, chapter: 5, chapterSequence: 32, title: 'तरुवर फल नहीं खात है', author: 'रहीम', hindiText: `तरुवर फल नहीं खात है...`, meaning: ``, audioDriveId: '', singer: '' },
-  { id: '2-5-33', part: 2, chapter: 5, chapterSequence: 33, title: 'कबिरा हम गुरुरस पिया', author: 'कबीर', hindiText: `कबिरा हम गुरुरस पिया...`, meaning: ``, audioDriveId: '', singer: '' },
-  { id: '2-5-34', part: 2, chapter: 5, chapterSequence: 34, title: 'नोन मला पानी मिला', author: 'कबीर', hindiText: `नोन मला पानी मिला...`, meaning: ``, audioDriveId: '', singer: '' },
-  { id: '2-5-35', part: 2, chapter: 5, chapterSequence: 35, title: 'हद हद पर सब ही गया', author: 'कबीर', hindiText: `हद हद पर सब ही गया...`, meaning: ``, audioDriveId: '', singer: '' },
+  { id: '2-5-1', part: 2, chapter: 5, chapterSequence: 1, title: 'लिखा पढीकी बात नहीं', author: 'अज्ञात', hindiText: `INTUITION vs. INTELLECT.
+
+लिखा पढ़ी की बात नहिं, देखा देखी बात ।
+दुलहा दुलहन मिल गए, फीकी परी बरात ॥
+`, meaning: `लिखा पढ़ी की बात नहीं है। देखा देखी की बात है । दुलहा-दुलहन मिल गए और बारात फीकी पड़ गई ।
+`, audioDriveId: '', singer: '' },
+  { id: '2-5-2', part: 2, chapter: 5, chapterSequence: 2, title: 'तुलसी या संसार को', author: 'तुलसीदास', hindiText: `SEEING, THEY CANNOT PERCEIVE; HEARING THEY CANNOT UNDERSTAND.
+
+तुलसी या संसार को, भयो मोतियाविन्द ।
+है नियरे सूझे नहीं, लानत ऐसी जिन्द ।।
+`, meaning: `तुलसीदास कहते हैं कि इस संसार को मोतियाबिन्द हो गया है। निकट ही है पर दिखाई नहीं देता । ऐसी जिन्दगी को (सौ दफ़ा) धिकार है।
+`, audioDriveId: '', singer: '' },
+  { id: '2-5-3', part: 2, chapter: 5, chapterSequence: 3, title: 'हाथ छुड़ाये जात हो', author: 'सूरदास', hindiText: `INTERNAL PERCEPTION.
+
+हाथ छुड़ाए जात हौ, निवल जानि के मोहिं ।
+हिरदय से जब जाहुगे, सत्रल बदौंगो तोहि ।।
+`, meaning: `मुझ को निर्बल जान अपना हाथ छुड़ाकर जाते हो । जब हृदय से जाओगे, तब तुम को सबल कहूँगा (मानूँगा) ।
+`, audioDriveId: '', singer: '' },
+  { id: '2-5-4', part: 2, chapter: 5, chapterSequence: 4, title: 'जो देखे सो कहै नहीं', author: 'कबीर', hindiText: `INTER-INCOMMUNICATIVENESS OF SENSES.
+
+जो देखे सो कहै नहिं, कहै सो देखे नाहिं ।
+सुनै सो समझात्रै नहीं, रसना दृग श्रुति काहिं ।।
+`, meaning: `जो देखता है, वह कहता नहीं; जो कहता है, वह देखता नहीं। जो सुनता है वह समझाता नहीं । रसना, दृग, श्रुति इन में से कौन किस को समझाता है !
+`, audioDriveId: '', singer: '' },
+  { id: '2-5-5', part: 2, chapter: 5, chapterSequence: 5, title: 'जो गूंगे के सैन को', author: 'कबीर', hindiText: `A SPIRITUAL REALISER ALONE CAN UNDERSTAND THE SIGNS OF A SPIRITUAL REALISER.
+
+जों गूँगे के सैन को, गूँगा ही पहिचान ।
+त्यों ज्ञानी के सैन को, ज्ञानी होय सो जान ॥
+`, meaning: `जिस प्रकार गूँगे के संकेत को गूँगा ही पहचानता है, उसी प्रकार ज्ञानी के संकेत को ज्ञानी ही जानता है।
+`, audioDriveId: '', singer: '' },
+  { id: '2-5-6', part: 2, chapter: 5, chapterSequence: 6, title: 'हीरा तहाँ न खोलिये', author: 'कबीर', hindiText: `ONE SHOULD NOT OPEN ONE'S DIAMOND BEFORE A VEGETABLE-SELLER.
+
+हीरा तहाँ न खोलिये, जहँ कुँजरन की हाट ।
+सहजहिं गाँठी बाँधि कै, लगौ आपनी बाट ।।
+`, meaning: `जहाँ कुँजड़ों की हाट हो, वहाँ हीरा मत खोलो । बिना सोचे गाँठ में बाँधकर अपनी बाट लग जाओ ।
+`, audioDriveId: '', singer: '' },
+  { id: '2-5-7', part: 2, chapter: 5, chapterSequence: 7, title: 'गुण इन्द्री सहजै गये', author: 'कबीर', hindiText: `BY THE HELP OF MY SPIRITUAL TEACHER, THE NAME HAS SPRUNG UP IN ME; WHY SHOULD I BABBLE ANY LONGER?
+
+गुण इन्द्री सहजै गए, सतगुरु करी सहाय ।
+घट में नाम प्रगट भया, बकि बकि मरै बलाय ॥
+`, meaning: `सद्गुरु ने सहायता की जिससे गुण और इन्द्रियों के व्यापार आसानी से स्थगित हो गये । अन्तःकरण में नाम प्रकट हो गया । सब आपत्तियों का बक बक करके अन्त हो गया । अब वक-चक करके मेरी बलाय मरे !
+`, audioDriveId: '', singer: '' },
+  { id: '2-5-8', part: 2, chapter: 5, chapterSequence: 8, title: 'हाड़ सूखि पिञ्जर भए', author: 'अज्ञात', hindiText: `THE RESOUNDING OF GOD'S NAME THROUGH EVERY HAIR OF THE BODY.
+
+हाड़ सूखि पिंजर भए, रगें सूखि भइँ तार ।
+रोम रोम सुर उठत है, बाजत नाम तिहार ।।
+`, meaning: `हाड़ सूखकर पिञ्जर हो गए। रगें सूखकर तार हो गई । रोम रोम से स्वर उठता है। हे ईश्वर तुम्हारा नाम बज रहा है ।
+`, audioDriveId: '', singer: '' },
+  { id: '2-5-9', part: 2, chapter: 5, chapterSequence: 9, title: 'सब बाजे हिरदे बजे', author: 'कबीर', hindiText: `I HAVE NOW FOUNDOUT WITHIN ME THE MUSICIAN, FROM WHOM PROCEEDS MANIFOLD MUSIC.
+
+सब बाजे हिरदे बजैं, प्रेम पखावज तार ।
+मन्दिर ढूँढ़त को फिरै, मिल्यो बजावनहार ।।
+`, meaning: `प्रेम होने के कारण पखावज, तन्त्री आदि सब प्रकार के वाद्य अन्तःकरण में बज रहे हैं। सत्र मन्दिरों को ढूँढ़ता कौन फिरे ? बजवैया अन्दर ही मिल गया है।
+`, audioDriveId: '', singer: '' },
+  { id: '2-5-10', part: 2, chapter: 5, chapterSequence: 10, title: 'अलख पुरुष निर्वाण है', author: 'कबीर', hindiText: `CONSTANT SERVICE AND WATCHFUL HUMILITY ALONE LEAD ONE TO THE REALISATION OF THE PERSON AND THE LOVE OF SHABDA.
+
+अलख पुरुप निर्वाण है, वाको लखे न कोय ।
+बाको तो वाही लखै, जो उस घर का होय ।।
+घर का भया तो क्या भया, तत्रत तरे का होय ।
+तत्रत तरे का सूरमा, सबद सनेही सोय ।।
+`, meaning: `अलक्ष्य पुरुप निर्वाण है - उसको कोई नहीं देख सकता । उसको तो वही देख सकता है जो उस घर का है। केवल घर का हुआ तो हुआ, तख्त तले का निवासी हो । तख्त के नीचे वाला ही वीर है; वही शब्द का प्रेमी होता है ।`, audioDriveId: '', singer: '' },
+  { id: '2-5-11', part: 2, chapter: 5, chapterSequence: 11, title: 'सबद सबद का अन्तरा', author: 'कबीर', hindiText: `THE METAPHYSICAL AND EPISTEMOLOGICAL SIGNIFICANCE OF SHABDA.
+
+सबद सबद का अन्तरा, सबद सबद का सीर ।
+सबद सबद का खोजना, सबद सबद का पीर ।।
+`, meaning: `शब्द शब्द का गर्भ है। शब्द शब्द का सिर है। शब्द ही शब्द का अन्वेषण है। शब्द ही शब्द का स्वामी है।
+`, audioDriveId: '', singer: '' },
+  { id: '2-5-12', part: 2, chapter: 5, chapterSequence: 12, title: 'मकडी चढती तारसे', author: 'अज्ञात', hindiText: `THE EVER-ASCENDING LADDER OF SHABDA
+
+मकड़ी चढ़ती तार से, चढ़कै उतरी जाय ।
+सन्त चढ़त है शब्द से, चढ़त चढ़त चढ़ जाय ।।
+`, meaning: `मकड़ी अपने तंतु से चढ़ती है; पर चढ़कर उतर जाती है। सन्त शब्द से चढ़ता है; पर चढ़ते ही चढ़ते जाता है ।
+`, audioDriveId: '', singer: '' },
+  { id: '2-5-13', part: 2, chapter: 5, chapterSequence: 13, title: 'बूंद समानी बूंद में', author: 'अज्ञात', hindiText: `COALESCENCE OF SOUND AND FORM EXPERIENCE.
+
+बूँद समानी बूँद में, सो जाने सब कोइ ।
+बूँद समानी सबद में, जानै विरला कोइ ।।
+`, meaning: `बूँद बूँद में समाती है, यह सब कोई जानता है; पर बूँद शब्द में समाती है, इस को विरला ही कोई जानता है।
+`, audioDriveId: '', singer: '' },
+  { id: '2-5-14', part: 2, chapter: 5, chapterSequence: 14, title: 'हरि दरिया सूभर भरा', author: 'कबीर', hindiText: `IN THE SEA OF GOD, THE SAINT IS AN OYSTER-SHELL, IN WHICH IS BORN THE PEARL OF EXPERIENCE.
+
+हरि दरिया सूभर भरा, साधो का घट सीप ।
+ता में मोती नीपजे, चढ़े देसावर दीप ।।
+`, meaning: `चारों ओर भरे हुए हरि-रूप समुद्र में साधु का घट सीप है । उसमें (विन्दुरूप या नाम रूप) मोती उत्पन्न होता है, जिसका मोल अन्य देशों में और अन्य द्वीपों में चढ़ता है।`, audioDriveId: '', singer: '' },
+  { id: '2-5-15', part: 2, chapter: 5, chapterSequence: 15, title: 'सुन्न मंडलमें घर', author: 'कबीर', hindiText: `EVERY HAIR OF THE BODY HAS VERITABLY BECOME A LAMP OF GOD.
+
+सुन्न मण्डल में घर किया, बाजे शब्द रसाल ।
+रोम रोम दीपक भया, प्रगटे दीन दयाल ।।
+`, meaning: `गगन मण्डल में घर किया । रसाल शब्द बजने लगे रोम रोम दीपक हो गया और दीन दयाल प्रकट हो गए ।
+`, audioDriveId: '', singer: '' },
+  { id: '2-5-16', part: 2, chapter: 5, chapterSequence: 16, title: 'गगन गरजि बरसै अमी', author: 'कबीर', hindiText: `KABIR BATHES WHEN THE STORM OF THUNDER AND LIGHTNING SENDS DOWN AMBROSIA.
+
+गगन गरजि बरसे अमी, बादल गहिर गभीर ।
+चहुँ दिसि दमके दामिनी, भीजत दास कवीर ।।
+`, meaning: `आकाश में घने बादल गम्भीरता से गरजते हैं और अमृत रस को बरसाते हैं। चारों दिशाओं में बिजली दमकती है और कवीरदास भीग रहे हैं।
+`, audioDriveId: '', singer: '' },
+  { id: '2-5-17', part: 2, chapter: 5, chapterSequence: 17, title: 'धरनी पलक परै नहीं', author: 'धरनीदास', hindiText: `THE INSATIABILITY OF THE THIRST FOR THE ENJOYMENT OF GOD'S SPLENDOUR.
+
+धरनी पलक परे नहीं, पिय की झलक सुहाय ।
+पुनि पुनि पीवत परम रस, तत्रहूं प्यास न जाय ॥
+`, meaning: `(१) धरनीदास कहते हैं कि पलक मुँदते नहीं क्योंकि प्रिय की झलक अति शोभन है। परम प्रेम-रस बार बार पीता हूँ, तब भी प्यास नहीं बुझती ।
+(२) पृथ्वी की ओर पलक नहीं झुकते, (क्यों कि) प्रिय की झलक अतिशोभन है । परम प्रेम-रस बार बार पीता हूँ, तब भी प्यास नहीं बुझती ।
+`, audioDriveId: '', singer: '' },
+  { id: '2-5-18', part: 2, chapter: 5, chapterSequence: 18, title: 'पिञ्जर प्रेम प्रकासिया', author: 'कबीर', hindiText: `SPEECH BECOMES FRAGRANT IN CONSEQUENCE OF THE ECSTATIC STATE.
+
+पिञ्जर प्रेम प्रकासिया, अन्तर भया उजास ।
+सुख करि सूती महल में, बानी फूटी बास ।।
+`, meaning: `पिञ्जर में प्रेम प्रकाशित हुआ। अन्तर में उजाला हो गया । (जीवात्मा) महल में सुख से सो गई । वाणी में बास फूट पड़ा ।
+`, audioDriveId: '', singer: '' },
+  { id: '2-5-19', part: 2, chapter: 5, chapterSequence: 19, title: 'सुन्न सहज मन सुमिरते', author: 'अज्ञात', hindiText: `RESIGN YOURSELF TO THE PERSON WHO MANIFESTS HIMSELF IN THE LIGHT OF MEDITATION.
+
+सुन्न सहज मन सुमिरते, प्रगट भई इक ज्योत ।
+ताहि पुरुप, बलिहार में, निरालम्ब जो होत ।।
+`, meaning: `निर्विकल्प सहज मन से स्मरण करते करते एक ज्योति प्रकट हो गई । उसमें एक पुरुप है, जो निरालम्ब है। उसकी मैं बलिहारी हूँ ।`, audioDriveId: '', singer: '' },
+  { id: '2-5-20', part: 2, chapter: 5, chapterSequence: 20, title: 'लागी लागी सब कहै', author: 'अज्ञात', hindiText: `ATONEMENT MEANS TRANSPARENCY OF VISION.
+
+लागी लागी सत्र कहैं, लागी बड़ी बलाय ।
+लागी वही सराहिये, आरपार हो जाय ।।
+`, meaning: `लग गई लग गई सत्र कहते हैं, पर लगन एक बड़ी भूत-बाधा (या संचार) है। लगन तो वही प्रशस्य है, जिससे पारदर्शित्व प्राप्त हो ।`, audioDriveId: '', singer: '' },
+  { id: '2-5-21', part: 2, chapter: 5, chapterSequence: 21, title: 'हृदया भीतर आरसी', author: 'कबीर', hindiText: `THE SEEING OF THE FACE IN THE MIRROR OF THE HEART.
+
+हृदया भीतर आरसी, मुख तो देखे नाहिं ।
+मुख तो तब ही देखिहौ, दिल की दुविधा जाहि ।।
+`, meaning: `हृदय के भीतर आरसी है। उसमें तुमने अपना) मुख नहीं देखा । मुख तो तभी देखोगे जब दिल की दुविधा चली जाएगी ।
+`, audioDriveId: '', singer: '' },
+  { id: '2-5-22', part: 2, chapter: 5, chapterSequence: 22, title: 'पिय को हेरन मैं गयी', author: 'अज्ञात', hindiText: `TO DISCOVER GOD IS TO BE LOST IN HIM.
+
+पिय को हेरन मैं गई, हेरत गई हेराय ।
+पिय को पहिचाना नहीं, पिय घट में गया समाय ॥
+`, meaning: `मैं प्रिय को हेरने गई । हेरते हेरते स्वयं ही हेरा (या हिरा) गई। मैंने प्रिय को पहिचाना नहीं । प्रिय घट में समा गया ।
+`, audioDriveId: '', singer: '' },
+  { id: '2-5-23', part: 2, chapter: 5, chapterSequence: 23, title: 'मनुवा मेरो मरि गयो', author: 'कबीर', hindiText: `"STOP A WHILE, O KABIR!" SAYS GOD; KABIR LISTENS NOT AND MOVES ON.
+
+मनुवा मेरो मरि गयो, दुर्बल भयो शरीर ।
+पीछे पीछे हरि फिरें, कहत कबीर कवीर ।।
+`, meaning: `मेरा मन मर गया और शरीर दुर्बल हो गया । "कवीर ! कवीर !” कहते हरि पीछे-पीछे फिरते हैं ।
+`, audioDriveId: '', singer: '' },
+  { id: '2-5-24', part: 2, chapter: 5, chapterSequence: 24, title: 'कबिरा देखा एक अङ्ग', author: 'कबीर', hindiText: `KABIR HAS TOUCHED GOD; HE HAS ATTAINED TO ONLY A FRAGMENT OF EXPERIENCE.
+
+कविरा देखा एक अंग, महिमा कही न जाय ।
+तेजपुञ्ज परसाधनी, नैनों रहा समाय ।।
+`, meaning: `कबीर कहते हैं कि मैने केवल एक अंग देखा । उसकी भी महिमा कही नहीं जाती। तेज-पुञ्ज धनी को मैंने स्पर्श किया । वह नयनों में समा रहा है।`, audioDriveId: '', singer: '' },
+  { id: '2-5-25', part: 2, chapter: 5, chapterSequence: 25, title: 'सुरत उड़ानी गगनको', author: 'कबीर', hindiText: `THE SELF FLIES TO THE HIGHEST PINNACLE TO RIVET ITSELF ON THE FEET OF GOD.
+
+सुरत उड़ानी गगन को, चरन विलम्ची जाय ।
+सुख पाया, साहेब मिला, आनन्द उर न समाय ।।
+`, meaning: `सुरत ब्रह्मरन्ध्र को उड़कर चरणावम्बी हो गई। सुख प्राप्त हुआ; साहब मिल गया। आनन्द हृदय में समाता नहीं है ।
+`, audioDriveId: '', singer: '' },
+  { id: '2-5-26', part: 2, chapter: 5, chapterSequence: 26, title: 'बड़ा लुफ्त है यार इश्कमें', author: 'मन्सूर', hindiText: `THERE IS EXCRUCIATING PAIN, BUT AT THE SAME TIME THERE IS THE VISION OF GOD.
+
+बड़ा लुत्फ़ है यार इश्क में, मार भी है और प्यार भी है।
+सूली पर मन्सूर खड़ा है, दार भी है दीदार भी है ।।
+`, meaning: `यार इश्क में बड़ा मज़ा है। मार भी है और प्यार भी है। मन्सूर सूली पर खड़ा है। प्राणदण्ड भी है और प्रिय-दर्शन भी है।`, audioDriveId: '', singer: '' },
+  { id: '2-5-27', part: 2, chapter: 5, chapterSequence: 27, title: 'दी गई मन्सूर को सूली', author: 'मन्सूर', hindiText: `IDENTITY CEASES AS SOON AS IT IS ASSERTED.
+
+दी गई मन्सूर को सूली, अदब के तर्क पर ।
+था अनल हक़ हक़ मगर यक लफ्ज़े गुस्ताखाना था ।
+`, meaning: `अदब छोड़ने से मन्सूर को सूली पर चढ़ना पड़ा । वास्तव में वह हक़ ही था। पर एकही पद (अनलहक कहने) से उसकी बेअद्दी प्रकट हो गई ।`, audioDriveId: '', singer: '' },
+  { id: '2-5-28', part: 2, chapter: 5, chapterSequence: 28, title: 'रहिमन बात अगम्य की', author: 'रहीम', hindiText: `IGNORANDO COGNOSCI; COGNOSCENDO IGNORARI.
+
+रहिमन बात अगम्य की, कहन सुनन की नाहिं ।
+जे जानत ते कहत नहिं, कहत ते जानत नाहिं ।।
+कविरा जब हम गावते, तब जाना गुरु नाहिं ।
+अब गुरु दिल में देखिया, गावन को कछु नाहिं ।।
+`, meaning: `रहीम कहते हैं कि अगम्य की बात कहने सुनने की नहीं । जो जानते हैं, वे कहते नहीं; जो कहते हैं, वे जानते नहीं ।
+कबीर कहते हैं कि जब हम गाते थे, तब गुरु को नहीं जाना था । अब गुरु को हृदय में देख लिया, तब गाने को कुछ नहीं रहा ।
+`, audioDriveId: '', singer: '' },
+  { id: '2-5-29', part: 2, chapter: 5, chapterSequence: 29, title: 'बड़े बड़ाई ना करें', author: 'अज्ञात', hindiText: `THE DIAMOND DOES NOT PROCLAIM ITS PRICE.
+
+बड़े बड़ाई ना करें, बड़ो न बोलें बोल ।
+रहिमन हीरा कब कहै, लाख हमारो मोल ।।
+`, meaning: `बड़े (अपनी) बड़ाई नहीं करते । बड़े बोल नहीं बोलते । रहीम कहते हैं कि हीरा कब कहता है कि मेरा मोल लाख (टका) है।
+`, audioDriveId: '', singer: '' },
+  { id: '2-5-30', part: 2, chapter: 5, chapterSequence: 30, title: 'कबिरा खड़ा बजार में दोनों', author: 'कबीर', hindiText: `THE SAINT MUST STAND UNCONCERNED.
+
+कविरा खड़ा बज़ार में, दोनों दीन कि खैर ।
+ना काहू से दोस्ती, ना काहू से बैर ।।
+`, meaning: `कबीर बाज़ार में खड़ा है और दोनों धर्मों का क्षेम चाहता है। न किसी से उसकी दोस्ती है और न किसी से वैर है।
+`, audioDriveId: '', singer: '' },
+  { id: '2-5-31', part: 2, chapter: 5, chapterSequence: 31, title: 'मेरा मुझ में कुछ नहीं', author: 'कबीर', hindiText: `ATTITUDE OF ABSOLUTE RESIGNATION TO GURU AS TO GOD.
+
+मेरा मुझ में कुछ नहीं, जो कुछ है सो तोर ।
+तेरा तुझ को सौंपते, क्या लागत है मोर ।।
+`, meaning: `मुझ में मेरा कुछ भी नहीं है। जो कुछ है सब तेरा है। तेरा तुझे सुपुर्द करते मेरा क्या लगता है ?`, audioDriveId: '', singer: '' },
+  { id: '2-5-32', part: 2, chapter: 5, chapterSequence: 32, title: 'तरुवर फल नहीं खात है', author: 'रहीम', hindiText: `SPIRITUAL ALTRUISM.
+
+तरुवर फल नहिं खात हैं, सरवर पियहिं न पान ।
+कह रहीम पर काज हित, सम्पति सँचहिं सुजान ॥
+`, meaning: `तरुवर (अपना) फल नहीं खाते । सरोवर (अपना) पानी नहीं पीते । रहीम कहते हैं कि सुज्ञ लोग परोपकार के लिए ही सम्पत्ति का संचय करते हैं ।
+`, audioDriveId: '', singer: '' },
+  { id: '2-5-33', part: 2, chapter: 5, chapterSequence: 33, title: 'कबिरा हम गुरुरस पिया', author: 'कबीर', hindiText: `I HAVE DRUNK THE CUP OF NECTAR TO THE VERY LAST DROP.
+
+कविरा हम गुरुरस पिया, बाकी रही न छाक ।
+पाका कलस कुम्हार का, बहुरि न चढ़सी चाक ।।
+`, meaning: `कबीर कहते हैं कि हमने गुरु रस पिया। अब इच्छा शेप नहीं रही । कुम्हार का कलश पक गया । अब चाक पर नहीं चढ़ेगा ।
+`, audioDriveId: '', singer: '' },
+  { id: '2-5-34', part: 2, chapter: 5, chapterSequence: 34, title: 'नोन मला पानी मिला', author: 'कबीर', hindiText: `THE STATE OF JIVANMUKTI.
+
+नोन गला पानी मिला, बहुरि न भरि है गौन ।
+सुरत शब्द मेला भया, काल रहा गहि मौन ।।
+`, meaning: `नमक गल कर पानी में मिल गया। फिर बोरी नहीं भरी जायगी । सुरत और शब्द का मेल हो गया तब काल ने मौन धारण कर लिया ।`, audioDriveId: '', singer: '' },
+  { id: '2-5-35', part: 2, chapter: 5, chapterSequence: 35, title: 'हद हद पर सब ही गया', author: 'कबीर', hindiText: `THE PERAS AND THE APEIRON.
+
+हद हद पर सब ही गया, बेहद गया न कोय ।
+बेहद के मैदान में, रमै कवीरा सोय ।।
+`, meaning: `हद हद तक सभी गए । बेहद कोई नहीं गया । पर वह कवीर बेहद के मैदान में रम रहा है।
+`, audioDriveId: '', singer: '' },
 ];
 
 // --- CHAPTER TITLES MAPPING ---
