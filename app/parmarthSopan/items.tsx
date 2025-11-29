@@ -176,7 +176,7 @@ export default function ItemsListScreen() {
         </View>
         <View style={styles.selectionText}>
           <Text style={styles.selectionTitle}>Part I: Padas</Text>
-          <Text style={styles.selectionSubtitle}>Songs of Devotion (100)</Text>
+          <Text style={styles.selectionSubtitle}>100</Text>
         </View>
         <ChevronRight size={24} color="#D7CCC8" />
       </TouchableOpacity>
@@ -187,7 +187,7 @@ export default function ItemsListScreen() {
         </View>
         <View style={styles.selectionText}>
           <Text style={styles.selectionTitle}>Part II: Dohas</Text>
-          <Text style={styles.selectionSubtitle}>Couplets of Wisdom (100)</Text>
+          <Text style={styles.selectionSubtitle}>100</Text>
         </View>
         <ChevronRight size={24} color="#D7CCC8" />
       </TouchableOpacity>

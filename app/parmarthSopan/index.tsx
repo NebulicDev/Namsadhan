@@ -115,7 +115,7 @@ export default function ParmarthSopanScreen() {
         ))}
 
         {/* 3. APPENDICES & NOTES (Back Matter) */}
-        <Text style={[styles.sectionLabel, { marginTop: 25 }]}>APPENDICES & NOTES</Text>
+        {/* <Text style={[styles.sectionLabel, { marginTop: 25 }]}>APPENDICES & NOTES</Text> */}
         {BACK_MATTER.map(renderStaticItem)}
 
         {/* 4. INDICES (Last) */}

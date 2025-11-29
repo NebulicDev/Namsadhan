@@ -52,62 +52,135 @@ R. D. RANADE
     id: 'extracts',
     title: 'Extracts from Dr. Radhakrishnan\'s Speech',
     type: 'frontmatter',
-    content: `1. "I am grateful to the Organisers of this function for asking me to associate myself with the publication of Dr. Ranade's Paramartha Sopan..."
+    content: `Extracts from Dr. Radhakrishnan’s Speech at the Publication Function of the Paramartha Sopan at Sangli on 9th January 1954. 
 
-2. "Paramartha Sopana may be translated either as the Ascent to the Divine, or the Way to Perfection..."`
-  },
-  {
-    id: 'analytical_toc',
-    title: 'Analytical Table of Contents',
-    type: 'frontmatter',
-    content: `PART ONE: PADAS
-1. Incentives to Spiritual Life
-2. The Necessity of Moral Preparation
-3. The Relation of God to Saints
-4. The Beginnings of the Pilgrimage
-5. The Highest Ascent
+1. “I am grateful to the Organisers of this function for asking me to associate myself with the publication of Dr. Ranade’s Paramartha Sopan. I have known Dr. Ranade for a number of years. It has been possible for him, much more than for myself, to pursue his supreme object in a spirit of dedication. My activities have been scattered, and I have had to give much of my time and attention in recent years to other things than Philosophy and Religion. All the same Philosophy remains my first affection. With Ranade, Philosophy is the pursuit of wisdom, not a mere intellectual exercise. It is for him meditation on the Spirit, a dedicated way of life”. 
 
-PART TWO: DOHAS
-(Follows the same five-fold division)`
+2. “You call the Institution ‘Adhyatma Vidya Mandir’; and rightly so. “Each religion and philosophy aim at the understanding of Self and communion with Self. They are based on the fundamental bed-rock of self-realisation”. “When, therefore, it is said that we are pursuing the goal of Adhyatma-Vidya which is the quest of the Supreme Self, we are getting beyond the dogmatic and sectarian controversies”. “What we have always stressed is the fundamental spiritual state variously called समाधि, समाधि, समाधि etc. that is, direct communion with the Divine, the direct union of the human Soul with the Divine”. “What may be regarded as the reconditioning of man’s nature must take place, so that his Self soaks and sinks completely in the spirit of the Divine”. 
+
+3. “Paramartha Sopan may be translated either as the Ascent to the Divine, or the Way to Perfection.” “Wherever philosophy has been seriously pursued, wherever religion has been understood in the truest sense of the word, it has meant the study of the true nature of the Self. All religions and philosophies at their highest are agreed on this point. 
+
+4. Socrates was asked when he was to die ‘Where shall we bury you’? He gave the answer ‘You may bury my body, but my soul you cannot bury; it is incorruptible and imperishable.’ The Upanishads say, however far you may go, there is something beyond. The limits of Self are unreachable. There is something which exists beyond logic and language. Buddhism holds that one can rise to be Buddha. The potentialities of human nature extend to Divinity. Jainism makes a discrimination between Atma and Anatma. Their श्रुत attains the knowledge of ‘Atma’. Christianity says ‘The Kingdom of God is within you.’ It is universal spirit of God that dwells in you. ‘The Spirit of man is the candle of the Lord’ say the Jews. St. Paul observes ‘Know you not that you are the temple of God, and the Spirit of God dwelleth in you.’ In different ways, therefore, all the great Prophets have called us back to the realisation of the deepest Self in us which lies behind the layers of the body and mind. Until man attains it, his goal remains unfulfilled. Spiritual realisation is the manifest destiny of man. Until he is able to find his way to the understanding of the Supreme, his heart is restless. All these Prophets of God believed that the natural culmination of human development was in the Divine”. 
+
+5. “In our country, we have worshipped not the industrialists, or the military heroes, or kings, or the emperors, or the dictators, or the statesmen, but we have worshipped the Saints who have penetrated behind the layers of body and mind, sunk into the depths of Self, and anchored themselves to the Divine. Such men are not to be limited to Europe, Asia, or America, or to this or that religion. The spiritual quality is common to the Arya, Anarya, Muslim or Christian. 
+
+6. Secular State does not mean a State without religion. It is not secular in this sense that we deify the worldly and the material. It is secular only in the sense that we recognise that every religion shows a way to reach the Supreme, and we do not wish to identify the State with any particular dogma or creed. It is secular in the sense that it is something which takes its stand on the very roots of our religion. In the Secular State we give liberty to all to exercise freedom of worship and thought. We recognise the liberty of religious life. The same liberty must be given to all people. 
+
+7. Spirituality does not involve renunciation of the world. On the other hand, spirituality is excellence in action, श्रेष्ठ कर्म श्रेष्ठ. The world at present finds itself in a night-mare condition of tension and conflict, from which it can be rescued and united only by true religion. The world can be really bound together and united at the spiritual level through religion expressing itself in love. Religion signifies two things in particular. One is the inward awareness of Spiritual Self, spiritual perception. Outwardly, it is abounding love to humanity. ज्ञान and करुणा, Wisdom and Love, constitute true religion”.
+`
   },
+//   {
+//     id: 'analytical_toc',
+//     title: 'Analytical Table of Contents',
+//     type: 'frontmatter',
+//     content: `PART ONE: PADAS
+// 1. Incentives to Spiritual Life
+// 2. The Necessity of Moral Preparation
+// 3. The Relation of God to Saints
+// 4. The Beginnings of the Pilgrimage
+// 5. The Highest Ascent
+
+// PART TWO: DOHAS
+// (Follows the same five-fold division)`
+//   },
   {
     id: 'intro_padas',
     title: 'General Introduction to Padas',
     type: 'frontmatter',
-    content: `If we make a comparative study of the Philosophies and Religions of the world... we shall see that there are certain broad characteristics common to the Pathway...
+    content: `If we make a comparative study of the Philosophies and Religions of the world, and especially of the lives and teachings of those who in the various stages of humanity and in different ages and lands have walked on the path of God, we shall see that there are certain broad characteristics common to the Pathway, which they have all pursued in the attainment of God. These might for convenience sake be summarised under five heads. First, there are certain incentives prompting men to spiritual life — philosophical, axiological and psychological. Then there is the question of moral and spiritual preparation which they must take before they are to advance on the Pathway. Thirdly, they have to keep before them- selves certain exemplars of devotion and attainments which they must necessarily follow. This they cannot do unless they have defined the incentives, both the- retically and practically, which have made them long for God in relation to the exemplars above mentioned. When the relationship between the exemplars and God has been defined, they have to tread the path them­ selves before they can be convinced about the reality of the experiences of those who have gone before them. Finally, after having walked on the Pathway for a long time, and through travails and turmoils of body and mind, of nature and of society, they can envisage to themselves certain landmarks, certain lamp-posts, which will help them to walk with courage and confidence on the Pathway to God, and attain to the highest ideal they have been seeking.
 
-These might for convenience sake be summarised under five heads: Incentives, Moral Preparation, Relation of God to Saints, Beginnings of Pilgrimage, and The Highest Ascent.`
+CHAPTER I
+
+In the present work, we shall be concerned with these five topics which have characterised the pursuit, in the attainment of God, of seekers in the Hindi provinces, as they have also characterised that of the seekers in other provinces of India, as well as of seekers in the world. We shall first state in brief the different incentives which have prompted the Hindi saint to the pursuit of the spiritual ideal. In the first place, the incentives come mainly from the evils and illusions, of blindness to reality, and of sleeping thought, which have been the cause of his formulating the spiritual ideal. The last incentives we shall discuss in the chapter in the next book relate to the highest incentives which prompt men for God.
+
+After studying the highest of the incentives, we shall next study the different types of moral preparation which the aspirant has to undergo. After this, we shall proceed to enumerate the various exercises which, as experience all over the world, and in the Hindi saints group has shown, are necessary for the advancement of the spiritual life, now clearly defined. These, with the exemplars in the Hindi provinces, the aspirant would have a complete idea as to what his spiritual ideal would probably be in the course of his attempt for the determination of his spiritual ideal.
+
+After this philosophical approach, we have to tackle the ethical approach also, especially from the side of the relationship of works to recompense. These questions have received the highest priority from philosophers and moralists, especially from Kant. After these philosophical and ethical approaches, we have to consider the question of sin whose existence we find in the lives of men and in society. Those who want to evolve an incentive to spiritual life through the consideration of sin are necessarily prompted to seek therefore a life which will be for ever beyond its pale. After the consideration of sin come the questions of age and of death, which are very primary considerations, very positive facts, which lead men toward Godward. Immediate lay life leads to the summation of the matter when we are met with the questions of transmutation and metem- psychosis, a determination of the nature of which Naciketa flash has to lead a man to the highest spiritual ideal. The last incentive is that provided in the present chapter in the subito flash of illumination given by the great saints like Mahaprabhu, where the individual reaches the high water-mark in the spiritual path made by him courageously and successfully.
+
+CHAPTER II
+
+The last chapter was devoted to a review of the various incentives that lead to the desire for the spiritual life. Now we must proceed to consider what moral virtues have to be cultivated before such a spiritual life could be realised. Cultivation of the moral virtues also implies an avoidance of bad qualities. Hence arises the necessity of the consideration of the avoidance of vices along with the cultivation of virtues. The first great vice is the company of the wicked; for it is the mother of all the vices. We shall consider with reference to relevant songs from Surdas, Kabir and Charanadas the main vices that are to be avoided, and the main virtues that are to be cultivated. One of the most important of such virtues is the company of Saints. In this connection, Nanak tells us how the company of the saints might enable a man to do a real welfare-state in a vision of God.
+
+Of the company of the Saints, that accord­ ing to Tulsidas, seems to be the firmest. The virtues are further told by Tulsidas the way for God-love through the avoidance of egoism and the attainment of humility (?). Kanak Das emphasises the importance of this, because without the avoidance of ego we cannot have the attention of God or the brilliant jewel*. Further, we can take an important way of devotional Love by the conciliation of the two from Tulsidas. Finally, in a fine literary way told by Tulsidas how this devotion to God might be compared to a diamond with nine facets, each representing one aspect of God-devotion, and all being present in an ideal Saint. The Chapter may well be ended with a review of the various virtues that are to be cultivated and the various vices that are to be avoided, which might be regarded as a distinct contribution of Hindi saints to World-Ethics, a contribution which might well be compared to that made by the great moral philosophers of ancient and modern times, such as Plato and Aristotle, Sidgwick and Green.
+
+CHAPTER III
+
+The subject-matter of the third chapter is God in relation to the Saints. The problem of God is always an interesting and difficult one, and when we try to find its bearing on mystical literature, it becomes all the more difficult, because mystical literature, in the main, cares only for the intuitive apprehension of God.
+
+In our present chapter, we shall first speak about the problem of God as it appears in the major Saints of Hindi pre-Mughal. After this, we may consider the philosophical-mystical argument of Ramananda in his description of God as such; and next the non-dualistic description of God as such as the Niranjan (God) assumes a Sugama form. After this the question of Love in the Hindi Saints group. We shall then speak about the imperative cry of Surdas to God to come down in a lower Order of miraculous grace, creating a proper meaning of God for men, and by describing an order of sportive action of God in which he reveals himself for His devotees. Under these problems, we shall have to consider the Hindi spiritual utterances, in the first place, of Mirabai, the Mystic Princess, then of the two great Hindi poets and Saints Surdas and Tulsidas, then of that group of spiritual realisers revelling in their description of mystical experience, such as Gorakhnath, Dharamdas and Yari, and finally of the two great Maratha saints who have also contributed to the mystical literature in Hindi, namely, Ekanath and Mahipati, the first because he was a citizen of Paitan in the Deccan which was under Mohammedan influence, as well as because he later lived at Banaras for some time in the maturity of his spiritual experience; and the second, because he served and died at Gwalior. After the description of the varieties of mystical experience by these great saints, we shall pass on to Group IV, in which we may find the descriptions by Charandas of the psychological and practical effects of God-realisation. Then, we shall proceed to Group V, wherein we shall find Kabir describing the sublimity and ineffability of mystical experience in language which any theist and Sufi might be satisfied with a more terrene description of the mystics, especially of the intermediary form of joy in mystics, as closely allied to the intuitively realised joy of the theologians in Group V. After this, we might describe the description of God as High Light of the Cosmos by Kabir of the lifting of the Cosmic Decea?. After this new Group under Sufistic description of mystical experience by Kabir, in the present con­ tains his account of mystical experience in a Vedantic vein.. After this, we come to probably the most important Group of poems in the present chapter, namely, on the nature of ecstacy and its contribution to the sustenance of the world. In the Group that follows, we have the post-ecstatic ejaculations of Gulal, Nar- harinath and Raidas — Gulal the Bhojpuri musician— poet, Narharinath, the spiritual teacher of Mahipati whom we have already mentioned, and Raidas, one of the greatest of the Untouchable Saints of India. Finally, we have from Kabir in an autobiographical manner a description of apostleship and prophethood, which may be regarded as the very cope-stone of mystical life to be ever attained by man.
+
+CHAPTER IV
+
+In the last chapter, we have taken a panoramic view of the different ideas held by the Hindi saints about the nature of God, and the prayers which they have offered to him. In the present chapter, we shall proceed to a description of the actual path of their pilgrimage, as well as the conditions which are necessary for taking them to their desired goal. In the first place, the aspirants must feel the necessity of the Spiritual Teacher who will guide them through their moral and physical turmoils of life. In that matter, we shall consider the characteristics, both moral and spiritual, which are necessary for the Spiritual Teacher. In this connection, the description given by Kabir in regard to these qualities of the Spiritual Teacher can never be excelled. We shall then proceed to discuss the meditations which must be conducted in the name of the Name and for the sake of God. After this we shall take up the description of the methods described here in the Hindi Saints’ group of pilgrims which are necessary for the removal of the sins of the aspirant. In this connection two methods are necessary for the development of the meditational life — the first is Yogi meditation of Patanjali as represented by Patanjali’s Ashtanga Yoga, and the second is the Nirvair and the ? (word unclear) method. A man must continue his meditation to the end of his life; he must utilise every breath of his life in its service; and finally, all this must be accomplished in a spirit of devotion. After dealing with these different stages of the meditational process, we shall discuss the place which Yoga and Absolutism occupy in the sphere of meditation. Ultimately, we shall find that the meditational process rises superior to both these elements. Next, we shall proceed to consider two different types of yogis or sants with two different attitudes, the militant and the submissive. The one may be called the tough-minded type, and the other the tender-minded type. The former finds its place in both these, while the tender-minded type finds its representatives in Surdas and Mirabai. In difference to these latter Sants, we shall also consider the phenomenon of the so-called Dark Night and the Dawn.
+
+CHAPTER V
+
+We now pass on to the final chapter of the present Part, namely, on the ultimate realisation of God- experience, in the Pada literature. The great literature of the Hinds contains under the Padas a representation of the fundamental moods of adoration of God under various acts and experiences, each group forming a proper description of the devotional moods experienced by Hindi Sants in their mystical experiences and spiritual uplift. Under this heading fall in their most beautiful utterances, in the first place, of Mirabai, the Mystic Princess, then of the two great Hindi poets Surdas and Tulsidas, then of that group of spiritual realisers revelling in their description of mystical experience, such as Gorakhnath, Dharamdas and Yari, and finally of the two great Maratha saints who have also contributed to the mystical literature in Hindi, namely, Ekanath and Mahipati, the first because he was a citizen of Paithan in the Deccan which was under Mohammedan influence, as well as because he later lived at Banaras for some time in the maturity of his spiritual experience; and the second, because he served and died at Gwalior. After the description of the varieties of mystical experience by these great saints, we shall pass on to Group IV, in which we may find the descriptions by Charandas of the psychological and practical effects of God-realisation. Then, we shall proceed to Group V, wherein we shall find Kabir describing the sublimity and ineffability of mystical experience in language which any theist and Sufi might be satisfied with; a more terrene description of the mystics, especially of the intermediary form of joy in mystics, being closely allied to the intuitively realised joy of the theologians in Group V. After this, we might describe the description of God as High Light of the Cosmos by Kabir of the lifting of the Cosmic Decea? (unclear). After this new Group under Sufistic description of mystical experience by Kabir, in the present contains his account of mystical experience in a Vedantic vein. After this, we come to probably the most important Group of poems in the present chapter, namely, on the nature of ecstacy and its contribution to the sustenance of the world. In the Group that follows, we have the post-ecstatic ejaculations of Gulal, Narharinath and Raidas—Gulal the Bhojpuri musician-poet, Narharinath, the spiritual teacher of Mahipati whom we have already mentioned, and Raidas, one of the greatest of the Untouchable Saints of India. Finally, we have from Kabir in an autobiographical manner a description of apostleship and prophethood, which may be regarded as the very cope-stone of mystical life to be ever attained by man.`
   },
   {
     id: 'intro_dohas',
     title: 'General Introduction to Dohas',
     type: 'frontmatter',
-    content: `In the first part of our work, we have seen how an aspirant rises step by step... The five chapters in the present part on the Dohas constitute the microcosm with the same head-topics seriatim...`
+    content: `In the first part of our work, we have seen how an aspirant rises step by step from certain incentives to spiritual life to the culmination of spiritual experience. In the five chapters in the first part, namely, on the Padas, we may say, constitute the macrocosm of spiritual experience as found in Hindi literature. The five chapters in the present part on the Dohas consti­tute the microcosm with the same head-topics seriatim, with are to be met with in the first part of our book. In the division between Padas and Dohas we have followed the time-honoured tradition in Hindi litera­ture, where the Padas are followed by the Sakhiis. Probably this method is to be commended, because a bigger thing cannot naturally be split into a smaller easily, while the smaller could be split giving spiritual reflections and the moral sharp epigrams. It is for this reason that we have definitely held the Doha literature in one place as Epigrammatic Mysticism.
+
+The great saint Tulsidas has made an original use of the Dohas as containing the “Quintessence” of the narrative in the Ramayana, and connecting Janus-wise the Chaupais that precede and the Chaupais that follow in the progress of the narrative. The word Doha thus signifies by a sort of a ????? not merely a metre, but also the ‘churned or condensed milk’ of the narra­tive fully expounded in the Chaupais. Elsewhere, as in other Hindi writers of Doha literature, the Dohas become symbols of highly ethical, spiritual, and even worldly-wise bon mot. The present writer thinks that scarcely in any other provincial literature of India there is this peculiar combination of epigram, wit, humour, sarcasm, love, devotion, service and general advice to worldly affairs, which we find in the Dohas. There are only two parallels which we can think of in connection with the Dohas. In Maratha literature we have the Abhangas, and in Kannada we have the Vachanas, which may offer a parallel to the Dohas in Hindi literature. Just as the Dohas can go to the highest spiritual ascent in the same way as the Padas, they can also take rise, then likewise level. The Dohas are smaller in dimension than the Padas and their tone and tenor are sharper and more emergent. The instances of Dohas as spiritual realisation are very many. The highest of the spiritual experience in a Tukaram and Namdev does not, however, come up to the level of the highest Dohas. In Marathi we have exhibited poetic utterances of Maharashtra which are equal to the level attained by Jnaneshvar or Tukaram, just as the Dohas or utterances in Hindi literature do not always come up to the level attained by Kabir.
+
+As far as possible, we have selected only such Dohas as would supplement the ideas in the Padas, un­less the Dohas are so brilliant that they cannot be omitted. For example, in the first Chapter of our Dohas, we are enumerating only two incentives, the incentive of age or perpetual change, and the incentive of decrepitude or death. The second is to be found in the Padas, but the first is to be found in the Dohas only. To take one more illustration, the Dohas in our second chapter will contain those ideas which are only supplementary to those contained in the Padas, for example, ideas such as those of the combination of material and spiritual welfare, the change of tempera­ment to moral character, valuation of fine arts, and so on. We are stating these facts only to show that our Dohas are not merely replicas of our Pada literature, but are in a way supplement the ideas contained in the Padas.
+
+CHAPTER I
+
+The essence of the first chapter of the Dohas consists in giving similes and analogies for the phenomenon of perpetual unceasing change, and two incentives to spiritual life. They will take us to observe that the (1) age is perpetually changing, and hence forcing the Hindi pilgrim to perpetually strive on with ever approa­ching perfection, (2) the union of age and decrepitude is of a fugitive in nature and, lastly, (3) the doom of ‘all impossibility’ a definite preindication of the united doom of those who pursue a flower. As regards the latter, we meet with trenchant suggestions as to (1) the succes­sion of heights and pitfalls in human life, (2) the incomprehensibility of the emergence and dissolution of the life-principle, and finally, (3) the infinite sadness following upon the spectacles of conflagrations in human existence. These, in fact, are regarded by the Dohas as the incentives that prompt us to spiritual life,
+
+CHAPTER II
+
+After the discussion of the incentives to spiritual life, we pass on to consider the help which the Dohas give for the formation of a good moral life. What moral preparation are we asked to make in order to fit ourselves for the spiritual task ? — that is the question. Analyptically examining the Dohas, we may say that they shall be discussed in the many points seriatim — (1) combination of material and spiritual welfare, (2) the reformation of original nature by the transforma­tion of character, (3) fine arts, their role in moral and immoral assets, (4) industry, (5) love of God and spiritual devotion, (6) self-control and (7) the spiritual road to God.
+
+CHAPTER III
+
+In our last chapter, we have tried to ascertain what the moral path to sainthood is. In the present chapter we propose to examine the nature of the phenomenon of sainthood, we shall proceed to some points in the analogy of God according to the Dohas. Parti­cularly we have to discuss such themes as the Imma­nent, the ????????? and the ?????????, the latter being a very notable contribution of Tulsidas to the Philosophy of Religion. After having discussed these categories, we shall proceed, in connection with the Doha ??????? ??? ?? ??? ???, to indicate the ten ascending stages of Tulsidas’s Philosophy of Devotion, which involves a survey of the relationships between such fundamental conceptions as ?????, ????, ????, ????, and ???.
+
+We shall next proceed to discuss the relationship that exists between Saints and God, both practical and philosophical. Under the first head, we shall consider the questions of (1) proximity and proximity pro­tection, and (2) personal autonomy under the sovereignty of Divine power. We shall next proceed to consider (3) what lofty heights, according to Tulsidas, a saint can ascend starting from a life of abject poverty, as well as of a privileged nobility, under leaders such as saints as Tulsidas in North India, and the great saints in the South. Let us have no gainsaying that the heights of high spiritual experience are not to be found in both these geographical portions of India. Thus unity in diversity in spiritual height is noteworthy in India. Then both the practical and philosophical and the eschatological merging of spirit with spirit to which the Saint ultimately attains.
+
+CHAPTER IV
+
+In this chapter we will discuss the beginnings of the spiritual pilgrimage as found in the Dohas.
+
+We shall begin by considering the nature and function of the spiritual teacher in the scheme of the realisation of God.
+
+Next, we shall proceed to two important topics. First, we shall discuss the method by which the spiri­tual teacher instructs us to begin and perfect our endeavour for God-realisation. This, of course, is medi­tation by the Name which the teacher communicates to us from a high spiritual altitude, from which it must descend and be concluded in the mind of his disciples. Second, we shall discuss the items in the Name, and the function it performs in the spiritual development of the disciple.
+
+Afterwards, we shall discuss four important requisites for the perfection of the method, namely, what physical, moral and mystical regularities are essential for this perfection.
+
+Finally, that inner spring of devotion, that long­ing for the highest realisation of mystic vision, namely the perception of the mystery of the union with the Infinite in different ranges of vision, will be discussed briefly with reference to the Dohas.
+
+CHAPTER V
+
+In our last chapter, we have seen the beginnings of the meditational process, which must be crowned by the perfection of mystical experience. This consti­tutes the highest ascent of man towards the Life Divine. Of course, this ascent is to be made through a number of rungs of the spiritual ladder, but before we tackle this problem, it will be necessary for us to make a preliminary investigation, both philosophically and psychologically, of certain fundamental conceptions such as the relation of intuition to intellect, the meaning of internal perception, and the question of the inter-com­municability or otherwise of various kinds of sensuous and super-sensuous experiences. After this preliminary investigation, it will be our task to consider the varieties of super-sensuous experience, which form the keynote of the present chapter. Of course, these kinds of supersensuous experience are scattered wherever and in whatever form of literature an attempt is made to climb the ascent. In the Dohas in Hindi literature we find in an inexplicable and cryptic form, and at the same time very accurately, all the stages through which are convergent the super-sensuous experiences which make the path to the Divine. But the most important of the varieties of super-sensuous experiences which we find in the Dohas is not any of these, but what we may call the mysterious perception of the “Cosmic fragrance”, the unfathomable experience which we find in various types of mystical literature all over the world. Next, we shall proceed to the link-chain between the sensuous and the supersensuous experiences, differing accordingly as they emerge reflecting the successive trends in the spiritual bath, the spiritual juice and the spiritual fragrance, about which the Dohas speak. After this comes the problem of Self-realisation. Of course, it cannot be maintained that the Dohas do full justice to such an important subject, but there are definite in­dications in the description of the Dohas which put us in mind of similar ideas in more developed literatures in connection with the subject of Self-realisation. Then there are Dohas which describe motor and tactical experiences, which form an important development of one chief form of self-realisation. In order to attain such spiritual heights, however, a great travail has to be experienced. This we might call the travail of union. The dangers we have to face, the temptations we have to resist, the attachments we have to suffer, all these come to the results, such as having to pass, before the attain to the crown of spiritual experience. When the crown is reached, this is accompanied by a peculiar and highly developed mark of God-realisation, we distinguish a highly developed final stage from other stages, the final ‘Summum Bonum’ to be ever attained by man.`
   },
-  {
-    id: 'notes_part1',
-    title: 'Notes to Part I: Padas',
-    type: 'backmatter',
-    content: `(Notes and annotations for the Padas will appear here...)`
-  },
-  {
-    id: 'notes_part2',
-    title: 'Notes to Part II: Dohas',
-    type: 'backmatter',
-    content: `(Notes and annotations for the Dohas will appear here...)`
-  },
-  {
-    id: 'appendix_1',
-    title: 'Appendix I: Saint Biographies',
-    type: 'backmatter',
-    content: `परमार्थसोपानस्थ संत कवियोंका आलोचनात्मक इतिहास by स्वर्गीय पं. सुखदेव बिहारी मिश्र`
-  },
-  {
-    id: 'appendix_2',
-    title: 'Appendix II: Rhetoric',
-    type: 'backmatter',
-    content: `Contribution to the Science of Rhetoric in Paramartha Sopana.`
-  },
+  // {
+  //   id: 'notes_part1',
+  //   title: 'Notes to Part I: Padas',
+  //   type: 'backmatter',
+  //   content: `(Notes and annotations for the Padas will appear here...)`
+  // },
+  // {
+  //   id: 'notes_part2',
+  //   title: 'Notes to Part II: Dohas',
+  //   type: 'backmatter',
+  //   content: `(Notes and annotations for the Dohas will appear here...)`
+  // },
+  // {
+  //   id: 'appendix_1',
+  //   title: 'Appendix I: Saint Biographies',
+  //   type: 'backmatter',
+  //   content: `परमार्थसोपानस्थ संत कवियोंका आलोचनात्मक इतिहास by स्वर्गीय पं. सुखदेव बिहारी मिश्र`
+  // },
+  // {
+  //   id: 'appendix_2',
+  //   title: 'Appendix II: Rhetoric',
+  //   type: 'backmatter',
+  //   content: `Contribution to the Science of Rhetoric in Paramartha Sopana.`
+  // },
 ];
 
 // --- 2. MASTER DATA (Full 200 Items) ---
