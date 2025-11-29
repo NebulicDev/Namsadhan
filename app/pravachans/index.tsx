@@ -1,14 +1,10 @@
 // app/pravachans/index.tsx
-import { collection, getDocs } from '@react-native-firebase/firestore';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
-import * as SecureStore from 'expo-secure-store';
-import { Calendar, ChevronLeft, Disc, MicVocal } from 'lucide-react-native';
-import { useEffect, useState } from 'react';
+import { ChevronLeft, Disc, MicVocal } from 'lucide-react-native';
 import {
-  ActivityIndicator,
-  Alert,
   FlatList,
+  Image,
   StatusBar,
   StyleSheet,
   Text,
@@ -16,8 +12,7 @@ import {
   View,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { db } from '../../firebaseConfig';
-import logger from '../../utils/logger';
+import { PRAVACHANS_DATA, SpeakerProfile } from '../../assets/text/pravachansData';
 
 // --- THEME CONSTANTS ---
 const THEME = {
@@ -29,98 +24,18 @@ const THEME = {
   accent: '#FFB74D',
 };
 
-type TrackType = {
-  id: string;
-  title: string;
-  speaker: string;
-  driveId: string;
-  url: string;
-  year: number;
-};
-
-type YearType = {
-  year: string;
-  tracks: TrackType[];
-};
-
-const CACHE_KEY = 'pravachans_data_v2';
-
 export default function PravachansScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
-  const [pravachansData, setPravachansData] = useState<YearType[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
 
-  // --- DATA LOGIC (UNTOUCHED) ---
-  useEffect(() => {
-    const loadPravachans = async () => {
-      try {
-        const cachedData = await SecureStore.getItemAsync(CACHE_KEY);
-        if (cachedData) {
-          setPravachansData(JSON.parse(cachedData));
-          setIsLoading(false);
-        }
-      } catch (e) {
-        logger.error('Failed to load cached pravachans:', e);
-      }
-
-      try {
-        const collectionRef = collection(db, 'pravachans_by_year');
-        const snapshot = await getDocs(collectionRef);
-
-        const fetchedData: YearType[] = snapshot.docs.map((doc) => {
-          const year = doc.id;
-          const yearNumber = parseInt(year);
-          const tracksData = doc.data().tracks || [];
-
-          return {
-            year,
-            tracks: tracksData.map((track: Omit<TrackType, 'url' | 'year'>) => ({
-              ...track,
-              year: yearNumber,
-              url: `https://drive.google.com/uc?export=download&id=${track.driveId}`,
-            })),
-          };
-        });
-
-        fetchedData.sort((a, b) => parseInt(b.year) - parseInt(a.year));
-        
-        const currentDataString = await SecureStore.getItemAsync(CACHE_KEY);
-        if (JSON.stringify(fetchedData) !== currentDataString) {
-          setPravachansData(fetchedData);
-          await SecureStore.setItemAsync(CACHE_KEY, JSON.stringify(fetchedData));
-        }
-
-      } catch (error) {
-        logger.error("Error fetching pravachans:", error);
-        if (pravachansData.length === 0) {
-          Alert.alert("Error", "Could not fetch pravachans. Please check your internet connection.");
-        }
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    loadPravachans();
-  }, []);
-
-  if (isLoading) {
-    return (
-      <View style={[styles.screenContainer, styles.center]}>
-        <ActivityIndicator size="large" color={THEME.text} />
-        <Text style={styles.loadingText}>Loading Library...</Text>
-      </View>
-    );
-  }
-
-  const renderItem = ({ item }: { item: YearType }) => {
+  const renderItem = ({ item }: { item: SpeakerProfile }) => {
     const count = item.tracks?.length || 0;
 
     return (
       <View style={styles.cardContainer}>
         <TouchableOpacity
           activeOpacity={0.9}
-          onPress={() => router.push(`/pravachans/${item.year}`)}
+          onPress={() => router.push(`/pravachans/${item.id}`)}
           style={styles.cardTouchable}
         >
           <LinearGradient
@@ -132,25 +47,30 @@ export default function PravachansScreen() {
               <Disc size={80} color={THEME.primary} opacity={0.1} />
             </View>
 
-            {/* Header */}
-            <View style={styles.cardHeader}>
-              <View style={styles.yearBadge}>
-                <Calendar size={12} color={THEME.textLight} style={{ marginRight: 4 }} />
-                <Text style={styles.yearLabel}>YEAR</Text>
+            {/* Image Section */}
+            <View style={styles.imageWrapper}>
+              <View style={styles.imageContainer}>
+                 <Image source={item.image} style={styles.speakerImage} resizeMode="cover" />
               </View>
-              <Text style={styles.yearText}>{item.year}</Text>
             </View>
 
-            {/* Footer */}
-            <View style={styles.cardFooter}>
-              <View>
-                <Text style={styles.countText}>{count} Discourses</Text>
-                <Text style={styles.subText}>Tap to Explore</Text>
-              </View>
-              <View style={styles.playButton}>
-                 <MicVocal size={14} color="#FFF" />
+            {/* Info Section */}
+            <View style={styles.cardContent}>
+              <Text style={styles.speakerName} numberOfLines={2}>
+                {item.name}
+              </Text>
+              
+              <View style={styles.footerRow}>
+                <View>
+                   <Text style={styles.countText}>{count} Discourses</Text>
+                   <Text style={styles.subText}>Tap to Listen</Text>
+                </View>
+                <View style={styles.playButton}>
+                   <MicVocal size={14} color="#FFF" />
+                </View>
               </View>
             </View>
+
           </LinearGradient>
         </TouchableOpacity>
       </View>
@@ -161,6 +81,7 @@ export default function PravachansScreen() {
     <View style={styles.screenContainer}>
       <StatusBar barStyle="dark-content" backgroundColor={THEME.background} />
       
+      {/* Header */}
       <View style={[styles.header, { paddingTop: insets.top > 0 ? insets.top + 10 : 40 }]}>
         <TouchableOpacity
           onPress={() => router.back()}
@@ -173,9 +94,9 @@ export default function PravachansScreen() {
       </View>
 
       <FlatList
-        data={pravachansData}
+        data={PRAVACHANS_DATA}
         renderItem={renderItem}
-        keyExtractor={(item) => item.year}
+        keyExtractor={(item) => item.id}
         numColumns={2}
         contentContainerStyle={styles.listContent}
         columnWrapperStyle={styles.columnWrapper}
@@ -189,15 +110,6 @@ const styles = StyleSheet.create({
   screenContainer: {
     flex: 1,
     backgroundColor: THEME.background,
-  },
-  center: {
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  loadingText: {
-    marginTop: 12,
-    color: THEME.textLight,
-    fontSize: 16,
   },
   header: {
     paddingHorizontal: 20,
@@ -239,8 +151,8 @@ const styles = StyleSheet.create({
   },
   cardGradient: {
     borderRadius: 24,
-    padding: 16,
-    minHeight: 180,
+    padding: 12,
+    minHeight: 200,
     justifyContent: 'space-between',
     overflow: 'hidden',
     borderWidth: 1,
@@ -253,50 +165,62 @@ const styles = StyleSheet.create({
     transform: [{ rotate: '-15deg' }],
     zIndex: 0,
   },
-  cardHeader: {
+  imageWrapper: {
+    alignItems: 'center',
+    marginTop: 10,
+    marginBottom: 10,
     zIndex: 1,
   },
-  yearBadge: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 8,
+  imageContainer: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    borderWidth: 3,
+    borderColor: '#FFF',
+    overflow: 'hidden',
     backgroundColor: '#FDF5E6',
-    alignSelf: 'flex-start',
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
   },
-  yearLabel: {
-    fontSize: 10,
+  speakerImage: {
+    width: '100%',
+    height: '100%',
+  },
+  cardContent: {
+    zIndex: 1,
+  },
+  speakerName: {
+    fontSize: 16,
     fontWeight: '700',
-    color: THEME.textLight,
-    letterSpacing: 1,
-  },
-  yearText: {
-    fontSize: 32,
-    fontWeight: '800',
     color: THEME.text,
-    letterSpacing: -1,
+    marginBottom: 12,
+    textAlign: 'center',
+    height: 40, // Fixed height for 2 lines
   },
-  cardFooter: {
+  footerRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'flex-end',
-    zIndex: 1,
+    backgroundColor: 'rgba(255,255,255,0.6)',
+    borderRadius: 12,
+    padding: 8,
   },
   countText: {
-    fontSize: 15,
+    fontSize: 13,
     fontWeight: '700',
     color: THEME.text,
   },
   subText: {
-    fontSize: 12,
+    fontSize: 10,
     color: THEME.textLight,
   },
   playButton: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
+    width: 28,
+    height: 28,
+    borderRadius: 14,
     backgroundColor: THEME.text,
     justifyContent: 'center',
     alignItems: 'center',

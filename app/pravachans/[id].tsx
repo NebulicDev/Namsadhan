@@ -1,31 +1,30 @@
-// app/pravachans/[year]/[speaker].tsx
+// app/pravachans/[id].tsx
 import Slider from '@react-native-community/slider';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import * as SecureStore from 'expo-secure-store';
 import {
-  ArrowDownToLine,
-  ChevronLeft,
-  Music,
-  Pause,
-  Play,
-  Trash2,
+    ArrowDownToLine,
+    ChevronLeft,
+    Music,
+    Pause,
+    Play,
+    Trash2,
 } from 'lucide-react-native';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
-  ActivityIndicator,
-  Alert,
-  FlatList,
-  StatusBar,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
+    ActivityIndicator,
+    Alert,
+    SectionList,
+    StatusBar,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useAudio } from '../../../context/AudioContext';
-import { useDownload } from '../../../context/DownloadContext';
-import logger from '../../../utils/logger';
+import { getDriveDownloadUrl, PRAVACHANS_DATA, PravachanTrack } from '../../assets/text/pravachansData';
+import { useAudio } from '../../context/AudioContext';
+import { useDownload } from '../../context/DownloadContext';
 
 // --- THEME CONSTANTS ---
 const THEME = {
@@ -38,34 +37,15 @@ const THEME = {
   sliderThumb: '#5D4037',
   sliderTrack: '#D7CCC8',
   sliderActive: '#8D6E63',
+  sectionHeader: '#FDF5E6',
 };
 
-type TrackType = {
-  id: string;
-  title: string;
-  speaker: string;
-  driveId: string;
-  url: string;
-  year: number;
-};
-
-type YearType = {
-  year: string;
-  tracks: TrackType[];
-};
-
-type PlayStatusType = {
-  position: number;
-  duration: number;
-};
-
-const CACHE_KEY = 'pravachans_data_v2';
-
-export default function SpeakerRecordingsScreen() {
+export default function SpeakerDetailsScreen() {
   const router = useRouter();
-  const { year, speaker } = useLocalSearchParams<{ year: string; speaker: string }>();
+  const { id } = useLocalSearchParams<{ id: string }>();
   const insets = useSafeAreaInsets();
   
+  // Contexts
   const {
     playSound,
     pauseSound,
@@ -83,40 +63,45 @@ export default function SpeakerRecordingsScreen() {
     loadDownloadedTracks,
   } = useDownload();
 
-  const [tracks, setTracks] = useState<TrackType[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  // State
+  const [speakerData, setSpeakerData] = useState(PRAVACHANS_DATA.find(s => s.id === id));
 
-  // --- DATA LOGIC (UNTOUCHED) ---
+  // Update data if ID changes
   useEffect(() => {
-    const loadTracksForSpeaker = async () => {
-      if (!year || !speaker) return;
-      setIsLoading(true);
-      try {
-        const cachedData = await SecureStore.getItemAsync(CACHE_KEY);
-        if (cachedData) {
-          const allPravachans: YearType[] = JSON.parse(cachedData);
-          const yearData = allPravachans.find((item) => item.year === year);
-          
-          if (yearData) {
-            const speakerTracks = yearData.tracks.filter(
-                t => (t.speaker || 'Unknown Speaker') === speaker
-            );
-            setTracks(speakerTracks);
-          }
-        }
-      } catch (e) {
-        logger.error('Failed to load tracks for speaker:', e);
-        Alert.alert('Error', 'Could not load the tracks.');
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    loadTracksForSpeaker();
+    const found = PRAVACHANS_DATA.find(s => s.id === id);
+    setSpeakerData(found);
     loadDownloadedTracks();
-  }, [year, speaker]);
+  }, [id]);
 
-  const deleteTrack = async (track: TrackType) => {
+  // Group Tracks by Year
+  const sections = useMemo(() => {
+    if (!speakerData || !speakerData.tracks.length) return [];
+
+    const grouped: Record<string, PravachanTrack[]> = {};
+    
+    speakerData.tracks.forEach(track => {
+      const yearKey = track.year ? track.year.toString() : 'All Tracks';
+      if (!grouped[yearKey]) {
+        grouped[yearKey] = [];
+      }
+      grouped[yearKey].push(track);
+    });
+
+    // Sort years descending (newest first), keeping 'All Tracks' at top if mixed
+    const sortedKeys = Object.keys(grouped).sort((a, b) => {
+        if (a === 'All Tracks') return -1;
+        if (b === 'All Tracks') return 1;
+        return parseInt(b) - parseInt(a);
+    });
+
+    return sortedKeys.map(key => ({
+      title: key,
+      data: grouped[key],
+    }));
+  }, [speakerData]);
+
+  // Handlers
+  const deleteTrack = async (track: PravachanTrack) => {
     Alert.alert(
       'Delete Download',
       `Remove "${track.title}" from downloads?`,
@@ -125,14 +110,10 @@ export default function SpeakerRecordingsScreen() {
         {
           text: 'Delete',
           onPress: async () => {
-            try {
-              if (currentTrackId === track.id) {
-                await pauseSound();
-              }
-              await deleteDownloadedTrack(track.id);
-            } catch (error) {
-              logger.error('Failed to delete track', error);
-            }
+             if (currentTrackId === track.id) {
+               await pauseSound();
+             }
+             await deleteDownloadedTrack(track.id);
           },
           style: 'destructive',
         },
@@ -140,13 +121,18 @@ export default function SpeakerRecordingsScreen() {
     );
   };
 
-  const handlePlayPause = async (track: TrackType) => {
+  const handlePlayPause = async (track: PravachanTrack) => {
     const fileUri = getDownloadedFileUri(track.id);
+    
+    // If not downloaded, you might want to stream it or force download. 
+    // Ideally, for Drive links, streaming is hard without a direct link. 
+    // Assuming we force download for now as per previous logic, or if you have direct stream links.
     if (!fileUri) {
       Alert.alert(
         'Download Required',
-        'Please download the pravachan to listen effortlessly without buffering.'
+        'Please download the pravachan to listen.'
       );
+      // Optional: Auto-start download here if you prefer
       return;
     }
 
@@ -168,23 +154,20 @@ export default function SpeakerRecordingsScreen() {
     return `${minutes}:${parseInt(seconds) < 10 ? '0' : ''}${seconds}`;
   };
 
-  const onSlidingComplete = async (value: number) => {
-    await seekSound(value);
-  };
-
-  if (isLoading) {
-    return (
-      <View style={[styles.screenContainer, styles.center]}>
-        <ActivityIndicator size="large" color={THEME.text} />
-      </View>
-    );
-  }
-
-  const renderItem = ({ item }: { item: TrackType }) => {
+  // Render Item
+  const renderItem = ({ item }: { item: PravachanTrack }) => {
     const trackDownloadState = downloadState[item.id];
     const isDownloaded = trackDownloadState?.isCompleted ?? false;
     const isDownloading = trackDownloadState?.isDownloading ?? false;
     const isActive = item.id === currentTrackId;
+
+    // Helper to map PravachanTrack to the format expected by startDownload (if types differ slightly)
+    const downloadItem = {
+        ...item,
+        speaker: speakerData?.name || 'Unknown',
+        url: getDriveDownloadUrl(item.driveId),
+        year: item.year || 0
+    };
 
     return (
       <View style={styles.cardWrapper}>
@@ -193,7 +176,7 @@ export default function SpeakerRecordingsScreen() {
             style={[styles.card, isActive && styles.cardActive]}
         >
             <View style={styles.trackRow}>
-                {/* Left Icon */}
+                {/* Icon */}
                 <View style={[styles.iconContainer, isActive && styles.iconActive]}>
                     {isActive && isPlaying ? (
                         <Pause size={24} color={isActive ? '#FFF' : THEME.primary} fill={isActive ? '#FFF' : 'transparent'} />
@@ -202,7 +185,7 @@ export default function SpeakerRecordingsScreen() {
                     )}
                 </View>
 
-                {/* Title & Info */}
+                {/* Info */}
                 <View style={styles.infoContainer}>
                     <Text style={[styles.trackTitle, isActive && styles.textActive]} numberOfLines={1}>
                         {item.title}
@@ -226,7 +209,7 @@ export default function SpeakerRecordingsScreen() {
 
                     <TouchableOpacity
                         style={[styles.actionButton, styles.mainAction]}
-                        onPress={() => (isDownloaded ? handlePlayPause(item) : startDownload(item))}
+                        onPress={() => (isDownloaded ? handlePlayPause(item) : startDownload(downloadItem))}
                         disabled={isDownloading}
                     >
                         {isDownloading ? (
@@ -244,7 +227,7 @@ export default function SpeakerRecordingsScreen() {
                 </View>
             </View>
 
-            {/* Slider (Visible when active) */}
+            {/* Slider */}
             {isActive && (
                 <View style={styles.sliderView}>
                     <Slider
@@ -252,18 +235,14 @@ export default function SpeakerRecordingsScreen() {
                         minimumValue={0}
                         maximumValue={playbackStatus.duration || 1}
                         value={playbackStatus.position}
-                        onSlidingComplete={onSlidingComplete}
+                        onSlidingComplete={seekSound}
                         minimumTrackTintColor={THEME.sliderActive}
                         maximumTrackTintColor={THEME.sliderTrack}
                         thumbTintColor={THEME.sliderThumb}
                     />
                     <View style={styles.timeRow}>
-                        <Text style={styles.timeText}>
-                            {formatTime(playbackStatus.position)}
-                        </Text>
-                        <Text style={styles.timeText}>
-                            {formatTime(playbackStatus.duration)}
-                        </Text>
+                        <Text style={styles.timeText}>{formatTime(playbackStatus.position)}</Text>
+                        <Text style={styles.timeText}>{formatTime(playbackStatus.duration)}</Text>
                     </View>
                 </View>
             )}
@@ -272,29 +251,46 @@ export default function SpeakerRecordingsScreen() {
     );
   };
 
+  const renderSectionHeader = ({ section: { title } }: { section: { title: string } }) => (
+    <View style={styles.sectionHeader}>
+      <Text style={styles.sectionTitle}>{title}</Text>
+    </View>
+  );
+
+  if (!speakerData) {
+    return (
+      <View style={[styles.screenContainer, styles.center]}>
+        <Text style={{ color: THEME.textLight }}>Speaker not found</Text>
+        <TouchableOpacity onPress={() => router.back()} style={{ marginTop: 20 }}>
+            <Text style={{ color: THEME.text, fontWeight: 'bold' }}>Go Back</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
+
   return (
     <View style={styles.screenContainer}>
       <StatusBar barStyle="dark-content" backgroundColor={THEME.background} />
       
+      {/* Header */}
       <View style={[styles.header, { paddingTop: insets.top > 0 ? insets.top + 10 : 40 }]}>
-        <TouchableOpacity
-          onPress={() => router.back()}
-          style={styles.backButton}
-        >
+        <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
           <ChevronLeft size={28} color={THEME.text} />
         </TouchableOpacity>
         <View style={{ flex: 1 }}>
-            <Text style={styles.title} numberOfLines={1}>{speaker}</Text>
-            <Text style={styles.subtitle}>{tracks.length} Pravachans</Text>
+            <Text style={styles.headerTitle} numberOfLines={1}>{speakerData.name}</Text>
+            <Text style={styles.headerSubtitle}>{speakerData.tracks.length} Pravachans</Text>
         </View>
       </View>
 
-      <FlatList
-        data={tracks}
-        renderItem={renderItem}
+      <SectionList
+        sections={sections}
         keyExtractor={(item) => item.id}
+        renderItem={renderItem}
+        renderSectionHeader={renderSectionHeader}
         contentContainerStyle={styles.listContent}
         showsVerticalScrollIndicator={false}
+        stickySectionHeadersEnabled={false}
       />
     </View>
   );
@@ -313,10 +309,23 @@ const styles = StyleSheet.create({
     zIndex: 10,
   },
   backButton: { marginRight: 15 },
-  title: { fontSize: 22, fontWeight: 'bold', color: THEME.text },
-  subtitle: { fontSize: 13, color: THEME.textLight, marginTop: 2 },
+  headerTitle: { fontSize: 22, fontWeight: 'bold', color: THEME.text },
+  headerSubtitle: { fontSize: 13, color: THEME.textLight, marginTop: 2 },
 
-  listContent: { paddingHorizontal: 16, paddingBottom: 40, paddingTop: 10 },
+  listContent: { paddingHorizontal: 16, paddingBottom: 40 },
+  
+  sectionHeader: {
+    paddingVertical: 10,
+    marginBottom: 8,
+    marginTop: 10,
+    backgroundColor: THEME.background,
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: '800',
+    color: THEME.textLight,
+    letterSpacing: 0.5,
+  },
 
   cardWrapper: {
     marginBottom: 12,
@@ -339,10 +348,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   
-  trackRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
+  trackRow: { flexDirection: 'row', alignItems: 'center' },
   
   iconContainer: {
     width: 48,
@@ -353,36 +359,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginRight: 16,
   },
-  iconActive: {
-    backgroundColor: THEME.text,
-  },
+  iconActive: { backgroundColor: THEME.text },
   
   infoContainer: { flex: 1 },
-  trackTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: THEME.text,
-    marginBottom: 2,
-  },
-  textActive: {
-    fontWeight: 'bold',
-  },
-  trackSubtitle: {
-    fontSize: 12,
-    color: THEME.textLight,
-  },
+  trackTitle: { fontSize: 16, fontWeight: '600', color: THEME.text, marginBottom: 2 },
+  textActive: { fontWeight: 'bold' },
+  trackSubtitle: { fontSize: 12, color: THEME.textLight },
   
-  actions: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  actionButton: {
-    width: 40,
-    height: 40,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginLeft: 4,
-  },
+  actions: { flexDirection: 'row', alignItems: 'center' },
+  actionButton: { width: 40, height: 40, justifyContent: 'center', alignItems: 'center', marginLeft: 4 },
   mainAction: {
     backgroundColor: '#FFF',
     borderRadius: 20,
@@ -393,25 +378,8 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
 
-  sliderView: {
-    marginTop: 16,
-    paddingTop: 8,
-    borderTopWidth: 1,
-    borderTopColor: 'rgba(0,0,0,0.03)',
-  },
-  slider: {
-    width: '100%',
-    height: 40,
-  },
-  timeRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingHorizontal: 2,
-    marginTop: -8,
-  },
-  timeText: {
-    fontSize: 11,
-    color: THEME.textLight,
-    fontVariant: ['tabular-nums'],
-  },
+  sliderView: { marginTop: 16, paddingTop: 8, borderTopWidth: 1, borderTopColor: 'rgba(0,0,0,0.03)' },
+  slider: { width: '100%', height: 40 },
+  timeRow: { flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 2, marginTop: -8 },
+  timeText: { fontSize: 11, color: THEME.textLight, fontVariant: ['tabular-nums'] },
 });
